@@ -60,7 +60,7 @@ const Login = () => {
         }
 
         const params = {
-            mail: values.mail,
+            email: values.email,
             password: values.password,
         };
         const accountApi = new AccountApi()
@@ -134,7 +134,7 @@ const Login = () => {
                         onFinish={onFinish}
                     >
                         <Form.Item
-                            name="mail"
+                            name="email"
                             rules={[
                                 {
                                     required: true,
