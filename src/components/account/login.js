@@ -7,7 +7,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import { AccountApi } from "../../api/apis"
-// import store, { setUser } from '../../store/store'
+import store, { setUser } from '../../store/store'
 import { validPhone, validPassword, validEmail } from '../../resources/regexp'
 
 const { Title } = Typography;
@@ -134,7 +134,7 @@ const Login = () => {
                         onFinish={onFinish}
                     >
                         <Form.Item
-                            name="phone"
+                            name="mail"
                             rules={[
                                 {
                                     required: true,
