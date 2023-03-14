@@ -6,16 +6,14 @@ import { Typography } from 'antd'
 import React, { useState, useRef, useEffect } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
-import { AccountApi } from "../../api/apis"
 import { valid, validEmail } from '../../resources/regexp'
-
+import './style.scss'
 const { Title } = Typography;
 
 
 const ForgotPassword = () => {
     const [form] = Form.useForm();
     const [fieldValue, setFieldvalue] = useState([]);
-    const accountApi = new AccountApi();
     const navigate = useNavigate();
     const [loadings, setLoadings] = useState([]);
 
@@ -55,14 +53,14 @@ const ForgotPassword = () => {
             mail: form.getFieldValue('mail'),
         };
         try {
-            const response = await accountApi.forgot_password(params);
-            if (response.data.code == 1) {
-                message.success("Đã gửi link đổi mật khẩu ở mail " + form.getFieldValue('mail'));
-                setSentOtp({ value: true })
-                mailRef.current.focus()
-            } else {
-                message.error("Số điện thoại không chính xác")
-            }
+            //const response = await accountApi.forgot_password(params);
+            // if (response.data.code == 1) {
+            //     message.success("Đã gửi link đổi mật khẩu ở mail " + form.getFieldValue('mail'));
+            //     setSentOtp({ value: true })
+            //     mailRef.current.focus()
+            // } else {
+            //     message.error("Số điện thoại không chính xác")
+            // }
         } catch (error) {
             console.log('Failed:', error);
             message.error("Số điện thoại không chính xác")
@@ -87,14 +85,14 @@ const ForgotPassword = () => {
             mail: values.mail,
         };
         try {
-            const response = await accountApi.forgot_password_verify(params);
-            console.log(response)
-            if (response.data.code == 1) {
-                message.success("Mật khẩu mới sẽ được gửi tới mail " + values.mail + ", vui lòng đổi mật khẩu ngay.");
-                setTimeout(() => {
-                    navigate('/login');
-                }, 3000)
-            }
+            //const response = await accountApi.forgot_password_verify(params);
+            // console.log(response)
+            // if (response.data.code == 1) {
+            //     message.success("Mật khẩu mới sẽ được gửi tới mail " + values.mail + ", vui lòng đổi mật khẩu ngay.");
+            //     setTimeout(() => {
+            //         navigate('/login');
+            //     }, 3000)
+            // }
         } catch (error) {
             console.log('Failed:', error);
             message.error("Mail không chính xác")
@@ -127,22 +125,20 @@ const ForgotPassword = () => {
                 height: '100vh'
             }}>
                 <Col span={8} xs={18} sm={14} md={10} lg={8} style={{}}>
-                    <div style={{
-                        transform: 'translateY(-90px)'
-                    }}>
+                    <div className='logo-container'>
                         <img style={{
                             width: '150px'
                         }} src={require('../../assets/logo.png')}></img>
-                        <Title level={2} style={{
+                        <Title className='logo-text' level={2} style={{
                             color: 'white'
                         }}>Kho hàng thông minh</Title>
                     </div>
                 </Col>
                 <Col span={8} xs={18} sm={14} md={10} lg={8} style={{ backgroundColor: "white", padding: "50px", borderRadius: "10px" }}>
-                    <Title level={2} style={{ marginBottom: '20px' }}>
+                    <Title className='form-title' level={2} style={{ marginBottom: '20px' }}>
                         Quên mật khẩu
                     </Title>
-                    <Form
+                    <Form className='login-form'
                         form={form}
                         name="basic"
                         initialValues={{
