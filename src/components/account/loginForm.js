@@ -16,6 +16,8 @@ import userApi from "../../api/userApi";
 import { useDispatch } from "react-redux";
 import { validEmail, validPassword } from "../../resources/regexp";
 import "./style.scss";
+import { setUser } from "../../redux/userSlice";
+import tokenService from "../../service/token.service";
 const { Title } = Typography;
 
 const error_msg = () => {
@@ -42,6 +44,10 @@ const LoginForm = () => {
             console.log(res);
             if (res) {
                 navigate("/trang-chu");
+                distpatch(setUser(res.data));
+                
+                //luu thông tin acessTonken vào localstorage
+                tokenService.setUser(res.data);
             }
         } catch (err) {
             console.log(err);

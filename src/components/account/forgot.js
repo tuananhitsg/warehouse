@@ -6,6 +6,7 @@ import { Typography } from 'antd'
 import React, { useState, useRef, useEffect } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
+import userApi from '../../api/userApi'
 import { valid, validEmail } from '../../resources/regexp'
 import './style.scss'
 const { Title } = Typography;
@@ -17,8 +18,8 @@ const ForgotPassword = () => {
     const navigate = useNavigate();
     const [loadings, setLoadings] = useState([]);
 
-    const mailRef = useRef()
-    const [sentOtp, setSentOtp] = useState({ value: false })
+    const [email, setEmail] = useState("");
+    
 
     const onValuesChange = (value) => {
         form.setFieldsValue(value)
@@ -39,41 +40,7 @@ const ForgotPassword = () => {
             return newLoadings;
         });
     }
-
-    const sendOtp = async () => {
-        enterLoading(0)
-        if (!validEmail.test(form.getFieldValue('mail'))) {
-            message.error('Email không hợp lệ');
-            stopLoading(0);
-            mailRef.current.focus();
-            // form.getFieldValue('phone').;
-            return;
-        }
-        const params = {
-            mail: form.getFieldValue('mail'),
-        };
-        try {
-            //const response = await accountApi.forgot_password(params);
-            // if (response.data.code == 1) {
-            //     message.success("Đã gửi link đổi mật khẩu ở mail " + form.getFieldValue('mail'));
-            //     setSentOtp({ value: true })
-            //     mailRef.current.focus()
-            // } else {
-            //     message.error("Số điện thoại không chính xác")
-            // }
-        } catch (error) {
-            console.log('Failed:', error);
-            message.error("Số điện thoại không chính xác")
-        } finally {
-            stopLoading(0)
-        }
-    }
-
-    useEffect(() => {
-        if (sentOtp.value == true) {
-            mailRef.current.focus()
-        }
-    }, []);
+    
 
     useEffect(() => {
         document.title = "Quên mật khẩu - Quản lý kho hàng thông minh"
@@ -82,8 +49,9 @@ const ForgotPassword = () => {
     const onFinish = async (values) => {
         enterLoading(1)
         const params = {
-            mail: values.mail,
+           email: email,
         };
+        console.log(params);
         try {
             //const response = await accountApi.forgot_password_verify(params);
             // console.log(response)
@@ -93,6 +61,13 @@ const ForgotPassword = () => {
             //         navigate('/login');
             //     }, 3000)
             // }
+            const res = await userApi.forgetPassword(params);
+            if (res.status === 200) {
+                message.success("Mật khẩu mới sẽ được gửi tới mail " + values.mail + ", vui lòng đổi mật khẩu ngay.");
+                setTimeout(() => {
+                    navigate('/login');
+                }, 3000)
+            }
         } catch (error) {
             console.log('Failed:', error);
             message.error("Mail không chính xác")
@@ -147,13 +122,12 @@ const ForgotPassword = () => {
                          onFinish={onFinish}
                         onFinishFailed={onFinishFailed}
                         autoComplete="off"
-
                         onValuesChange={onValuesChange}
                     >
                         <Row>
                             <Col flex="auto">
                                 <Form.Item
-                                    name="mail"
+                                    name="email"
                                     rules={[
                                         {
                                             required: true,
@@ -163,10 +137,9 @@ const ForgotPassword = () => {
                                 >
                                     <Input
                                         size='large'
-                                        ref={mailRef}
                                         prefix={<MailOutlined className="site-form-item-icon" />}
                                         placeholder="Email"
-                                        onChan />
+                                        onChange={(e)=> setEmail(e.target.value)} />
                                 </Form.Item>
                             </Col>
                             {/* <Col flex="none">
