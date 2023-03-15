@@ -43,6 +43,7 @@ const GoodsTable = () => {
     {
       title: "Id",
       dataIndex: "id",
+      width: "5%",
       render: (val) => {
         return (
           <a
@@ -65,6 +66,11 @@ const GoodsTable = () => {
       title: "Tên sản phẩm",
       dataIndex: "name",
       key: "name",
+    },
+    {
+      title: "Loại sản phẩm",
+      dataIndex: "category",
+      key: "category",
     },
     {
       title: "Đơn vị",
@@ -114,6 +120,7 @@ const GoodsTable = () => {
       id:i+1,
       code: "SP001",
       name: "Nuoc suoi",
+      category: "Nuoc uong",
       unit: "chai",
       wsize: "0.2",
       dsize: "0.2",
@@ -132,7 +139,7 @@ const GoodsTable = () => {
   };
   return (
     <div className="table-container">
-      <div
+      <div className="table-header"
         style={{
           marginBottom: 16,
         }}
@@ -169,7 +176,7 @@ const GoodsTable = () => {
         columns={columns}
         dataSource={data}
         // pagination={{ pageSize: 50 }}
-        scroll={{ y: 450 }}
+        scroll={{ y: 350 }}
       />
       {showModalGoodsDetail ? (
         <ModalGoodsDetail

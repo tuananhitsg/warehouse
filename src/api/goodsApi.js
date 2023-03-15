@@ -1,7 +1,10 @@
 import axiosApi from "./axisosApi";
 
 const productApi = {
-    getProducts: () => {
+    getGoods: () => {
         return axiosApi.get("/product");
     },
+    addGoods: () =>{
+        return axiosApi.post("/goods/add");
+    } 
 }

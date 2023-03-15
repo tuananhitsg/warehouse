@@ -3,10 +3,14 @@ import { Input, Col, Row, Typography, Button, Modal } from "antd";
 
 import { SearchOutlined, UserAddOutlined } from "@ant-design/icons";
 import GoodsTable from "./table";
+const { Title, Text } = Typography;
 
 const IndexGoods = () => {
   return (
     <div className="site-card-wrapper">
+      <Title level={5} style={{ marginBottom: "1rem" }}>
+        Sản phẩm
+      </Title>
       <Row gutter={{ xs: 8, sm: 16, md: 16, lg: 16 }}>
         <Col span={12}>
           <Input
@@ -14,17 +18,6 @@ const IndexGoods = () => {
             prefix={<SearchOutlined />}
           />
         </Col>
-      </Row>
-      <Row
-        style={{ margin: "1rem 0 1rem 0" }}
-        gutter={{
-          xs: 8,
-          sm: 16,
-          md: 16,
-          lg: 16,
-        }}
-      >
-        
       </Row>
       <GoodsTable></GoodsTable>
     </div>

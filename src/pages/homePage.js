@@ -70,7 +70,7 @@ const items = [
   ]),
   getItem("Sản phẩm", "4", <TagsOutlined />, [
     getItem("Danh sách sản phẩm","4.1"),
-    getItem("Nhóm sản phẩm", "4.2"),
+    getItem("Loại sản phẩm", "4.2"),
     getItem("Kích thước", "4.3"),
     getItem("Đơn vị tính", "4.4"),
   ]),
