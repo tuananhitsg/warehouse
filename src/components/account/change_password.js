@@ -15,6 +15,7 @@ const ChangePassword = () => {
   const navigate = useNavigate();
   const [loadings, setLoadings] = useState([]);
   const [password, setPassword] = useState("");
+  console.log(password);
   // const [mess, setMess]= useState("Vui lòng nhập mật khẩu mới!");
 
   const testResult = zxcvbn(password);
@@ -76,7 +77,7 @@ const ChangePassword = () => {
   };
 
   const error_msg = () => {
-    message.error("Sai số điện thoại hoặc mật khẩu");
+    message.error("Sai mật khẩu");
   };
 
   const onFinish = async (values) => {
@@ -107,23 +108,22 @@ const ChangePassword = () => {
     }
 
     const params = {
-      password: values.old_password,
-      new_password: values.new_password,
+      password: values.new_password,
+      username: "tuananhitsg@gmail.com",
     };
     console.log(params);
+    const response = await userApi.changePassword(params);
 
     try {
-      const response = await userApi.change_password(params);
-      console.log(response);
       if (response.data.code == 1) {
         message.success("Đổi mật khẩu thành công");
         navigate("/dang-nhap");
       } else {
-        message.error("Sai số điện thoại hoặc mật khẩu");
+        message.error("Sai mật khẩu");
       }
     } catch (error) {
       console.log("Failed:", error);
-      message.error("Sai số điện thoại hoặc mật khẩu");
+      message.error("Sai mật khẩu");
     } finally {
       stopLoading(0);
     }
@@ -202,32 +202,16 @@ const ChangePassword = () => {
             onFinish={onFinish}
           >
             <Form.Item
-              name="old_password"
-              rules={[
-                {
-                  required: true,
-                  message: "Vui lòng nhập mật khẩu cũ!",
-                },
-              ]}
-            >
-              <Input.Password
-                size="large"
-                prefix={<LockOutlined className="site-form-item-icon" />}
-                type="password"
-                placeholder="Mật khẩu cũ"
-              />
-            </Form.Item>
-            <Form.Item
               name="new_password"
               style={{
                 marginBottom: "0px",
               }}
-              // rules={[
-              //     {
-              //         required: true,
-              //         message: "Vui lòng nhập mật khẩu mới!",
-              //     },
-              // ]}
+              //   rules={[
+              //       {
+              //           required: true,
+              //           message: "Vui lòng nhập mật khẩu mới!",
+              //       },
+              //   ]}
             >
               <Input.Password
                 size="large"
@@ -253,12 +237,12 @@ const ChangePassword = () => {
               </p>
             </Form.Item>
 
-            {/* <Form.Item
+            <Form.Item
               name="repeat_password"
               rules={[
                 {
                   required: true,
-                  message: "Vui lòng lặp lại mật khẩu mới!",
+                  message: "Vui lòng nhập lại mật khẩu mới!",
                 },
               ]}
             >
@@ -266,9 +250,9 @@ const ChangePassword = () => {
                 size="large"
                 prefix={<LockOutlined className="site-form-item-icon" />}
                 type="password"
-                placeholder="Lặp lại mật khẩu mới"
+                placeholder="Nhập lại mật khẩu mới"
               />
-            </Form.Item> */}
+            </Form.Item>
 
             <Form.Item>
               <Button
