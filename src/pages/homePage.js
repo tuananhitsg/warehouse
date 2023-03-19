@@ -39,7 +39,9 @@ import "./homePage.scss";
 
 import IndexDashboard from "../components/management/dashboard/index";
 import IndexGoods from "../components/management/goods/index";
-
+import IndexCategory from "../components/management/category/index";
+import IndexEmployee from "../components/management/employee/index";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import tokenService from "../service/token.service";
 const { Header, Content, Footer, Sider } = Layout;
@@ -64,9 +66,10 @@ const items = [
     getItem("Xuất kho", "2.1"),
     getItem("Phiếu xuất kho", "2.2"),
   ]),
-  getItem("Quản lý tồn kho", "3", <HomeOutlined />, [
-    getItem("Phiếu kiểm kê", "3.1"),
-    getItem("Lịch sử biến động kho", "3.2"),
+  getItem("Quản lý kho", "3", <HomeOutlined />, [
+    getItem("Kho hàng", "3.1"),
+    getItem("Hàng hoá","3.2"),
+    getItem("Kệ", "3.3"),
   ]),
   getItem("Sản phẩm", "4", <TagsOutlined />, [
     getItem("Danh sách sản phẩm","4.1"),
@@ -75,15 +78,15 @@ const items = [
     getItem("Đơn vị tính", "4.4"),
   ]),
   getItem("Nhân viên", "5", <UserOutlined />, [
-    getItem("Nhà cung cấp", "5.1"),
-    getItem("Nhân viên", "5.2"),
+    getItem("Nhân viên", "5.1"),
+    getItem("Đối tác", "5.2"),
   ]),
 ];
 
 
 const HomePage = () => {
   const navigate = useNavigate();
-
+  const user = useSelector((state) => state.user);
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -121,6 +124,11 @@ const HomePage = () => {
       return <IndexDashboard />;
     }else if(itemClicked === 4.1){
         return <IndexGoods/>
+    }else if(itemClicked === 4.2){
+      return <IndexCategory/>
+    }
+    else if(itemClicked === 5.1){
+        return <IndexEmployee/>
     }
     return <IndexDashboard />;
   };
@@ -189,9 +197,9 @@ const HomePage = () => {
                         <div>
                           <SettingOutlined />
                           <Text
-                            style={{
-                              marginLeft: "12px",
-                            }}
+                            // style={{
+                            //   marginLeft: "12px",
+                            // }}
                           >
                             Cài đặt
                           </Text>
@@ -206,9 +214,9 @@ const HomePage = () => {
                         <div onClick={() => showModal()}>
                           <LogoutOutlined />
                           <Text
-                            style={{
-                              marginLeft: "12px",
-                            }}
+                            // style={{
+                            //   marginLeft: "12px",
+                            // }}
                           >
                             Đăng xuất
                           </Text>
@@ -225,7 +233,7 @@ const HomePage = () => {
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    marginLeft: "0.5rem",
+                    //marginLeft: "0.5rem",
                     justifyContent: "space-between",
                   }}
                 >

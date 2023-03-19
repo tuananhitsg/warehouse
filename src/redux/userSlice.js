@@ -7,7 +7,6 @@ const userSlice = createSlice({
         setUser: (state, action) => {
             state.info = action.payload;
         },
-        getUser: (state) => state
     },
 });
 

@@ -48,23 +48,15 @@ const ForgotPassword = () => {
     };
     console.log(params);
     try {
-      //const response = await accountApi.forgot_password_verify(params);
-      // console.log(response)
-      // if (response.data.code == 1) {
-      //     message.success("Mật khẩu mới sẽ được gửi tới mail " + values.mail + ", vui lòng đổi mật khẩu ngay.");
-      //     setTimeout(() => {
-      //         navigate('/login');
-      //     }, 3000)
-      // }
       const res = await userApi.forgetPassword(params);
-      if (res.status === 200) {
+      if (res.data.status === 204) {
         message.success(
           "Mật khẩu mới sẽ được gửi tới mail " +
             values.mail +
             ", vui lòng đổi mật khẩu ngay."
         );
         setTimeout(() => {
-          navigate("/login");
+          navigate("/dang-nhap");
         }, 3000);
       }
     } catch (error) {
@@ -166,20 +158,11 @@ const ForgotPassword = () => {
                   />
                 </Form.Item>
               </Col>
-              {/* <Col flex="none">
-                                <Form.Item>
-                                    <Button type="primary" htmlType="button" size='large' loading={loadings[0]} onClick={() => sendOtp()}>
-                                        Nhận email
-                                    </Button>
-
-                                </Form.Item>
-                            </Col> */}
             </Row>
             <Form.Item
               wrapperCol={{
                 span: 24,
               }}
-              //style={{ display: sentOtp.value ? 'block' : 'none' }}
             >
               <Button
                 type="primary"

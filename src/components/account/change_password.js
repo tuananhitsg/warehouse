@@ -5,9 +5,11 @@ import React, { useEffect, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { validPhone, validPassword } from "../../resources/regexp";
+import tokenService from "../../service/token.service";
 import userApi from "../../api/userApi";
 import zxcvbn from "zxcvbn";
 import "./style.scss";
+
 const { Title } = Typography;
 
 const ChangePassword = () => {
@@ -108,8 +110,9 @@ const ChangePassword = () => {
     }
 
     const params = {
+      email: "tuananhitsg@gmail.com",
       password: values.new_password,
-      username: "tuananhitsg@gmail.com",
+      
     };
     console.log(params);
     const response = await userApi.changePassword(params);

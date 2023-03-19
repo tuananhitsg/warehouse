@@ -9,14 +9,12 @@ import {
   DeleteOutlined,
   DownloadOutlined,
 } from "@ant-design/icons";
-import TableCustomer from "../customer/TableCustomer";
-import ModelAddCustomer from "../customer/ModelAddCustomer";
-import TableEmployee from "./TableEmployee";
-import ModelAddEmployee from "./ModelAddEmployee";
+import EmployeeTable from "./table";
+import ModalAddEmployee from "./ModalAddEmployee";
 
 const { Title, Text } = Typography;
 const IndexEmployee = () => {
-  const [showModalAddCustomer, setShowModalAddCustomer] = useState(false);
+  const [showModalAddEmployee, setShowModalAddEmployee] = useState(false);
   
   // //model
   // const [isModalOpen, setIsModalOpen] = useState(false);
@@ -36,7 +34,7 @@ const IndexEmployee = () => {
   // /////
 
   const showModal = () => {
-    setShowModalAddCustomer(true);
+    setShowModalAddEmployee(true);
   };
 
   return (
@@ -87,13 +85,13 @@ const IndexEmployee = () => {
         }}
       >
         <Col span={24}>
-          <TableEmployee />
+          <EmployeeTable />
         </Col>
       </Row>
-      {showModalAddCustomer ? (
-        <ModelAddEmployee
-          showModalAddCustomer={showModalAddCustomer}
-          setShowModalAddCustomer={setShowModalAddCustomer}
+      {showModalAddEmployee ? (
+        <ModalAddEmployee
+          showModalAddEmployee={showModalAddEmployee}
+          setShowModalAddEmployee={setShowModalAddEmployee}
         />
       ) : null}
     </div>

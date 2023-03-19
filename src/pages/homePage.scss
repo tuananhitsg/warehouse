@@ -1,10 +1,12 @@
-.avt_group{
-  
-    padding: 2px 8px;
-    cursor: pointer;
-    border-radius: 4px;
-    &:hover{
-        background-color: var(--B20);
-    }
-
+.avt_group {
+  padding: 2px 8px;
+  cursor: pointer;
+  border-radius: 4px;
+  &:hover {
+    background-color: var(--B20);
+  }
+  .ant-layout-sider-children {
+    height: 100%;
+    overflow: auto;
+  }
 }

@@ -1,10 +1,18 @@
-import axiosApi from "./axisosApi";
+import axiosApi from "./axiosApi";
 
-const productApi = {
+const goodsApi = {
     getGoods: () => {
-        return axiosApi.get("/product");
+        const url= "/goods/get-all";
+        return axiosApi.get(url);
     },
-    addGoods: () =>{
-        return axiosApi.post("/goods/add");
+    getGoodsById: (id) => {
+        const url = `/goods/get-by/${id}`;
+        return axiosApi.get(url);
+    },
+    addGoods: (data) =>{
+        const url = "/goods/add";
+        return axiosApi.post(url, data);
     } 
 }
+
+export default goodsApi;

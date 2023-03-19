@@ -7,35 +7,33 @@ import {
   UserAddOutlined,
   ReloadOutlined,
 } from "@ant-design/icons";
-
-import goodsApi from "../../../api/goodsApi";
 import { useDispatch, useSelector } from "react-redux";
 import { setReload } from "../../../redux/reloadSlice";
 import "./table.scss";
-import ModalGoodsDetail from "./modalGoodsDetail";
-import ModalAddGoods from "./modalAddGoods";
-
+import ModalGoodsDetail from "./modalCategoryDetail";
 const GoodsTable = () => {
   const [selectedId, setSelectedId] = useState([]);
   const [showModalGoodsDetail, setShowModalGoodsDetail] = useState(false);
-  const [showModalAddGoods, setShowModalAddGoods] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [listGoods, setListGoods] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [listProduct, setListProduct] = useState([]);
   const [refreshKey, setRefreshKey] = useState(0);
-  const reload = useSelector((state) => state.reloadReducer.reload);
+  const dispatch = useDispatch();
+
+  const reload = useSelector((state) => state.reload);
 
   const showModalDetail = (e) => {
     setShowModalGoodsDetail(true);
     setSelectedId(e);
   };
-  const showModalAdd = () => {
-    setShowModalAddGoods(true);
-  };
+
   const onSelectChange = (selectedId) => {
     setSelectedRowKeys(selectedId);
   };
-
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+  };
   const [isModalOpen, setIsModalOpen] = useState(false);
   const showModal = () => {
     setIsModalOpen(true);
@@ -43,10 +41,9 @@ const GoodsTable = () => {
 
   const columns = [
     {
-      title: "Mã sản phẩm",
-      width: "15%",
-      dataIndex: "code",
-      key: "code",
+      title: "Id",
+      dataIndex: "id",
+      width: "5%",
       render: (val) => {
         return (
           <a
@@ -58,6 +55,12 @@ const GoodsTable = () => {
           </a>
         );
       },
+    },
+    {
+      title: "Mã sản phẩm",
+      width: "15%",
+      dataIndex: "code",
+      key: "code",
     },
     {
       title: "Tên sản phẩm",
@@ -78,20 +81,20 @@ const GoodsTable = () => {
     {
       title: "Chiều dài (mét)",
       width: "12%",
-      dataIndex: "length",
-      key: "length",
+      dataIndex: "wsize",
+      key: "wsize",
     },
     {
       title: "Chiều rộng (mét)",
       width: "12%",
-      dataIndex: "width",
-      key: "width",
+      dataIndex: "dsize",
+      key: "dsize",
     },
     {
       title: "Chiều cao (mét)",
       width: "12%",
-      dataIndex: "height",
-      key: "height",
+      dataIndex: "hsize",
+      key: "hsize",
     },
     {
       title: "Action",
@@ -101,65 +104,60 @@ const GoodsTable = () => {
       render: (_, record) => (
         <Space size="middle">
           <a>
+            <EditOutlined />
+          </a>
+          <a>
             <DeleteOutlined />
           </a>
         </Space>
       ),
     },
   ];
-  //get good list
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await goodsApi.getGoods();
-        if (res) {
-          const data = res.map((item) => {
-            return {
-              ...item,
-              key: item.id,
-            };
-          });
-          setListGoods(data.reverse());
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchData();
-  }, [reload]);
-  
-
+  const data = [];
+  for (let i = 0; i < 100; i++) {
+    data.push({
+      key: i,
+      id:i+1,
+      code: "SP001",
+      name: "Nuoc suoi",
+      category: "Nuoc uong",
+      unit: "chai",
+      wsize: "0.2",
+      dsize: "0.2",
+      hsize: "0.2",
+    });
+  }
   const handleRefresh = () => {
-    setIsLoading(true);
+    setLoading(true);
     // ajax request after empty completing
     setTimeout(() => {
       setSelectedRowKeys([]);
-      setIsLoading(false);
+      setLoading(false);
       setRefreshKey((oldKey) => oldKey + 1);
       message.success("Tải lại thành công");
     }, 1000);
   };
   return (
     <div className="table-container">
-      <div
-        className="table-header"
+      <div className="table-header"
         style={{
           marginBottom: 16,
         }}
       >
         <Button
           type="primary"
-          loading={isLoading}
+          //   onClick={handleDelete}
+          //   disabled={!hasSelected}
+          loading={loading}
           icon={<UserAddOutlined />}
           style={{ marginRight: "1rem" }}
-          onClick={showModalAdd}
         >
           Thêm
         </Button>
         <Button
           type="primary"
           onClick={handleRefresh}
-          loading={isLoading}
+          loading={loading}
           icon={<ReloadOutlined />}
           style={{ marginRight: "1rem" }}
         >
@@ -176,8 +174,8 @@ const GoodsTable = () => {
       <Table
         sticky
         columns={columns}
-        dataSource={listGoods}
-        pagination={{ pageSize: 6 }}
+        dataSource={data}
+        // pagination={{ pageSize: 50 }}
         scroll={{ y: 350 }}
       />
       {showModalGoodsDetail ? (
@@ -185,12 +183,6 @@ const GoodsTable = () => {
           showModalGoodsDetail={showModalGoodsDetail}
           setShowModalGoodsDetail={setShowModalGoodsDetail}
           selectedId={selectedId}
-        />
-      ) : null}
-      {showModalAddGoods ? (
-        <ModalAddGoods
-          showModalAddGoods={showModalAddGoods}
-          setShowModalAddGoods={setShowModalAddGoods}
         />
       ) : null}
     </div>

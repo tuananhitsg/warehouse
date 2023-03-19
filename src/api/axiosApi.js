@@ -16,13 +16,15 @@ const axiosApi = axios.create({
       },
 });
 
-
-
 axiosApi.interceptors.request.use(async (config) => {
-  // Handle token here ...
-  console.log("token in here");
+  const token = localStorage.getItem('token');
+  console.log(token)
+  if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+  }
   return config;
 });
+
 
 axiosApi.interceptors.response.use(
   (response) => {

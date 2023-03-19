@@ -13,12 +13,12 @@ import {
 } from "antd";
 // import openAddressApi from "../../api/openApi";
 import { useDispatch, useSelector } from "react-redux";
-import { setReload } from "../../redux/actions";
+import { setReload } from "../../../redux/reloadSlice";
 
 
 const { Option } = Select;
 
-const ModelAddEmployee = ({
+const ModalAddEmployee = ({
   showModalAddCustomer,
   setShowModalAddCustomer,
 }) => {
@@ -293,4 +293,4 @@ const ModelAddEmployee = ({
     </>
   );
 };
-export default ModelAddEmployee;
+export default ModalAddEmployee;

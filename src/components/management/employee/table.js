@@ -1,5 +1,5 @@
-import React, { useEffect,useState } from "react";
-import { Button, Table, Modal, Tag, Image, message,Badge } from "antd";
+import React, { useEffect, useState } from "react";
+import { Button, Table, Modal, Tag, Image, message, Badge } from "antd";
 import {
   SearchOutlined,
   PlusSquareFilled,
@@ -7,17 +7,15 @@ import {
   ToolOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
-import staffApi from "../../api/staffApi";
-// import openAddressApi from "../../api/openApi";
+
 import { useDispatch, useSelector } from "react-redux";
-import { setReload } from "../../redux/actions";
-import roleApi from "../../api/roleApi";
-const onClick=(e)=>{
-  console.log("evet",e)
-}
+import { setReload } from "../../../redux/reloadSlice";
 
+const onClick = (e) => {
+  console.log("evet", e);
+};
 
-const TableEmployee = () => {
+const EmployeeTable = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [loading, setLoading] = useState(false);
   const [listStaff, setListStaff] = useState([]);
@@ -32,8 +30,8 @@ const TableEmployee = () => {
 
   const columns = [
     {
-      title: "Id",
-      dataIndex: "id",
+      title: "Mã nhân viên",
+      dataIndex: "code",
       render: (val) => {
         return (
           <a
@@ -56,7 +54,7 @@ const TableEmployee = () => {
     },
     {
       title: "Giới tính",
-      dataIndex:"gender",
+      dataIndex: "gender",
       width: 30,
     },
     {
@@ -76,17 +74,14 @@ const TableEmployee = () => {
       dataIndex: "position",
       render: (position) => {
         let color = "green";
-        let roleName ='';
+        let roleName = "";
         if (position === "NV") {
           color = "green";
-          roleName = "Nhân viên"
-        }if (position === "HC") {
-          color = "cyan";
-          roleName = "Hậu cần"
+          roleName = "Nhân viên";
         }
         if (position === "QL") {
           color = "blue";
-          roleName = "Quản lý"
+          roleName = "Quản lý";
         }
         return (
           <Tag color={color} key={position}>
@@ -100,72 +95,65 @@ const TableEmployee = () => {
       dataIndex: "status",
       render: (status) => {
         let color = "green";
-        let statusName ='';
+        let statusName = "";
         if (status === "1") {
           color = "green";
-          statusName = "Hoạt động"
-        }if (status === "0") {
-          color = "red";
-          statusName = "Không hoạt động"
+          statusName = "Hoạt động";
         }
-        return (
-          <Badge text={statusName} color={color}
-          />
-        );
+        if (status === "0") {
+          color = "red";
+          statusName = "Không hoạt động";
+        }
+        return <Badge text={statusName} color={color} />;
       },
     },
-    {
-      title: "Hình ảnh",
-      dataIndex: "image",
-      render: (image) => <Image width={30} src={image} />,
-      width: 50,
-    },
+    
   ];
 
-  useEffect(() => {
-    const fetchListStaff = async () => {
-      try {
-        const response = await staffApi.getStaffs();
-        console.log(response);
+  // useEffect(() => {
+  //   const fetchListStaff = async () => {
+  //     try {
+  //       const response = await staffApi.getStaffs();
+  //       console.log(response);
 
-        const data = await Promise.all(
-          response.map(async(item, index) => {
-            const ward = await openAddressApi.getWardByCode(item.ward_id);
-            const district = await openAddressApi.getDistrictByCode(
-              item.district_id
-            );
-            const city = await openAddressApi.getProvinceByCode(item.city_id);
-            const role = await roleApi.getRoleById(item.position);
-            item.ward_id = ward.name;
-            item.district_id = district.name;
-            item.city_id = city.name;
-            item.position = role.nameRole;
-            return {
-              key: index,
-              id: item.id,
-              name: `${item.firstName} ${item.lastName}`,
-              phone: item.phone,
-              gender: item.gender,
-              dob: item.dob.substring(0, 10),
-              address: ` ${item?.ward_id + " /"} ${item?.district_id + " /"} ${
-                item?.city_id
-              }`,
-              email: item.email,
-              position: item.position,
-              status: item.status,
-              // maneger: `${item.Staffs[0]?.firstName} ${item.Staffs[0]?.lastName}`,
-              maneger: item.Staffs[0]?.firstName + item.Staffs[0]?.lastName,
-              image: item.image,
-            };
-          })
-        );
-        setListStaff(data);
-      } catch (error) {
-        console.log("Failed to fetch product list: ", error);
-      }
-    };
-    fetchListStaff();
-  }, [reload]);
+  //       const data = await Promise.all(
+  //         response.map(async(item, index) => {
+  //           const ward = await openAddressApi.getWardByCode(item.ward_id);
+  //           const district = await openAddressApi.getDistrictByCode(
+  //             item.district_id
+  //           );
+  //           const city = await openAddressApi.getProvinceByCode(item.city_id);
+  //           const role = await roleApi.getRoleById(item.position);
+  //           item.ward_id = ward.name;
+  //           item.district_id = district.name;
+  //           item.city_id = city.name;
+  //           item.position = role.nameRole;
+  //           return {
+  //             key: index,
+  //             id: item.id,
+  //             name: `${item.firstName} ${item.lastName}`,
+  //             phone: item.phone,
+  //             gender: item.gender,
+  //             dob: item.dob.substring(0, 10),
+  //             address: ` ${item?.ward_id + " /"} ${item?.district_id + " /"} ${
+  //               item?.city_id
+  //             }`,
+  //             email: item.email,
+  //             position: item.position,
+  //             status: item.status,
+  //             // maneger: `${item.Staffs[0]?.firstName} ${item.Staffs[0]?.lastName}`,
+  //             maneger: item.Staffs[0]?.firstName + item.Staffs[0]?.lastName,
+  //             image: item.image,
+  //           };
+  //         })
+  //       );
+  //       setListStaff(data);
+  //     } catch (error) {
+  //       console.log("Failed to fetch product list: ", error);
+  //     }
+  //   };
+  //   fetchListStaff();
+  // }, [reload]);
 
   const onSelectChange = (selectedId) => {
     setSelectedRowKeys(selectedId);
@@ -198,27 +186,27 @@ const TableEmployee = () => {
   const showModal = () => {
     setIsModalOpen(true);
   };
-  const handleOk = () => {
-    setIsModalOpen(false);
-    const fetchDeleteStaff = async () => {
-      try {
-        const response = await staffApi.deleteStaff(selectedId);
-        if (response == 1) {
-          depatch(setReload(!reload));
-        } else {
-          setTimeout(() => {
-            message.success("Xóa thất bại");
-          }, 1000);
-        }
-      } catch (error) {
-        console.log("Failed to fetch product list: ", error);
-      }
-    };
-    fetchDeleteStaff();
-    setTimeout(() => {
-      message.success("Xóa thành công");
-    }, 1000);
-  };
+  // const handleOk = () => {
+  //   setIsModalOpen(false);
+  //   const fetchDeleteStaff = async () => {
+  //     try {
+  //       const response = await staffApi.deleteStaff(selectedId);
+  //       if (response == 1) {
+  //         depatch(setReload(!reload));
+  //       } else {
+  //         setTimeout(() => {
+  //           message.success("Xóa thất bại");
+  //         }, 1000);
+  //       }
+  //     } catch (error) {
+  //       console.log("Failed to fetch product list: ", error);
+  //     }
+  //   };
+  //   fetchDeleteStaff();
+  //   setTimeout(() => {
+  //     message.success("Xóa thành công");
+  //   }, 1000);
+  // };
   const handleCancel = () => {
     setIsModalOpen(false);
   };
@@ -259,18 +247,11 @@ const TableEmployee = () => {
           {hasSelected ? `Selected ${selectedRowKeys.length} items` : ""}
         </span>
       </div>
-      <Table rowSelection={{
-          selectedRowKeys,
-          onChange: onSelectChange,
-          onSelect: (record) => {
-            setSelectedId(record.id);
-          },
-        }} 
-        columns={columns} dataSource={listStaff} />
+      <Table columns={columns} dataSource={listStaff} />
       <Modal
         title="Xóa nhân viên"
         open={isModalOpen}
-        onOk={handleOk}
+        //onOk={handleOk}
         onCancel={handleCancel}
       >
         <p>Bạn muốn xóa nhân viên không?</p>
@@ -278,4 +259,4 @@ const TableEmployee = () => {
     </div>
   );
 };
-export default TableEmployee;
+export default EmployeeTable;

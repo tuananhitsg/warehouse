@@ -1,4 +1,4 @@
-import axiosApi from "./axisosApi";
+import axiosApi from "./axiosApi";
 
 const employeeApi = {
     getEmployee: (params) => {
