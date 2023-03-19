@@ -7,7 +7,6 @@ import "./App.css";
 const ChangePassword = lazy(() => import("./components/account/change_password"));
 const ForgotPassword = lazy(() => import("./components/account/forgot"));
 const LoginForm = lazy(() => import("./components/account/loginForm"));
-const Management = lazy(() => import("./components/management/management"));
 const HomePage = lazy(() => import("./pages/homePage"));
 
 const App = () => {
