@@ -13,8 +13,9 @@ import {
   Upload,
 } from "antd";
 
-const { Option } = Select;
+import categoryApi from "../../../api/categoryApi";
 
+const { Option } = Select;
 const ModalCategoryDetail = ({
   showModalCategoryDetail,
   setShowModalCategoryDetail,
@@ -27,26 +28,27 @@ const ModalCategoryDetail = ({
   const handleSubmit = async (values) => {
     console.log("submit", values);
   }
-  useEffect(() => {
-    // console.log("selectedId", selectedId);
-    // const fetchGoodsDetail = async (id) => {
-    //   try {
-    //     const res = await goodsApi.getGoodsDetail(id);
-    //     console.log("res", res);
-    //     if (res.status === 200) {
-    //       const { data } = res;
-    //       setGoodsDetail(data);
-    //     }
-    //   } catch (error) {
-    //     console.log("error", error);
-    //   }
-    // }
-  }, []);
+  // useEffect(() => {
+  //   console.log("selectedId", selectedId);
+  //   const fetchData = async (id) => {
+  //     try {
+  //       const res = await categoryApi.getCategoryById(id);
+  //       console.log("res", res);
+  //       if (res.status === 200) {
+  //         const { data } = res;
+  //         setGoodsDetail(data);
+  //       }
+  //     } catch (error) {
+  //       console.log("error", error);
+  //     }
+  //   };
+  //   fetchData(selectedId);
+  // }, []);
   return (
     <div className="modal-container">
       <div className="modal-header">
         <Drawer
-          title="Chi tiết sản phẩm"
+          title="Chi tiết loại sản phẩm"
           width={720}
           onClose={onClose}
           open={showModalCategoryDetail}

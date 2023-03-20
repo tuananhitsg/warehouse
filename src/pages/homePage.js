@@ -22,18 +22,8 @@ import {
   ShoppingCartOutlined,
   InboxOutlined,
   DashboardOutlined,
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
   SettingOutlined,
-  DesktopOutlined,
-  FileOutlined,
-  PieChartOutlined,
-  TeamOutlined,
-  DashboardTwoTone,
-  BellOutlined,
-  ProfileOutlined,
-  ThunderboltOutlined,
-  ProjectOutlined,
+  ContainerOutlined,
 } from "@ant-design/icons";
 import "./homePage.scss";
 
@@ -44,6 +34,7 @@ import IndexEmployee from "../components/management/employee/index";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import tokenService from "../service/token.service";
+import { setUser } from "../redux/userSlice";
 const { Header, Content, Footer, Sider } = Layout;
 const { Text } = Typography;
 
@@ -56,37 +47,53 @@ function getItem(label, key, icon, children) {
   };
 }
 
-const items = [
-  getItem("Dashboard", "0", <DashboardOutlined />),
-  getItem("Nhập kho", "1", <LoginOutlined />, [
-    getItem("Nhập kho", "1.1"),
-    getItem("Phiếu nhập kho", "1.2"),
-  ]),
-  getItem("Xuất kho", "2", <LogoutOutlined />, [
-    getItem("Xuất kho", "2.1"),
-    getItem("Phiếu xuất kho", "2.2"),
-  ]),
-  getItem("Quản lý kho", "3", <HomeOutlined />, [
-    getItem("Kho hàng", "3.1"),
-    getItem("Hàng hoá","3.2"),
-    getItem("Kệ", "3.3"),
-  ]),
-  getItem("Sản phẩm", "4", <TagsOutlined />, [
-    getItem("Sản phẩm","4.1"),
-    getItem("Loại sản phẩm", "4.2"),
-    getItem("Kích thước", "4.3"),
-    getItem("Đơn vị tính", "4.4"),
-  ]),
-  getItem("Nhân viên", "5", <UserOutlined />, [
-    getItem("Nhân viên", "5.1"),
-    getItem("Đối tác", "5.2"),
-  ]),
-];
-
-
 const HomePage = () => {
+  const [userInfo, setUserInfo] = useState({});
   const navigate = useNavigate();
-  const user = useSelector((state) => state.user);
+
+  const user = useSelector((state) => state.userReducer);
+  console.log(user);
+
+  // const getItem = (label, key, icon, children, required_perm, type) => {
+  //   if (!userInfo || (required_perm && userInfo.is_manager == false)) {
+  //     return null;
+  //   }
+  //   return {
+  //     key,
+  //     icon,
+  //     children,
+  //     label,
+  //     type,
+  //   };
+  // };
+  const items = [
+    getItem("Dashboard", "0", <DashboardOutlined />),
+    getItem("Nhập kho", "1", <LoginOutlined />, [
+      getItem("Nhập kho", "1.1"),
+      getItem("Phiếu nhập kho", "1.2"),
+    ]),
+    getItem("Xuất kho", "2", <LogoutOutlined />, [
+      getItem("Xuất kho", "2.1"),
+      getItem("Phiếu xuất kho", "2.2"),
+    ]),
+    getItem("Quản lý kho", "3", <HomeOutlined />, [
+      getItem("Kho hàng", "3.1"),
+      getItem("Hàng hoá", "3.2"),
+      getItem("Kệ", "3.3"),
+    ]),
+    getItem("Sản phẩm", "4", <TagsOutlined />, [
+      getItem("Sản phẩm", "4.1"),
+      getItem("Loại sản phẩm", "4.2"),
+      getItem("Kích thước", "4.3"),
+      getItem("Đơn vị tính", "4.4"),
+    ]),
+    getItem("Nhân viên", "5", <UserOutlined />, [
+      getItem("Nhân viên", "5.1"),
+      getItem("Đối tác", "5.2"),
+    ]),
+    getItem("Nhà kho", "6", <ContainerOutlined />),
+  ];
+
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -118,17 +125,14 @@ const HomePage = () => {
     }
   };
   const RenderHome = () => {
-    console.log(itemClicked);
-    
     if (itemClicked === 0) {
       return <IndexDashboard />;
-    }else if(itemClicked === 4.1){
-        return <IndexGoods/>
-    }else if(itemClicked === 4.2){
-      return <IndexCategory/>
-    }
-    else if(itemClicked === 5.1){
-        return <IndexEmployee/>
+    } else if (itemClicked === 4.1) {
+      return <IndexGoods />;
+    } else if (itemClicked === 4.2) {
+      return <IndexCategory />;
+    } else if (itemClicked === 5.1) {
+      return <IndexEmployee />;
     }
     return <IndexDashboard />;
   };
@@ -136,9 +140,11 @@ const HomePage = () => {
     //redict to login page
     navigate("/dang-nhap");
     //delete user in local storage
+    localStorage.removeItem("token");
+    //delete user in redux
     tokenService.removeUser();
   };
-  
+
   return (
     <Layout
       style={{
@@ -197,9 +203,9 @@ const HomePage = () => {
                         <div>
                           <SettingOutlined />
                           <Text
-                            // style={{
-                            //   marginLeft: "12px",
-                            // }}
+                          // style={{
+                          //   marginLeft: "12px",
+                          // }}
                           >
                             Cài đặt
                           </Text>
@@ -214,9 +220,9 @@ const HomePage = () => {
                         <div onClick={() => showModal()}>
                           <LogoutOutlined />
                           <Text
-                            // style={{
-                            //   marginLeft: "12px",
-                            // }}
+                          // style={{
+                          //   marginLeft: "12px",
+                          // }}
                           >
                             Đăng xuất
                           </Text>

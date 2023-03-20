@@ -12,20 +12,20 @@ import {
   Space,
   Upload,
 } from "antd";
-import goodsApi from "../../../api/goodsApi";
+import employeeApi from "../../../api/employeeApi";
 
 
 
-const ModalGoodsDetail = ({
-  showModalGoodsDetail,
-  setShowModalGoodsDetail,
+const ModalEmployeeDetail = ({
+  showModalEmployeeDetail,
+  setShowModalEmployeeDetail,
   selectedId,
 }) => {
   const [form] = Form.useForm();
   const [size, setSize] = useState("");
 
   const onClose = () => {
-    setShowModalGoodsDetail(false);
+    setShowModalEmployeeDetail(false);
   };
   const handleSubmit = async (values) => {
     console.log("submit", values);
@@ -40,7 +40,7 @@ const ModalGoodsDetail = ({
     console.log("selectedId", selectedId);
     const fetchData = async (id) => {
       try {
-        const res = await goodsApi.getGoodsById(id);
+        const res = await employeeApi.getEmployeeById(id);
         if (res) {
           console.log("res:", res);
           form.setFieldsValue({ ...res });
@@ -58,7 +58,7 @@ const ModalGoodsDetail = ({
           title="Chi tiết sản phẩm"
           width={560}
           onClose={onClose}
-          open={showModalGoodsDetail}
+          open={showModalEmployeeDetail}
           extra={
             <Space>
               <Button onClick={onClose}>Huỷ</Button>
@@ -136,4 +136,4 @@ const ModalGoodsDetail = ({
     </div>
   );
 };
-export default ModalGoodsDetail;
+export default ModalEmployeeDetail;

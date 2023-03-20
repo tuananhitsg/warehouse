@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import userApi from "../../api/userApi";
 import { valid, validEmail } from "../../resources/regexp";
 import "./style.scss";
+import tokenService from "../../service/token.service";
 const { Title } = Typography;
 
 const ForgotPassword = () => {
@@ -49,12 +50,14 @@ const ForgotPassword = () => {
     console.log(params);
     try {
       const res = await userApi.forgetPassword(params);
-      if (res.data.status === 204) {
+      localStorage.setItem("resetPasswordEmail", params);
+      if (res.data.status === 200) {
         message.success(
           "Mật khẩu mới sẽ được gửi tới mail " +
             values.mail +
             ", vui lòng đổi mật khẩu ngay."
         );
+
         setTimeout(() => {
           navigate("/dang-nhap");
         }, 3000);

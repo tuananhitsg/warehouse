@@ -1,8 +1,19 @@
 import React, { useState, useEffect } from "react";
 
-import { Space, Table, Button, Modal, Tag, message } from "antd";
+import {
+  Space,
+  Input,
+  Table,
+  Button,
+  Modal,
+  Tag,
+  Row,
+  Col,
+  message,
+} from "antd";
 import {
   DeleteOutlined,
+  SearchOutlined,
   EditOutlined,
   UserAddOutlined,
   ReloadOutlined,
@@ -115,8 +126,8 @@ const GoodsTable = () => {
         if (res) {
           const data = res.map((item) => {
             return {
+              key: item.code,
               ...item,
-              key: item.id,
             };
           });
           setListGoods(data.reverse());
@@ -127,7 +138,6 @@ const GoodsTable = () => {
     };
     fetchData();
   }, [reload]);
-  
 
   const handleRefresh = () => {
     setIsLoading(true);
@@ -141,44 +151,42 @@ const GoodsTable = () => {
   };
   return (
     <div className="table-container">
-      <div
-        className="table-header"
-        style={{
-          marginBottom: 16,
-        }}
-      >
-        <Button
-          type="primary"
-          loading={isLoading}
-          icon={<UserAddOutlined />}
-          style={{ marginRight: "1rem" }}
-          onClick={showModalAdd}
-        >
-          Thêm
-        </Button>
-        <Button
-          type="primary"
-          onClick={handleRefresh}
-          loading={isLoading}
-          icon={<ReloadOutlined />}
-          style={{ marginRight: "1rem" }}
-        >
-          Làm mới
-        </Button>
-        <span
-          style={{
-            marginLeft: 8,
-          }}
-        >
-          {/* {hasSelected ? `Selected ${selectedRowKeys.length} items` : ""} */}
-        </span>
+      <div className="table-header">
+        <Row gutter={{ xs: 8, sm: 16, md: 16, lg: 16 }}>
+          <Col span={12}>
+            <Input
+              placeholder="Tìm kiếm sản phẩm theo mã, tên"
+              prefix={<SearchOutlined />}
+            />
+          </Col>
+          <Col span={12}>
+            <Button
+              type="primary"
+              loading={isLoading}
+              icon={<UserAddOutlined />}
+              style={{ marginLeft: "16px" }}
+              onClick={showModalAdd}
+            >
+              Thêm
+            </Button>
+            <Button
+              type="primary"
+              onClick={handleRefresh}
+              loading={isLoading}
+              icon={<ReloadOutlined />}
+              style={{ marginLeft: "8px" }}
+            >
+              Làm mới
+            </Button>
+          </Col>
+        </Row>
       </div>
       <Table
         sticky
         columns={columns}
         dataSource={listGoods}
-        pagination={{ pageSize: 6 }}
-        scroll={{ y: 350 }}
+        pagination={{ pageSize: 10 }}
+        scroll={{ y: 400 }}
       />
       {showModalGoodsDetail ? (
         <ModalGoodsDetail

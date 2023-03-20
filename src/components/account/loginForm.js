@@ -33,25 +33,24 @@ const LoginForm = () => {
 
   const handleLogin = () => {
     const params = {
-        email: email,
-        password: password,
+      email: email,
+      password: password,
     };
     console.log(params);
 
     const login = async (params) => {
-        try{
-            const res= await userApi.login(params);
-            console.log("token header:", res);
-            if(res){
-                navigate("/trang-chu");
-                distpatch(setUser(res));
-
-                tokenService.setUser(res);
-
-            }
-        }catch(err){
-            console.log(err);
-        };  
+      try {
+        const res = await userApi.login(params);
+        console.log("token header:", res.token);
+        if (res) {
+          localStorage.setItem("token", res.token);
+          tokenService.setUser(res);
+          navigate("/trang-chu");
+          distpatch(setUser(res));
+        }
+      } catch (err) {
+        console.log(err);
+      }
     };
     login(params);
     // const { email, password } = e;
@@ -62,7 +61,7 @@ const LoginForm = () => {
     //     localStorage.setItem("token", token);
     //     localStorage.setItem("refreshToken", refreshToken);
     //     distpatch(setUser(true));
-    //     navigate("/trang-chu"); 
+    //     navigate("/trang-chu");
     //   }
     // } catch (err) {
     //   console.log(err);
@@ -123,7 +122,7 @@ const LoginForm = () => {
             Đăng nhập
           </Title>
           <Form
-            onFinish={()=>handleLogin()}
+            onFinish={() => handleLogin()}
             name="normal_login"
             className="login-form"
             initialValues={{
@@ -171,7 +170,7 @@ const LoginForm = () => {
                 className="login-form-button"
                 size="large"
                 loading={loadings[0]}
-                onClick={()=>handleLogin()}
+                onClick={() => handleLogin()}
               >
                 Đăng nhập
               </Button>

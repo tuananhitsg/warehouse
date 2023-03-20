@@ -15,9 +15,9 @@ import categoryApi from "../../../api/categoryApi";
 import { setReload } from "../../../redux/reloadSlice";
 import { useDispatch, useSelector } from "react-redux";
 
-const ModalAddEmployee = ({
-  showModalAddEmployee,
-  setShowModalAddEmployee,
+const ModalAddCategory = ({
+  showModalAddCategory,
+  setShowModalAddCategory,
 }) => {
   const dispatch = useDispatch();
   const reload = useSelector((state) => state.reloadReducer.reload);
@@ -25,7 +25,7 @@ const ModalAddEmployee = ({
   // const [isLoading, setIsLoading] = useState(false);
 
   const onClose = () => {
-    setShowModalAddEmployee(false);
+    setShowModalAddCategory(false);
   };
 
   const handleSubmit = async (params) => {
@@ -60,7 +60,7 @@ const ModalAddEmployee = ({
         title="Thông tin loại sản phẩm"
         width={720}
         onClose={onClose}
-        open={showModalAddEmployee}
+        open={showModalAddCategory}
         bodyStyle={{
           paddingBottom: 80,
         }}
@@ -94,4 +94,4 @@ const ModalAddEmployee = ({
     </>
   );
 };
-export default ModalAddEmployee;
+export default ModalAddCategory;

@@ -1,37 +1,58 @@
-import React, { useEffect, useState } from "react";
-import { Button, Table, Modal, Tag, Image, message, Badge } from "antd";
+import React, { useState, useEffect } from "react";
+
+import { Space, Table, Button, Modal, Tag, message } from "antd";
 import {
-  SearchOutlined,
-  PlusSquareFilled,
-  UserAddOutlined,
-  ToolOutlined,
   DeleteOutlined,
+  EditOutlined,
+  UserAddOutlined,
+  ReloadOutlined,
 } from "@ant-design/icons";
 
+import employeeApi from "../../../api/employeeApi";
 import { useDispatch, useSelector } from "react-redux";
 import { setReload } from "../../../redux/reloadSlice";
-
-const onClick = (e) => {
-  console.log("evet", e);
-};
+import "./table.scss";
+import ModalEmployeeDetail from "./modalEmployeeDetail";
+import ModalAddEmployee from "./modalAddEmployee";
 
 const EmployeeTable = () => {
+  const [selectedId, setSelectedId] = useState([]);
+  const [showModalEmployeeDetail, setShowModalEmployeeDetail] = useState(false);
+  const [showModalAddEmployee, setShowModalAddEmployee] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [listStaff, setListStaff] = useState([]);
-  const depatch = useDispatch();
-  const reload = useSelector((state) => state.reload);
-  const [selectedId, setSelectedId] = useState([]);
+  const [listCategory, setListCategory] = useState([]);
+  const [refreshKey, setRefreshKey] = useState(0);
+  const dispatch = useDispatch();
+
+  const reload = useSelector((state) => state.reloadReducer.reload);
 
   const showModalDetail = (e) => {
-    //setShowModalDetailCustomer(true);
+    setShowModalEmployeeDetail(true);
     setSelectedId(e);
+  };
+  const showModalAdd = () => {
+    setShowModalAddEmployee(true);
+  };
+
+  const onSelectChange = (selectedId) => {
+    setSelectedRowKeys(selectedId);
+  };
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+  };
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const showModal = () => {
+    setIsModalOpen(true);
   };
 
   const columns = [
     {
       title: "Mã nhân viên",
+      width: "15%",
       dataIndex: "code",
+      key: "code",
       render: (val) => {
         return (
           <a
@@ -45,218 +66,126 @@ const EmployeeTable = () => {
       },
     },
     {
-      title: "Họ và Tên",
-      dataIndex: "name",
-    },
-    {
-      title: "Số điện thoại",
-      dataIndex: "phone",
-    },
-    {
-      title: "Giới tính",
-      dataIndex: "gender",
-      width: 30,
-    },
-    {
-      title: "Ngày sinh",
-      dataIndex: "dob",
-    },
-    {
-      title: "Địa chỉ",
-      dataIndex: "address",
+      title: "Họ và tên",
+      width: "20%",
+      dataIndex: "fullName",
+      key: "fullName",
     },
     {
       title: "Email",
       dataIndex: "email",
+      key: "email",
+    },
+    {
+      title: "Giới tính",
+      dataIndex: "sex",
+      key: "sex",
     },
     {
       title: "Chức vụ",
-      dataIndex: "position",
-      render: (position) => {
-        let color = "green";
-        let roleName = "";
-        if (position === "NV") {
-          color = "green";
-          roleName = "Nhân viên";
-        }
-        if (position === "QL") {
-          color = "blue";
-          roleName = "Quản lý";
-        }
-        return (
-          <Tag color={color} key={position}>
-            {roleName}
-          </Tag>
-        );
-      },
+      dataIndex: "role",
+      key: "role",
     },
     {
-      title: "Trạng thái",
-      dataIndex: "status",
-      render: (status) => {
-        let color = "green";
-        let statusName = "";
-        if (status === "1") {
-          color = "green";
-          statusName = "Hoạt động";
-        }
-        if (status === "0") {
-          color = "red";
-          statusName = "Không hoạt động";
-        }
-        return <Badge text={statusName} color={color} />;
-      },
+      title: "Action",
+      key: "action",
+      fix: "right",
+      width: "10%",
+      render: (_, record) => (
+        <Space size="middle">
+          <a>
+            <DeleteOutlined />
+          </a>
+        </Space>
+      ),
     },
-    
   ];
-
-  // useEffect(() => {
-  //   const fetchListStaff = async () => {
-  //     try {
-  //       const response = await staffApi.getStaffs();
-  //       console.log(response);
-
-  //       const data = await Promise.all(
-  //         response.map(async(item, index) => {
-  //           const ward = await openAddressApi.getWardByCode(item.ward_id);
-  //           const district = await openAddressApi.getDistrictByCode(
-  //             item.district_id
-  //           );
-  //           const city = await openAddressApi.getProvinceByCode(item.city_id);
-  //           const role = await roleApi.getRoleById(item.position);
-  //           item.ward_id = ward.name;
-  //           item.district_id = district.name;
-  //           item.city_id = city.name;
-  //           item.position = role.nameRole;
-  //           return {
-  //             key: index,
-  //             id: item.id,
-  //             name: `${item.firstName} ${item.lastName}`,
-  //             phone: item.phone,
-  //             gender: item.gender,
-  //             dob: item.dob.substring(0, 10),
-  //             address: ` ${item?.ward_id + " /"} ${item?.district_id + " /"} ${
-  //               item?.city_id
-  //             }`,
-  //             email: item.email,
-  //             position: item.position,
-  //             status: item.status,
-  //             // maneger: `${item.Staffs[0]?.firstName} ${item.Staffs[0]?.lastName}`,
-  //             maneger: item.Staffs[0]?.firstName + item.Staffs[0]?.lastName,
-  //             image: item.image,
-  //           };
-  //         })
-  //       );
-  //       setListStaff(data);
-  //     } catch (error) {
-  //       console.log("Failed to fetch product list: ", error);
-  //     }
-  //   };
-  //   fetchListStaff();
-  // }, [reload]);
-
-  const onSelectChange = (selectedId) => {
-    setSelectedRowKeys(selectedId);
-  };
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange,
-  };
-  const hasSelected = selectedRowKeys.length > 0;
-  const selectedOne = selectedRowKeys.length === 1;
-
-  //handle delete customer in here...
-  const handleDelete = () => {
-    showModal();
-  };
-
-  //handle update customer in here ....
-  const handleUpdate = () => {
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await employeeApi.getEmployee();
+        if (res) {
+          const data = res.map((item) => {
+            return {
+              key: item.code,
+              ...item,
+              role:item.roles.name,       
+            };
+          });
+          setListCategory(data.reverse());
+        }
+      } catch (error) {
+        console.log("Failed to fetch employee list: ", error);
+      }
+    };
+    fetchData();
+  }, [reload]);
+  const handleRefresh = () => {
     setLoading(true);
     // ajax request after empty completing
     setTimeout(() => {
       setSelectedRowKeys([]);
       setLoading(false);
+      setRefreshKey((oldKey) => oldKey + 1);
+      message.success("Tải lại thành công");
     }, 1000);
   };
-
-  ///
-  //model
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
-  // const handleOk = () => {
-  //   setIsModalOpen(false);
-  //   const fetchDeleteStaff = async () => {
-  //     try {
-  //       const response = await staffApi.deleteStaff(selectedId);
-  //       if (response == 1) {
-  //         depatch(setReload(!reload));
-  //       } else {
-  //         setTimeout(() => {
-  //           message.success("Xóa thất bại");
-  //         }, 1000);
-  //       }
-  //     } catch (error) {
-  //       console.log("Failed to fetch product list: ", error);
-  //     }
-  //   };
-  //   fetchDeleteStaff();
-  //   setTimeout(() => {
-  //     message.success("Xóa thành công");
-  //   }, 1000);
-  // };
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
-  /////
-
   return (
-    <div>
+    <div className="table-container">
       <div
+        className="table-header"
         style={{
           marginBottom: 16,
         }}
       >
         <Button
           type="primary"
-          danger
-          onClick={handleDelete}
-          disabled={!hasSelected}
+          onClick={showModalAdd}
           loading={loading}
-          icon={<DeleteOutlined />}
+          icon={<UserAddOutlined />}
           style={{ marginRight: "1rem" }}
         >
-          Xóa
+          Thêm
         </Button>
         <Button
           type="primary"
-          onClick={handleUpdate}
-          disabled={!selectedOne}
+          onClick={handleRefresh}
           loading={loading}
-          icon={<ToolOutlined />}
+          icon={<ReloadOutlined />}
+          style={{ marginRight: "1rem" }}
         >
-          Cập nhật
+          Làm mới
         </Button>
         <span
           style={{
             marginLeft: 8,
           }}
         >
-          {hasSelected ? `Selected ${selectedRowKeys.length} items` : ""}
+          {/* {hasSelected ? `Selected ${selectedRowKeys.length} items` : ""} */}
         </span>
       </div>
-      <Table columns={columns} dataSource={listStaff} />
-      <Modal
-        title="Xóa nhân viên"
-        open={isModalOpen}
-        //onOk={handleOk}
-        onCancel={handleCancel}
-      >
-        <p>Bạn muốn xóa nhân viên không?</p>
-      </Modal>
+      <Table
+        sticky
+        columns={columns}
+        dataSource={listCategory}
+        pagination={{ pageSize: 6 }}
+        scroll={{ y: 350 }}
+      />
+      {showModalEmployeeDetail ? (
+        <ModalEmployeeDetail
+          showModalEmployeeDetail={showModalEmployeeDetail}
+          setShowModalEmployeeDetail={setShowModalEmployeeDetail}
+          selectedId={selectedId}
+        />
+      ) : null}
+      {showModalAddEmployee ? (
+        <ModalAddEmployee
+          showModalAddEmployee={showModalAddEmployee}
+          setShowModalAddEmployee={setShowModalAddEmployee}
+        />
+      ) : null}
     </div>
   );
 };
+
 export default EmployeeTable;

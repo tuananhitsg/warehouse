@@ -1,30 +1,49 @@
 import React, { useState, useEffect } from "react";
 
-import { Space, Table, Button, Modal, Tag, message } from "antd";
+import {
+  Space,
+  Table,
+  Button,
+  Input,
+  Row,
+  Col,
+  Modal,
+  Tag,
+  message,
+} from "antd";
 import {
   DeleteOutlined,
   EditOutlined,
+  SearchOutlined,
   UserAddOutlined,
   ReloadOutlined,
 } from "@ant-design/icons";
+
+import categoryApi from "../../../api/categoryApi";
 import { useDispatch, useSelector } from "react-redux";
 import { setReload } from "../../../redux/reloadSlice";
 import "./table.scss";
-import ModalGoodsDetail from "./modalCategoryDetail";
-const GoodsTable = () => {
+import ModalCategoryDetail from "./modalCategoryDetail";
+import ModalAddCategory from "./modalAddCategory";
+
+const CategoryTable = () => {
   const [selectedId, setSelectedId] = useState([]);
-  const [showModalGoodsDetail, setShowModalGoodsDetail] = useState(false);
+  const [showModalCategoryDetail, setShowModalCategoryDetail] = useState(false);
+  const [showModalAddCategory, setShowModalAddCategory] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [listProduct, setListProduct] = useState([]);
+  const [listCategory, setListCategory] = useState([]);
   const [refreshKey, setRefreshKey] = useState(0);
   const dispatch = useDispatch();
 
-  const reload = useSelector((state) => state.reload);
+  const reload = useSelector((state) => state.reloadReducer.reload);
 
   const showModalDetail = (e) => {
-    setShowModalGoodsDetail(true);
+    setShowModalCategoryDetail(true);
     setSelectedId(e);
+  };
+  const showModalAdd = () => {
+    setShowModalAddCategory(true);
   };
 
   const onSelectChange = (selectedId) => {
@@ -41,9 +60,10 @@ const GoodsTable = () => {
 
   const columns = [
     {
-      title: "Id",
-      dataIndex: "id",
-      width: "5%",
+      title: "Mã loại sản phẩm",
+      width: "15%",
+      dataIndex: "code",
+      key: "code",
       render: (val) => {
         return (
           <a
@@ -57,55 +77,23 @@ const GoodsTable = () => {
       },
     },
     {
-      title: "Mã sản phẩm",
-      width: "15%",
-      dataIndex: "code",
-      key: "code",
-    },
-    {
-      title: "Tên sản phẩm",
+      title: "Tên loại sản phẩm",
+      width: "20%",
       dataIndex: "name",
       key: "name",
     },
     {
-      title: "Loại sản phẩm",
-      dataIndex: "category",
-      key: "category",
-    },
-    {
-      title: "Đơn vị",
-      width: "10%",
-      dataIndex: "unit",
-      key: "unit",
-    },
-    {
-      title: "Chiều dài (mét)",
-      width: "12%",
-      dataIndex: "wsize",
-      key: "wsize",
-    },
-    {
-      title: "Chiều rộng (mét)",
-      width: "12%",
-      dataIndex: "dsize",
-      key: "dsize",
-    },
-    {
-      title: "Chiều cao (mét)",
-      width: "12%",
-      dataIndex: "hsize",
-      key: "hsize",
+      title: "Mô tả",
+      dataIndex: "description",
+      key: "description",
     },
     {
       title: "Action",
       key: "action",
       fix: "right",
-      with: "10%",
+      width: "10%",
       render: (_, record) => (
         <Space size="middle">
-          <a>
-            <EditOutlined />
-          </a>
           <a>
             <DeleteOutlined />
           </a>
@@ -113,20 +101,25 @@ const GoodsTable = () => {
       ),
     },
   ];
-  const data = [];
-  for (let i = 0; i < 100; i++) {
-    data.push({
-      key: i,
-      id:i+1,
-      code: "SP001",
-      name: "Nuoc suoi",
-      category: "Nuoc uong",
-      unit: "chai",
-      wsize: "0.2",
-      dsize: "0.2",
-      hsize: "0.2",
-    });
-  }
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await categoryApi.getCategories();
+        if (res) {
+          const data = res.map((item) => {
+            return {
+              key: item.code,
+              ...item,
+            };
+          });
+          setListCategory(data.reverse());
+        }
+      } catch (error) {
+        console.log("Failed to fetch category list: ", error);
+      }
+    };
+    fetchData();
+  }, [reload]);
   const handleRefresh = () => {
     setLoading(true);
     // ajax request after empty completing
@@ -139,54 +132,58 @@ const GoodsTable = () => {
   };
   return (
     <div className="table-container">
-      <div className="table-header"
-        style={{
-          marginBottom: 16,
-        }}
-      >
-        <Button
-          type="primary"
-          //   onClick={handleDelete}
-          //   disabled={!hasSelected}
-          loading={loading}
-          icon={<UserAddOutlined />}
-          style={{ marginRight: "1rem" }}
-        >
-          Thêm
-        </Button>
-        <Button
-          type="primary"
-          onClick={handleRefresh}
-          loading={loading}
-          icon={<ReloadOutlined />}
-          style={{ marginRight: "1rem" }}
-        >
-          Làm mới
-        </Button>
-        <span
-          style={{
-            marginLeft: 8,
-          }}
-        >
-          {/* {hasSelected ? `Selected ${selectedRowKeys.length} items` : ""} */}
-        </span>
+      <div className="table-header">
+        <Row gutter={{ xs: 8, sm: 16, md: 16, lg: 16 }}>
+          <Col span={12}>
+            <Input
+              placeholder="Tìm kiếm sản phẩm theo mã, tên"
+              prefix={<SearchOutlined />}
+            />
+          </Col>
+          <Col span={12}>
+            <Button
+              type="primary"
+              onClick={showModalAdd}
+              loading={loading}
+              icon={<UserAddOutlined />}
+              style={{ marginLeft: "16px" }}
+            >
+              Thêm
+            </Button>
+            <Button
+              type="primary"
+              onClick={handleRefresh}
+              loading={loading}
+              icon={<ReloadOutlined />}
+              style={{ marginLeft: "8px" }}
+            >
+              Làm mới
+            </Button>
+          </Col>
+        </Row>
       </div>
       <Table
         sticky
         columns={columns}
-        dataSource={data}
-        // pagination={{ pageSize: 50 }}
+        dataSource={listCategory}
+        pagination={{ pageSize: 6 }}
         scroll={{ y: 350 }}
       />
-      {showModalGoodsDetail ? (
-        <ModalGoodsDetail
-          showModalGoodsDetail={showModalGoodsDetail}
-          setShowModalGoodsDetail={setShowModalGoodsDetail}
+      {showModalCategoryDetail ? (
+        <ModalCategoryDetail
+          showModalCategoryDetail={showModalCategoryDetail}
+          setShowModalCategoryDetail={setShowModalCategoryDetail}
           selectedId={selectedId}
+        />
+      ) : null}
+      {showModalAddCategory ? (
+        <ModalAddCategory
+          showModalAddCategory={showModalAddCategory}
+          setShowModalAddCategory={setShowModalAddCategory}
         />
       ) : null}
     </div>
   );
 };
 
-export default GoodsTable;
+export default CategoryTable;

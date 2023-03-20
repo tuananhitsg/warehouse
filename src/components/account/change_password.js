@@ -17,6 +17,7 @@ const ChangePassword = () => {
   const navigate = useNavigate();
   const [loadings, setLoadings] = useState([]);
   const [password, setPassword] = useState("");
+  const resetPasswordEmail = localStorage.getItem("resetPasswordEmail");
   console.log(password);
   // const [mess, setMess]= useState("Vui lòng nhập mật khẩu mới!");
 
@@ -110,7 +111,7 @@ const ChangePassword = () => {
     }
 
     const params = {
-      email: "tuananhitsg@gmail.com",
+      email: resetPasswordEmail,
       password: values.new_password,
       
     };
