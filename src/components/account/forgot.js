@@ -50,7 +50,7 @@ const ForgotPassword = () => {
     console.log(params);
     try {
       const res = await userApi.forgetPassword(params);
-      localStorage.setItem("resetPasswordEmail", params);
+      localStorage.setItem("resetPasswordEmail", params.email);
       if (res.data.status === 200) {
         message.success(
           "Mật khẩu mới sẽ được gửi tới mail " +
