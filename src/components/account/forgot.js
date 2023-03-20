@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import userApi from "../../api/userApi";
 import { valid, validEmail } from "../../resources/regexp";
 import "./style.scss";
-import tokenService from "../../service/token.service";
+import AuthService from "../../service/auth.service";
 const { Title } = Typography;
 
 const ForgotPassword = () => {

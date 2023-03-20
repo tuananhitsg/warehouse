@@ -12,7 +12,7 @@
 // } from "antd";
 
 // import { PlusOutlined, LoadingOutlined } from "@ant-design/icons";
-// import TokenService from "../../service/token.service";
+// import authService from "../../service/auth.service";
 
 // const { Title, Text } = Typography;
 // // const getBase64 = (img, callback) => {
@@ -67,7 +67,7 @@
 
 //   useEffect(() => {
 //     //get info user in local storage
-//     setUser(TokenService.getUser().staff);
+//     setUser(authService.getUser().staff);
 //   }, []);
 //   return (
 //     <div className="site-card-wrapper">

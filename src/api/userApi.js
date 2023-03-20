@@ -13,6 +13,10 @@ const userApi = {
         const url = "/auth/reset_password";
         return axiosApi.post(url, params);
     },
+    updateInfor:(params) => {
+        const url = "/user/update/{code}";
+        return axiosApi.post(url, params);
+    }
     
 };
 

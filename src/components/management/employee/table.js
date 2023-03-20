@@ -1,8 +1,19 @@
 import React, { useState, useEffect } from "react";
 
-import { Space, Table, Button, Modal, Tag, message } from "antd";
+import {
+  Space,
+  Table,
+  Button,
+  Modal,
+  Tag,
+  message,
+  Input,
+  Col,
+  Row,
+} from "antd";
 import {
   DeleteOutlined,
+  SearchOutlined,
   EditOutlined,
   UserAddOutlined,
   ReloadOutlined,
@@ -83,8 +94,8 @@ const EmployeeTable = () => {
     },
     {
       title: "Chức vụ",
-      dataIndex: "role",
-      key: "role",
+      dataIndex: "roles",
+      key: "roles",
     },
     {
       title: "Action",
@@ -109,9 +120,10 @@ const EmployeeTable = () => {
             return {
               key: item.code,
               ...item,
-              role:item.roles.name,       
+              roles: item.roles[0].name,
             };
           });
+          console.log(data);
           setListCategory(data.reverse());
         }
       } catch (error) {
@@ -138,31 +150,34 @@ const EmployeeTable = () => {
           marginBottom: 16,
         }}
       >
-        <Button
-          type="primary"
-          onClick={showModalAdd}
-          loading={loading}
-          icon={<UserAddOutlined />}
-          style={{ marginRight: "1rem" }}
-        >
-          Thêm
-        </Button>
-        <Button
-          type="primary"
-          onClick={handleRefresh}
-          loading={loading}
-          icon={<ReloadOutlined />}
-          style={{ marginRight: "1rem" }}
-        >
-          Làm mới
-        </Button>
-        <span
-          style={{
-            marginLeft: 8,
-          }}
-        >
-          {/* {hasSelected ? `Selected ${selectedRowKeys.length} items` : ""} */}
-        </span>
+        <Row gutter={{ xs: 8, sm: 16, md: 16, lg: 16 }}>
+          <Col span={12}>
+            <Input
+              placeholder="Tìm kiếm sản phẩm theo mã, tên"
+              prefix={<SearchOutlined />}
+            />
+          </Col>
+          <Col span={12}>
+            <Button
+              type="primary"
+              onClick={showModalAdd}
+              loading={loading}
+              icon={<UserAddOutlined />}
+              style={{ marginLeft: "16px" }}
+            >
+              Thêm
+            </Button>
+            <Button
+              type="primary"
+              onClick={handleRefresh}
+              loading={loading}
+              icon={<ReloadOutlined />}
+              style={{ marginLeft: "8px" }}
+            >
+              Làm mới
+            </Button>
+          </Col>
+        </Row>
       </div>
       <Table
         sticky

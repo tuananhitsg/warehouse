@@ -17,7 +17,7 @@ import { useDispatch } from "react-redux";
 import { validEmail, validPassword } from "../../resources/regexp";
 import "./style.scss";
 import { setUser } from "../../redux/userSlice";
-import tokenService from "../../service/token.service";
+import authService from "../../service/auth.service";
 const { Title } = Typography;
 
 const error_msg = () => {
@@ -44,7 +44,7 @@ const LoginForm = () => {
         console.log("token header:", res.token);
         if (res) {
           localStorage.setItem("token", res.token);
-          tokenService.setUser(res);
+          authService.setUser(res);
           navigate("/trang-chu");
           distpatch(setUser(res));
         }

@@ -23,6 +23,7 @@ import {
   InboxOutlined,
   DashboardOutlined,
   SettingOutlined,
+  ProfileOutlined,
   ContainerOutlined,
 } from "@ant-design/icons";
 import "./homePage.scss";
@@ -30,10 +31,10 @@ import "./homePage.scss";
 import IndexDashboard from "../components/management/dashboard/index";
 import IndexGoods from "../components/management/goods/index";
 import IndexCategory from "../components/management/category/index";
-// import IndexEmployee from "../components/management/employee/index";
+import IndexEmployee from "../components/management/employee/index";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import tokenService from "../service/token.service";
+import authService from "../service/auth.service";
 import { setUser } from "../redux/userSlice";
 const { Header, Content, Footer, Sider } = Layout;
 const { Text } = Typography;
@@ -48,11 +49,10 @@ function getItem(label, key, icon, children) {
 }
 
 const HomePage = () => {
-  const [userInfo, setUserInfo] = useState({});
   const navigate = useNavigate();
 
-  const user = useSelector((state) => state.userReducer);
-  console.log(user);
+  const user = useSelector((state) => state.userReducer.info);
+  console.log("User in4:", user);
 
   // const getItem = (label, key, icon, children, required_perm, type) => {
   //   if (!userInfo || (required_perm && userInfo.is_manager == false)) {
@@ -131,19 +131,25 @@ const HomePage = () => {
       return <IndexGoods />;
     } else if (itemClicked === 4.2) {
       return <IndexCategory />;
-    } 
-    // else if (itemClicked === 5.1) {
-    //   return <IndexEmployee />;
+    }
+    else if (itemClicked === 5.1) {
+      return <IndexEmployee />;
+    }
+    // else if (itemClicked ==="user"){
+    //   return <UserInfo />;
     // }
     return <IndexDashboard />;
   };
+
+
+  // handleUserInfo = () => {
+  //   set
+  // }
+
   const handleLogout = () => {
-    //redict to login page
-    navigate("/dang-nhap");
-    //delete user in local storage
     localStorage.removeItem("token");
-    //delete user in redux
-    tokenService.removeUser();
+    authService.removeUser();
+    navigate("/dang-nhap", { replace: true });
   };
 
   return (
@@ -201,14 +207,18 @@ const HomePage = () => {
                         }}
                       >
                         {" "}
+                        {/* <div onClick={() => handleUserInfo()}>
+                          <ProfileOutlined />
+                          <Text style={{ marginLeft: "12px" }}>Thông tin</Text>
+                        </div> */}
                         <div>
-                          <SettingOutlined />
+                       
                           <Text
                           // style={{
                           //   marginLeft: "12px",
                           // }}
                           >
-                            Cài đặt
+                            Thông tin
                           </Text>
                         </div>
                       </Menu.Item>
@@ -256,14 +266,20 @@ const HomePage = () => {
                   >
                     {/* {user?.lastName[0]} */}A
                   </Avatar>
-                  <Text
-                    style={{
-                      fontWeight: "500",
-                      color: "#333",
-                    }}
-                  >
-                    tuan anh
-                  </Text>
+                  <div style={{ display: "flex", flexDirection: "column" }}>
+                    <Text style={{ fontWeight: "500", color: "#333" }}>
+                      {user?.fullName}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: "12px",
+                        fontWeight: "400",
+                        color: "#abb4bc",
+                      }}
+                    >
+                      {user?.roles}
+                    </Text>
+                  </div>
                 </div>
               </Dropdown>
             </div>

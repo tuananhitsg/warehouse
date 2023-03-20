@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { validPhone, validPassword } from "../../resources/regexp";
-import tokenService from "../../service/token.service";
+import authService from "../../service/auth.service";
 import userApi from "../../api/userApi";
 import zxcvbn from "zxcvbn";
 import "./style.scss";

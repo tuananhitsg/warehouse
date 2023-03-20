@@ -5,14 +5,14 @@ const employeeApi = {
         const url = "/user/get-all";
         return axiosApi.get(url);
     },
-    // addEmployee: (params) => {
-    //     const url = "/register";
-    //     return axiosApi.post(url, params,{
-    //         headers: {
-    //             'Content-Type': 'multipart/form-data'
-    //         }
-    //     });
-    // },
+    addEmployee: (params) => {
+        const url = "/register";
+        return axiosApi.post(url, params,{
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+    },
     
 }
 export default employeeApi;

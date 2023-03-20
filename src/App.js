@@ -4,7 +4,7 @@ import { Route, Routes,useNavigate } from "react-router-dom";
 import Loading from "./components/basic/loading";
 import { useDispatch } from 'react-redux';
 import "./App.css";
-import tokenService from "./service/token.service";
+import authService from "./service/auth.service";
 import {setUser} from "./redux/userSlice";
 
 const ChangePassword = lazy(() => import("./components/account/change_password"));
@@ -16,15 +16,15 @@ const App = () => {
     const dispatch=useDispatch();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const userInLocalStorage = tokenService.getUser();
-        if (userInLocalStorage) {
-            dispatch(setUser(userInLocalStorage));
-            navigate("/trang-chu");
-        } else {
-            navigate("/dang-nhap");
-        }
-    },[]);
+    // useEffect(() => {
+    //     const userInLocalStorage = authService.getUser();
+    //     if (userInLocalStorage) {
+    //         dispatch(setUser(userInLocalStorage));
+    //         navigate("/trang-chu");
+    //     } else {
+    //         navigate("/dang-nhap");
+    //     }
+    // },[]);
 
     return (
         <div className="App">

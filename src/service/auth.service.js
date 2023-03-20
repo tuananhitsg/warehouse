@@ -1,4 +1,4 @@
-class TokenService {
+class AuthService {
     getLocalRefreshToken() {
       const user = JSON.parse(localStorage.getItem("user"));
       return user?.refreshToken;
@@ -29,4 +29,4 @@ class TokenService {
     }
   }
   
-  export default new TokenService();
+  export default new AuthService();
