@@ -30,7 +30,7 @@ import "./homePage.scss";
 import IndexDashboard from "../components/management/dashboard/index";
 import IndexGoods from "../components/management/goods/index";
 import IndexCategory from "../components/management/category/index";
-import IndexEmployee from "../components/management/employee/index";
+// import IndexEmployee from "../components/management/employee/index";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import tokenService from "../service/token.service";
@@ -131,9 +131,10 @@ const HomePage = () => {
       return <IndexGoods />;
     } else if (itemClicked === 4.2) {
       return <IndexCategory />;
-    } else if (itemClicked === 5.1) {
-      return <IndexEmployee />;
-    }
+    } 
+    // else if (itemClicked === 5.1) {
+    //   return <IndexEmployee />;
+    // }
     return <IndexDashboard />;
   };
   const handleLogout = () => {
