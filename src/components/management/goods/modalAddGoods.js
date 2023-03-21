@@ -15,12 +15,9 @@ import goodsApi from "../../../api/goodsApi";
 import { setReload } from "../../../redux/reloadSlice";
 import { useDispatch, useSelector } from "react-redux";
 
-const ModalAddGoods = ({ 
-  showModalAddGoods, 
-  setShowModalAddGoods 
-}) => {
+const ModalAddGoods = ({ showModalAddGoods, setShowModalAddGoods }) => {
   const dispatch = useDispatch();
-  const reload = useSelector(state=> state.reloadReducer.reload);
+  const reload = useSelector((state) => state.reloadReducer.reload);
   const [form] = Form.useForm();
   const [size, setSize] = useState("");
   const [category, setCategory] = useState("");
@@ -39,9 +36,24 @@ const ModalAddGoods = ({
   const handleSubmit = async (values) => {
     console.log("submit", values);
     console.log("reload", reload);
-    const { categoryCode, name, length, width, height } = values;
-    console.log("name", name);
+    const { categoryCode, name, size } = values;
 
+    let length;
+    let width;
+    let height;
+    if (size === "1") {
+      length = 0.3;
+      width = 0.2;
+      height = 0.3;
+    } else if (size === "2") {
+      length = 0.5;
+      width = 0.3;
+      height = 0.4;
+    } else if (size === "3") {
+      length = 0.6;
+      width = 0.4;
+      height = 0.4;
+    }
     const data = new FormData();
     data.append("categoryCode", categoryCode ? categoryCode : "");
     data.append("name", name ? name : "");
@@ -113,28 +125,28 @@ const ModalAddGoods = ({
           </Row>
 
           <Row gutter={16}>
-            <Col span={8}>
-              <Form.Item name="length" label="Chiều dài">
+            <Col span={12}>
+              <Form.Item name="size" label="Kích thước">
                 <Select
                   onChange={onChangeSize}
                   options={[
                     {
                       value: "1",
-                      label: "1",
+                      label: "0.3 X 0.2 X 0.3 (m)",
                     },
                     {
                       value: "2",
-                      label: "2",
+                      label: "0.5 X 0.3 X 0.4 (m)",
                     },
                     {
                       value: "3",
-                      label: "3",
+                      label: "0.6 X 0.4 X 0.4 (m)",
                     },
                   ]}
                 />
               </Form.Item>
             </Col>
-            <Col span={8}>
+            {/* <Col span={8}>
               <Form.Item name="width" label="Chiều rộng">
                 <Select
                   onChange={onChangeSize}
@@ -175,7 +187,7 @@ const ModalAddGoods = ({
                   ]}
                 />
               </Form.Item>
-            </Col>
+            </Col> */}
           </Row>
         </Form>
       </Drawer>

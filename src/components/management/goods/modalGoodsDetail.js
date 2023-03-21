@@ -14,8 +14,6 @@ import {
 } from "antd";
 import goodsApi from "../../../api/goodsApi";
 
-
-
 const ModalGoodsDetail = ({
   showModalGoodsDetail,
   setShowModalGoodsDetail,
@@ -31,9 +29,8 @@ const ModalGoodsDetail = ({
     console.log("submit", values);
   };
 
-  const onChangeSize = async (values) => {
-    console.log("values", values);
-    setSize(values);
+  const onChangeSize = async (value) => {
+    setSize(value);
   };
 
   useEffect(() => {
@@ -41,9 +38,31 @@ const ModalGoodsDetail = ({
     const fetchData = async (id) => {
       try {
         const res = await goodsApi.getGoodsById(id);
+        console.log(res);
+        console.log(
+          "width - height - length",
+          res.width,
+          res.height,
+          res.length
+        );
         if (res) {
-          console.log("res:", res);
-          form.setFieldsValue({ ...res });
+          if (res.length === 0.3 && res.width === 0.2 && res.height === 0.3) {
+            form.setFieldsValue({ size: "1" });
+          } else if (
+            res.length === 0.5 &&
+            res.width === 0.3 &&
+            res.height === 0.4
+          ) {
+            form.setFieldsValue({ size: "2" });
+          } else if (
+            res.length === 0.6 &&
+            res.width === 0.4 &&
+            res.height === 0.4
+          ) {
+            form.setFieldsValue({ size: "3" });
+          } else {
+            form.setFieldsValue({ ...res });
+          }
         }
       } catch (error) {
         console.log("error", error);
@@ -56,7 +75,7 @@ const ModalGoodsDetail = ({
       <div className="modal-header">
         <Drawer
           title="Chi tiết sản phẩm"
-          width={560}
+          width={640}
           onClose={onClose}
           open={showModalGoodsDetail}
           extra={
@@ -99,36 +118,28 @@ const ModalGoodsDetail = ({
               </Col>
             </Row>
             <Row gutter={16}>
-              <Col span={8}>
-                <Form.Item name="length" label="Chiều dài">
-                  <Select onChange={onChangeSize} 
+              <Col span={12}>
+                <Form.Item name="size" label="Kích thước">
+                  <Select
+                    onChange={onChangeSize}
                     options={[
                       {
-                      value: "1",
-                      label: "1",
-                    },
-                    {
-                      value: "2",
-                      label: "2",
-                    },
-                    {
-                      value: "3",
-                      label: "3",
-                    },
+                        value: "1",
+                        label: "0.3 X 0.2 X 0.3 (m)",
+                      },
+                      {
+                        value: "2",
+                        label: "0.5 X 0.3 X 0.4 (m)",
+                      },
+                      {
+                        value: "3",
+                        label: "0.6 X 0.4 X 0.4 (m)",
+                      },
                     ]}
                   />
                 </Form.Item>
               </Col>
-              <Col span={8}>
-                <Form.Item name="width" label="Chiều rộng">
-                  <Select onChange={onChangeSize} />
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item name="height" label="Chiều cao">
-                  <Select onChange={onChangeSize} />
-                </Form.Item>
-              </Col>
+              
             </Row>
           </Form>
         </Drawer>

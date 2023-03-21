@@ -56,7 +56,7 @@ const ModalEmployeeDetail = ({
       <div className="modal-header">
         <Drawer
           title="Chi tiết sản phẩm"
-          width={560}
+          width={640}
           onClose={onClose}
           open={showModalEmployeeDetail}
           extra={

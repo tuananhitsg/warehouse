@@ -77,8 +77,8 @@ const GoodsTable = () => {
     },
     {
       title: "Loại sản phẩm",
-      dataIndex: "category",
-      key: "category",
+      dataIndex: "categoryName",
+      key: "categoryName",
     },
     {
       title: "Đơn vị",
