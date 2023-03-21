@@ -135,18 +135,23 @@ import employeeApi from "../../../api/employeeApi";
 import { setReload } from "../../../redux/reloadSlice";
 import { useDispatch, useSelector } from "react-redux";
 
-const ModalAddEmployee = ({ 
-  showModalAddEmployee, 
-  setShowModalAddEmployee 
+const ModalAddEmployee = ({
+  showModalAddEmployee,
+  setShowModalAddEmployee,
 }) => {
   const dispatch = useDispatch();
-  const reload = useSelector(state=> state.reloadReducer.reload);
+  const reload = useSelector((state) => state.reloadReducer.reload);
   const [form] = Form.useForm();
-  const [size, setSize] = useState("");
+  const [sex, setSex] = useState("");
+  const [role, setRole] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const onChangeSize = async (values) => {
+
+  const onChangeSex = async (values) => {
     console.log("values", values);
-    setSize(values);
+    setSex(values);
+  };
+  const onChangeRole = async (values) => {
+    setRole(values);
   };
 
   const onClose = () => {
@@ -154,17 +159,17 @@ const ModalAddEmployee = ({
   };
 
   const handleSubmit = async (values) => {
-    console.log("submit", values);
-    console.log("reload", reload);
-    const { categoryCode, name, length, width, height } = values;
-    console.log("name", name);
+    const { email, fullName, password, roles, sex } = values;
 
-    const data = new FormData();
-    data.append("categoryCode", categoryCode ? categoryCode : "");
-    data.append("name", name ? name : "");
-    data.append("length", length ? length : "");
-    data.append("width", width ? width : "");
-    data.append("height", height ? height : "");
+    const data = {
+      email: email ? email : "",
+      fullName: fullName ? fullName : "",
+      password: password ? password : "Abc@1234",
+      roles: roles ? roles.split() : [],
+      sex: sex ? sex : "Nam",
+    }
+    console.log("formdata:", data);
+
 
     try {
       const res = await employeeApi.addEmployee(data);
@@ -174,7 +179,7 @@ const ModalAddEmployee = ({
         dispatch(setReload(!reload));
         form.resetFields();
         setTimeout(() => {
-          message.success("Thêm sản phẩm thành công!");
+          message.success("Thêm nhân viên thành công!");
         }, 500);
       }
     } catch (error) {
@@ -204,89 +209,47 @@ const ModalAddEmployee = ({
         <Form form={form} onFinish={handleSubmit} id="myForm" layout="vertical">
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item name="categoryCode" label="Mã loại sản phẩm">
+              <Form.Item name="email" label="Email">
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item name="fullName" label="Tên nhân viên">
+                <Input />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item name="sex" label="Giới tính">
                 <Select
-                  placeholder="Chọn mã"
+                  onChange={onChangeSex}
                   options={[
                     {
-                      value: "L-104466",
-                      label: "Đồ uống - L-104466",
+                      value: "Nam",
+                      label: "Nam",
                     },
                     {
-                      value: "L-943843",
-                      label: "Bánh kẹo - L-943843",
+                      value: "Nữ",
+                      label: "Nữ",
                     },
                   ]}
                 />
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item name="name" label="Tên sản phẩm">
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}></Col>
-          </Row>
-
-          <Row gutter={16}>
-            <Col span={8}>
-              <Form.Item name="length" label="Chiều dài">
+              <Form.Item name="roles" label="Chức vụ">
                 <Select
-                  onChange={onChangeSize}
+                  onChange={onChangeRole}
                   options={[
                     {
-                      value: "1",
-                      label: "1",
+                      value: "admin",
+                      label: "Quản lý",
                     },
                     {
-                      value: "2",
-                      label: "2",
-                    },
-                    {
-                      value: "3",
-                      label: "3",
-                    },
-                  ]}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item name="width" label="Chiều rộng">
-                <Select
-                  onChange={onChangeSize}
-                  options={[
-                    {
-                      value: "1",
-                      label: "1",
-                    },
-                    {
-                      value: "2",
-                      label: "2",
-                    },
-                    {
-                      value: "3",
-                      label: "3",
-                    },
-                  ]}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item name="height" label="Chiều cao">
-                <Select
-                  onChange={onChangeSize}
-                  options={[
-                    {
-                      value: "1",
-                      label: "1",
-                    },
-                    {
-                      value: "2",
-                      label: "2",
-                    },
-                    {
-                      value: "3",
-                      label: "3",
+                      value: "user",
+                      label: "Nhân viên",
                     },
                   ]}
                 />

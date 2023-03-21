@@ -7,11 +7,7 @@ const employeeApi = {
     },
     addEmployee: (params) => {
         const url = "/register";
-        return axiosApi.post(url, params,{
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        });
+        return axiosApi.post(url, params);
     },
     
 }

@@ -23,12 +23,15 @@ const ModalAddGoods = ({
   const reload = useSelector(state=> state.reloadReducer.reload);
   const [form] = Form.useForm();
   const [size, setSize] = useState("");
+  const [category, setCategory] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const onChangeSize = async (values) => {
     console.log("values", values);
     setSize(values);
   };
-
+  const onChageCategory = async (values) => {
+    setCategory(values);
+  };
   const onClose = () => {
     setShowModalAddGoods(false);
   };
@@ -87,6 +90,7 @@ const ModalAddGoods = ({
               <Form.Item name="categoryCode" label="Mã loại sản phẩm">
                 <Select
                   placeholder="Chọn mã"
+                  onChange={onChageCategory}
                   options={[
                     {
                       value: "L-104466",
