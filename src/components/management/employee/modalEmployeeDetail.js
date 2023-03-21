@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import {
   Button,
   Col,
-  DatePicker,
   Drawer,
   Form,
   Input,
@@ -10,7 +9,7 @@ import {
   Row,
   Select,
   Space,
-  Upload,
+
 } from "antd";
 import employeeApi from "../../../api/employeeApi";
 
