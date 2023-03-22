@@ -13,6 +13,7 @@ const ChangePassword = lazy(() =>
 const ForgotPassword = lazy(() => import("./components/account/forgot"));
 const LoginForm = lazy(() => import("./components/account/loginForm"));
 const HomePage = lazy(() => import("./pages/homePage"));
+const LoginFormTemp = lazy(() => import("./components/account/login"))
 const App = () => {
   // const dispatch = useDispatch();
   // const navigate = useNavigate();
@@ -33,6 +34,7 @@ const App = () => {
         <Routes>
           <Route path="dang-nhap" element={<LoginForm />} />
           <Route path="" element={<LoginForm />} />
+          <Route path="login" element={<LoginFormTemp />} />
           <Route path="quen-mat-khau" element={<ForgotPassword />} />
           <Route path="doi-mat-khau" element={<ChangePassword />} />
           {/* <Route path="quan-ly/*" element={<Management />} /> */}

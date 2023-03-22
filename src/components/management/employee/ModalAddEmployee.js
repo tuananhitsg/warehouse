@@ -26,11 +26,11 @@ const ModalAddEmployee = ({
   const [role, setRole] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const onChangeSex = async (values) => {
+  const onChangeSex = (values) => {
     console.log("values", values);
     setSex(values);
   };
-  const onChangeRole = async (values) => {
+  const onChangeRole = (values) => {
     setRole(values);
   };
 
@@ -47,21 +47,19 @@ const ModalAddEmployee = ({
       password: password ? password : "Abc@1234",
       roles: roles ? roles.split() : [],
       sex: sex ? sex : "Nam",
-    }
+    };
     console.log("formdata:", data);
-
 
     try {
       const res = await employeeApi.addEmployee(data);
       console.log(res);
-      if (res) {
-        onClose();
-        dispatch(setReload(!reload));
-        form.resetFields();
-        setTimeout(() => {
-          message.success("Thêm nhân viên thành công!");
-        }, 500);
-      }
+
+      onClose();
+      dispatch(setReload(!reload));
+      form.resetFields();
+      setTimeout(() => {
+        message.success("Thêm nhân viên thành công!");
+      }, 500);
     } catch (error) {
       console.log(error);
     }

@@ -11,7 +11,6 @@ import {
   Typography,
   Modal,
 } from "antd";
-import Cookies from "js-cookie";
 import {
   LoginOutlined,
   LogoutOutlined,
