@@ -24,7 +24,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setReload } from "../../../redux/reloadSlice";
 import "./table.scss";
 import ModalEmployeeDetail from "./modalEmployeeDetail";
-// import ModalAddEmployee from "./modalAddEmployee";
+import ModalAddEmployee from "./modalAddEmployee";
 
 const EmployeeTable = () => {
   const [selectedId, setSelectedId] = useState([]);
@@ -193,12 +193,12 @@ const EmployeeTable = () => {
           selectedId={selectedId}
         />
       ) : null}
-      {/* {showModalAddEmployee ? (
+      {showModalAddEmployee ? (
         <ModalAddEmployee
           showModalAddEmployee={showModalAddEmployee}
           setShowModalAddEmployee={setShowModalAddEmployee}
         />
-      ) : null} */}
+      ) : null}
     </div>
   );
 };
