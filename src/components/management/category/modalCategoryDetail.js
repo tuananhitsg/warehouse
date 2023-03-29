@@ -14,6 +14,7 @@ import {
 } from "antd";
 
 import categoryApi from "../../../api/categoryApi";
+import Modal from "antd/es/modal/Modal";
 
 const { Option } = Select;
 const ModalCategoryDetail = ({
@@ -27,7 +28,8 @@ const ModalCategoryDetail = ({
   };
   const handleSubmit = async (values) => {
     console.log("submit", values);
-  }
+  };
+
   // useEffect(() => {
   //   console.log("selectedId", selectedId);
   //   const fetchData = async (id) => {
@@ -47,22 +49,48 @@ const ModalCategoryDetail = ({
   return (
     <div className="modal-container">
       <div className="modal-header">
-        <Drawer
+        <Modal
           title="Chi tiết loại sản phẩm"
           width={720}
-          onClose={onClose}
+          onCancel={onClose}
           open={showModalCategoryDetail}
-          extra={
+          footer={
             <Space>
               <Button onClick={onClose}>Huỷ</Button>
-              <Button type="primary" form="myForm" htmlType="submit">Thêm</Button>
+              <Button type="primary" form="myForm" htmlType="submit">
+                Thêm
+              </Button>
             </Space>
           }
         >
-          <Form form={form} id="myForm" layout="vertical" onFinish={handleSubmit}>
-          
+          <Form
+            form={form}
+            id="myForm"
+            layout="vertical"
+            onFinish={handleSubmit}
+          >
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item name="code" label="Mã sản phẩm">
+                  <Input disabled={true} name="code" label="Mã loại sản phẩm" />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item name="name" label="Tên loại sản phẩm">
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={12}></Col>
+            </Row>
+            <Row gutter={16}>
+              <Col span={24}>
+                <Form.Item name="description" label="Mô tả">
+                  <Input.TextArea rows={4} placeholder="Nhập mô tả..." />
+                </Form.Item>
+              </Col>
+            </Row>
           </Form>
-        </Drawer>
+        </Modal>
       </div>
     </div>
   );

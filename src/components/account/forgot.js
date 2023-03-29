@@ -43,24 +43,23 @@ const ForgotPassword = () => {
   }, []);
 
   const onFinish = async (values) => {
-    enterLoading(1);
     const params = {
       email: email,
     };
     console.log(params);
     try {
       const res = await userApi.forgetPassword(params);
+      console.log("res code:", res.status);
       localStorage.setItem("resetPasswordEmail", params.email);
-      if (res.data.status === 200) {
+      if (res.status === 204) {
         message.success(
-          "Mật khẩu mới sẽ được gửi tới mail " +
-            values.mail +
-            ", vui lòng đổi mật khẩu ngay."
+          "Link đổi mật khẩu sẽ được gửi tới mail " +
+            params.email +
+            ", vui lòng kiểm tra mail."
         );
-
         setTimeout(() => {
           navigate("/dang-nhap");
-        }, 3000);
+        }, 1000);
       }
     } catch (error) {
       console.log("Failed:", error);

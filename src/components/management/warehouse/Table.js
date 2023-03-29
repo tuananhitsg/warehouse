@@ -2,14 +2,15 @@ import React, { useState, useEffect } from "react";
 
 import {
   Space,
-  Input,
   Table,
   Button,
   Modal,
   Tag,
-  Row,
-  Col,
   message,
+  Input,
+  Col,
+  Row,
+  Badge,
 } from "antd";
 import {
   DeleteOutlined,
@@ -19,34 +20,37 @@ import {
   ReloadOutlined,
 } from "@ant-design/icons";
 
-import goodsApi from "../../../api/goodsApi";
+import wareHouseApi from "../../../api/wareHouseApi";
 import { useDispatch, useSelector } from "react-redux";
 import { setReload } from "../../../redux/reloadSlice";
 import "./table.scss";
-import ModalGoodsDetail from "./modalGoodsDetail";
-import ModalAddGoods from "./modalAddGoods";
+// import ModalAddWareHouse from "./ModalAddWareHouse";
 
-const GoodsTable = () => {
+const EmployeeTable = () => {
   const [selectedId, setSelectedId] = useState([]);
-  const [showModalGoodsDetail, setShowModalGoodsDetail] = useState(false);
-  const [showModalAddGoods, setShowModalAddGoods] = useState(false);
+  const [showModalAddWareHouse, setShowModalAddWareHouse] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [listGoods, setListGoods] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [listCategory, setListCategory] = useState([]);
   const [refreshKey, setRefreshKey] = useState(0);
+  const dispatch = useDispatch();
+
   const reload = useSelector((state) => state.reloadReducer.reload);
 
-  const showModalDetail = (e) => {
-    setShowModalGoodsDetail(true);
+  const showWarehouse = (e) => {
     setSelectedId(e);
   };
   const showModalAdd = () => {
-    setShowModalAddGoods(true);
+    setShowModalAddWareHouse(true);
   };
+
   const onSelectChange = (selectedId) => {
     setSelectedRowKeys(selectedId);
   };
-
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+  };
   const [isModalOpen, setIsModalOpen] = useState(false);
   const showModal = () => {
     setIsModalOpen(true);
@@ -54,7 +58,7 @@ const GoodsTable = () => {
 
   const columns = [
     {
-      title: "Mã sản phẩm",
+      title: "Mã nhà kho",
       width: "15%",
       dataIndex: "code",
       key: "code",
@@ -62,7 +66,7 @@ const GoodsTable = () => {
         return (
           <a
             onClick={() => {
-              showModalDetail(val);
+              showWarehouse(val);
             }}
           >
             {val}
@@ -71,44 +75,39 @@ const GoodsTable = () => {
       },
     },
     {
-      title: "Tên sản phẩm",
+      title: "Tên nhà kho",
+      width: "20%",
       dataIndex: "name",
       key: "name",
     },
     {
-      title: "Loại sản phẩm",
-      dataIndex: "categoryName",
-      key: "categoryName",
+      title: "Diện tích(m2)",
+      dataIndex: "acreage",
+      key: "acreage",
     },
     {
-      title: "Đơn vị",
-      width: "10%",
-      dataIndex: "unit",
-      key: "unit",
-    },
-    {
-      title: "Chiều dài (mét)",
-      width: "12%",
-      dataIndex: "length",
-      key: "length",
-    },
-    {
-      title: "Chiều rộng (mét)",
-      width: "12%",
-      dataIndex: "width",
-      key: "width",
-    },
-    {
-      title: "Chiều cao (mét)",
-      width: "12%",
-      dataIndex: "height",
-      key: "height",
+      title: "Tình trạng",
+      dataIndex: "status",
+      key: "status",
+      render: (status) => {
+        console.log(status);
+        let color='green';
+        let name='';
+        if (status === "TRONG") {
+          color = "green";
+          name = "Khả dụng";
+        } else if (status === "DAY") {
+          color = "red";
+          name = "Đầy";
+        }
+        return <Badge color={color} text={name} />;
+      },
     },
     {
       title: "Action",
       key: "action",
       fix: "right",
-      with: "10%",
+      width: "10%",
       render: (_, record) => (
         <Space size="middle">
           <a>
@@ -118,11 +117,12 @@ const GoodsTable = () => {
       ),
     },
   ];
-  //get good list
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await goodsApi.getGoods();
+        const res = await wareHouseApi.getAllWareHouse();
+        console.log("res:",res);
         if (res) {
           // const data = res.map((item) => {
           //   return {
@@ -130,29 +130,32 @@ const GoodsTable = () => {
           //     ...item,
           //   };
           // });
-          // setListGoods(data.reverse());
-          setListGoods(res.reverse());
+          setListCategory(res);
         }
       } catch (error) {
-        console.log(error);
+        console.log("Failed to fetch warehouse list: ", error);
       }
     };
     fetchData();
   }, [reload]);
-
   const handleRefresh = () => {
-    setIsLoading(true);
+    setLoading(true);
     // ajax request after empty completing
     setTimeout(() => {
       setSelectedRowKeys([]);
-      setIsLoading(false);
+      setLoading(false);
       setRefreshKey((oldKey) => oldKey + 1);
       message.success("Tải lại thành công");
     }, 1000);
   };
   return (
     <div className="table-container">
-      <div className="table-header">
+      <div
+        className="table-header"
+        style={{
+          marginBottom: 16,
+        }}
+      >
         <Row gutter={{ xs: 8, sm: 16, md: 16, lg: 16 }}>
           <Col span={12}>
             <Input
@@ -163,17 +166,17 @@ const GoodsTable = () => {
           <Col span={12}>
             <Button
               type="primary"
-              loading={isLoading}
+              onClick={showModalAdd}
+              loading={loading}
               icon={<UserAddOutlined />}
               style={{ marginLeft: "16px" }}
-              onClick={showModalAdd}
             >
               Thêm
             </Button>
             <Button
               type="primary"
               onClick={handleRefresh}
-              loading={isLoading}
+              loading={loading}
               icon={<ReloadOutlined />}
               style={{ marginLeft: "8px" }}
             >
@@ -185,25 +188,17 @@ const GoodsTable = () => {
       <Table
         sticky
         columns={columns}
-        dataSource={listGoods}
-        pagination={{ pageSize: 10 }}
-        
+        dataSource={listCategory}
+        pagination={{ pageSize: 7 }}
       />
-      {showModalGoodsDetail ? (
-        <ModalGoodsDetail
-          showModalGoodsDetail={showModalGoodsDetail}
-          setShowModalGoodsDetail={setShowModalGoodsDetail}
-          selectedId={selectedId}
+      {/* {showModalAddWareHouse ? (
+        <ModalAddWareHouse
+          showModalAddWareHouse={showModalAddWareHouse}
+          setShowModalAddWareHouse={setShowModalAddWareHouse}
         />
-      ) : null}
-      {showModalAddGoods ? (
-        <ModalAddGoods
-          showModalAddGoods={showModalAddGoods}
-          setShowModalAddGoods={setShowModalAddGoods}
-        />
-      ) : null}
+      ) : null} */}
     </div>
   );
 };
 
-export default GoodsTable;
+export default EmployeeTable;

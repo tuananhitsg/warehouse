@@ -1,19 +1,20 @@
 import React, { useState } from "react";
 import { Input, Col, Row, Typography, Button, Modal } from "antd";
 
-import EmployeeTable from "./table";
+import { SearchOutlined, UserAddOutlined } from "@ant-design/icons";
+import WareHouseTable from "./Table";
 const { Title, Text } = Typography;
 
-const IndexCategory = () => {
+const IndexWarehouse = () => {
   return (
     <div className="site-card-wrapper">
       <Title level={5} style={{ marginBottom: "1rem" }}>
-        Nhân viên
+        Nhà kho
       </Title>
 
-      <EmployeeTable></EmployeeTable>
+      <WareHouseTable></WareHouseTable>
     </div>
   );
 };
 
-export default IndexCategory;
+export default IndexWarehouse;

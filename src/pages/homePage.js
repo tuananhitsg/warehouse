@@ -31,6 +31,10 @@ import IndexDashboard from "../components/management/dashboard/index";
 import IndexGoods from "../components/management/goods/index";
 import IndexCategory from "../components/management/category/index";
 import IndexEmployee from "../components/management/employee/index";
+import IndexWarehouse2 from "../components/warehouse/warehouse";
+import IndexWarehouse from "../components/management/warehouse/Index";
+import IndexUser from "../components/account/user/userInfo";
+
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import authService from "../service/auth.service";
@@ -49,10 +53,7 @@ function getItem(label, key, icon, children) {
 
 const HomePage = () => {
   const navigate = useNavigate();
-
   const user = useSelector((state) => state.userReducer.info);
-  console.log("User in4:", user);
-
   // const getItem = (label, key, icon, children, required_perm, type) => {
   //   if (!userInfo || (required_perm && userInfo.is_manager == false)) {
   //     return null;
@@ -78,13 +79,10 @@ const HomePage = () => {
     getItem("Quản lý kho", "3", <HomeOutlined />, [
       getItem("Kho hàng", "3.1"),
       getItem("Hàng hoá", "3.2"),
-      getItem("Kệ", "3.3"),
     ]),
     getItem("Sản phẩm", "4", <TagsOutlined />, [
       getItem("Sản phẩm", "4.1"),
       getItem("Loại sản phẩm", "4.2"),
-      getItem("Kích thước", "4.3"),
-      getItem("Đơn vị tính", "4.4"),
     ]),
     getItem("Nhân viên", "5", <UserOutlined />, [
       getItem("Nhân viên", "5.1"),
@@ -116,34 +114,39 @@ const HomePage = () => {
   const [itemClicked, setItemClicked] = useState(1);
   function onClick(info) {
     setItemClicked(+info.key);
+    console.log("info", +info.key);
   }
   const onClickMenuUser = (info) => {
     //if user click logout
     if (info.key === "logout") {
       showModal();
+    } else if (info.key === "info") {
     }
   };
   const RenderHome = () => {
-    if (itemClicked === 0) {
-      return <IndexDashboard />;
-    } else if (itemClicked === 4.1) {
-      return <IndexGoods />;
-    } else if (itemClicked === 4.2) {
-      return <IndexCategory />;
+    switch (itemClicked) {
+      case 0:
+        return <IndexDashboard />;
+      case 4.1:
+        return <IndexGoods />;
+      case 4.2:
+        return <IndexCategory />;
+      case 5.1:
+        return <IndexEmployee />;
+      case 6:
+        return <IndexWarehouse />;
+      // case "user":
+      //   return <UserInfo />;
+      case 100:
+        return <IndexUser />;
+      default:
+        return <IndexDashboard />;
     }
-    else if (itemClicked === 5.1) {
-      return <IndexEmployee />;
-    }
-    // else if (itemClicked ==="user"){
-    //   return <UserInfo />;
-    // }
-    return <IndexDashboard />;
   };
 
-
-  // handleUserInfo = () => {
-  //   set
-  // }
+  const handleUserInfo = () => {
+    setItemClicked(100);
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -200,25 +203,22 @@ const HomePage = () => {
                   <>
                     <Menu onClick={onClickMenuUser}>
                       <Menu.Item
-                        key="setting"
+                        key="info"
                         style={{
                           padding: " 12px 12px",
                         }}
                       >
                         {" "}
-                        {/* <div onClick={() => handleUserInfo()}>
+                        <div onClick={() => handleUserInfo()}>
                           <ProfileOutlined />
                           <Text style={{ marginLeft: "12px" }}>Thông tin</Text>
-                        </div> */}
+                        </div>
                         <div>
-                       
                           <Text
                           // style={{
                           //   marginLeft: "12px",
                           // }}
-                          >
-                            Thông tin
-                          </Text>
+                          ></Text>
                         </div>
                       </Menu.Item>
                       <Menu.Item
@@ -230,9 +230,9 @@ const HomePage = () => {
                         <div onClick={() => showModal()}>
                           <LogoutOutlined />
                           <Text
-                          // style={{
-                          //   marginLeft: "12px",
-                          // }}
+                            style={{
+                              marginLeft: "12px",
+                            }}
                           >
                             Đăng xuất
                           </Text>

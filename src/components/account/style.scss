@@ -64,7 +64,7 @@
 //       background: $purple-lazo;
 //       z-index: -1;
 //       color: white;
-     
+
 //       cursor: pointer;
 //     }
 //     .login-form-footer {
@@ -118,26 +118,47 @@
 //   }
 // }
 .logo-container {
-    img {
-        width: 150px;
+  img {
+    width: 150px;
 
-        display: block;
-        margin: 0 auto;
-    }
-    .logo-text {
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        color: white;
-    }
-}
-.form-title{
-    text-align: center;
-}
-.login-form {
+    display: block;
+    margin: 0 auto;
+  }
+  .logo-text {
     align-items: center;
     justify-content: center;
     text-align: center;
+    color: white;
+  }
 }
-
-
+.form-title {
+  text-align: center;
+}
+.login-form {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.login-form-container {
+  width: 100vw;
+  height: 100vh;
+  background-image: url(../../assets/bg.jpg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: absolute;
+  .login-form {
+    background: #fff;
+    border-radius: 20px;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    width: 500px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    // .form-field {
+    //   margin-bottom: 16px;
+    // }
+  }
+}

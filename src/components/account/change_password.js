@@ -18,8 +18,11 @@ const ChangePassword = () => {
   const [loadings, setLoadings] = useState([]);
   const [password, setPassword] = useState("");
   const resetPasswordEmail = localStorage.getItem("resetPasswordEmail");
-  console.log(password);
-  // const [mess, setMess]= useState("Vui lòng nhập mật khẩu mới!");
+
+  const searchParams = new URLSearchParams(window.location.search);
+  const token = searchParams.get("token");
+  localStorage.setItem("token", token);
+  const [mess, setMess] = useState("Vui lòng nhập mật khẩu mới!");
 
   const testResult = zxcvbn(password);
   const num = (testResult.score * 100) / 4;
@@ -113,21 +116,24 @@ const ChangePassword = () => {
     const params = {
       email: resetPasswordEmail,
       password: values.new_password,
-      
     };
-    console.log(params);
-    const response = await userApi.changePassword(params);
+    console.log("param:", params);
 
     try {
-      if (response.data.code == 1) {
+      const response = await userApi.changePassword(params);
+      console.log("res:", response);
+
+      if (response) {
         message.success("Đổi mật khẩu thành công");
         navigate("/dang-nhap");
+        localStorage.removeItem("resetPasswordEmail");
+        localStorage.removeItem("token");
       } else {
-        message.error("Sai mật khẩu");
+        message.error("Xảy ra lỗi");
       }
     } catch (error) {
       console.log("Failed:", error);
-      message.error("Sai mật khẩu");
+      message.error("Xảy ra lỗi");
     } finally {
       stopLoading(0);
     }
@@ -174,7 +180,7 @@ const ChangePassword = () => {
               src={require("../../assets/logo.png")}
             ></img>
             <Title className="logo-text" level={2}>
-              Quản lý kho hàng
+              Kho hàng thông minh
             </Title>
           </div>
         </Col>
@@ -210,12 +216,7 @@ const ChangePassword = () => {
               style={{
                 marginBottom: "0px",
               }}
-              //   rules={[
-              //       {
-              //           required: true,
-              //           message: "Vui lòng nhập mật khẩu mới!",
-              //       },
-              //   ]}
+              
             >
               <Input.Password
                 size="large"
@@ -273,7 +274,7 @@ const ChangePassword = () => {
 
             <p>
               <Space>
-                <Link to="/dang-nhap">Đăng nhập ngay</Link>
+                <Link to="/dang-nhap">Đăng nhập</Link>
                 hoặc
                 <Link to="/quen-mat-khau">Lấy lại mật khẩu</Link>
               </Space>

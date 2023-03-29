@@ -33,7 +33,7 @@ const LoginForm = () => {
     const login = async (params) => {
       try {
         const res = await userApi.login(params);
-        console.log("token header:", res.token);
+        
         if (res) {
           localStorage.setItem("token", res.token);
           authService.setUser(res);

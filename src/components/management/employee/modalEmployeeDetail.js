@@ -6,14 +6,12 @@ import {
   Form,
   Input,
   message,
+  Modal,
   Row,
   Select,
   Space,
-
 } from "antd";
 import employeeApi from "../../../api/employeeApi";
-
-
 
 const ModalEmployeeDetail = ({
   showModalEmployeeDetail,
@@ -21,18 +19,48 @@ const ModalEmployeeDetail = ({
   selectedId,
 }) => {
   const [form] = Form.useForm();
-  const [size, setSize] = useState("");
-
+  const [sex, setSex] = useState("");
+  const [role, setRole] = useState("");
+  const onChangeSex = (values) => {
+    console.log("values", values);
+    setSex(values);
+  };
+  const onChangeRole = (values) => {
+    setRole(values);
+  };
   const onClose = () => {
     setShowModalEmployeeDetail(false);
   };
-  const handleSubmit = async (values) => {
-    console.log("submit", values);
+
+  const convertRoleName = (roleName) => {
+    if (roleName === "USER") {
+      return "Nhân viên";
+    } else if (roleName === "ADMIN") {
+      return "Quản lý";
+    } else {
+      return roleName;
+    }
   };
 
-  const onChangeSize = async (values) => {
-    console.log("values", values);
-    setSize(values);
+  const handleSubmit = async (values) => {
+    const { fullName, sex, role} = values;
+    const data = new FormData();
+    data.append("fullName", fullName);
+    data.append("sex", sex);
+    data.append("role", role);
+    console.log("data", data);
+    //loi api
+    try{
+      const res = await employeeApi.updateEmployee(selectedId, data);
+      if(res){
+        onClose();
+        setTimeout(() => {
+          message.success("Cập nhật thành công");
+        },3000);
+      }
+    }catch(error){
+      console.log("error", error);
+    }
   };
 
   useEffect(() => {
@@ -42,7 +70,11 @@ const ModalEmployeeDetail = ({
         const res = await employeeApi.getEmployeeById(id);
         if (res) {
           console.log("res:", res);
-          form.setFieldsValue({ ...res });
+
+          form.setFieldsValue({
+            ...res,
+            roles: convertRoleName(res.roles[0].name),
+          });
         }
       } catch (error) {
         console.log("error", error);
@@ -53,12 +85,12 @@ const ModalEmployeeDetail = ({
   return (
     <div className="modal-container">
       <div className="modal-header">
-        <Drawer
+        <Modal
           title="Chi tiết sản phẩm"
           width={640}
-          onClose={onClose}
+          onCancel={onClose}
           open={showModalEmployeeDetail}
-          extra={
+          footer={
             <Space>
               <Button onClick={onClose}>Huỷ</Button>
               <Button type="primary" form="myForm" htmlType="submit">
@@ -75,62 +107,61 @@ const ModalEmployeeDetail = ({
           >
             <Row gutter={16}>
               <Col span={12}>
-                <Form.Item name="code" label="Mã sản phẩm">
+                <Form.Item name="code" label="Mã nhân viên">
                   <Input disabled={true} />
                 </Form.Item>
               </Col>
               <Col span={12}>
-                <Form.Item name="name" label="Tên sản phẩm">
+                <Form.Item name="fullName" label="Tên nhân viên">
                   <Input />
                 </Form.Item>
               </Col>
             </Row>
             <Row gutter={16}>
               <Col span={12}>
-                <Form.Item name="categoryName" label="Loại sản phẩm">
-                  <Select />
+                <Form.Item name="email" label="Email">
+                  <Input disabled/>
                 </Form.Item>
               </Col>
               <Col span={12}>
-                <Form.Item name="unit" label="Đơn vị">
-                  <Select />
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row gutter={16}>
-              <Col span={8}>
-                <Form.Item name="length" label="Chiều dài">
-                  <Select onChange={onChangeSize} 
+                <Form.Item name="sex" label="Giới tính">
+                  <Select
+                    onChange={onChangeSex}
                     options={[
                       {
-                      value: "1",
-                      label: "1",
-                    },
-                    {
-                      value: "2",
-                      label: "2",
-                    },
-                    {
-                      value: "3",
-                      label: "3",
-                    },
+                        value: "Nam",
+                        label: "Nam",
+                      },
+                      {
+                        value: "Nữ",
+                        label: "Nữ",
+                      },
                     ]}
                   />
                 </Form.Item>
               </Col>
-              <Col span={8}>
-                <Form.Item name="width" label="Chiều rộng">
-                  <Select onChange={onChangeSize} />
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item name="height" label="Chiều cao">
-                  <Select onChange={onChangeSize} />
+            </Row>
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item name="roles" label="Chức vụ">
+                  <Select
+                    onChange={onChangeRole}
+                    options={[
+                      {
+                        value: "admin",
+                        label: "Quản lý",
+                      },
+                      {
+                        value: "user",
+                        label: "Nhân viên",
+                      },
+                    ]}
+                  />
                 </Form.Item>
               </Col>
             </Row>
           </Form>
-        </Drawer>
+        </Modal>
       </div>
     </div>
   );

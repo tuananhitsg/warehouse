@@ -6,12 +6,14 @@ import {
   Form,
   Input,
   message,
+  Modal,
   Row,
   Select,
   Space,
 } from "antd";
 
 import goodsApi from "../../../api/goodsApi";
+import categoryApi from "../../../api/categoryApi";
 import { setReload } from "../../../redux/reloadSlice";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -20,18 +22,34 @@ const ModalAddGoods = ({ showModalAddGoods, setShowModalAddGoods }) => {
   const reload = useSelector((state) => state.reloadReducer.reload);
   const [form] = Form.useForm();
   const [size, setSize] = useState("");
-  const [category, setCategory] = useState("");
+  const [categoryCodes, setCategoryCodes] = useState([]);
+  const [categoryCode, setCategoryCode] = useState("");
+
   const [isLoading, setIsLoading] = useState(false);
   const onChangeSize = async (values) => {
     console.log("values", values);
     setSize(values);
   };
-  const onChageCategory = async (values) => {
-    setCategory(values);
+  const onChageCategory = (value) => {
+    setCategoryCode(value);
   };
   const onClose = () => {
     setShowModalAddGoods(false);
   };
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await categoryApi.getCategories();
+        console.log("res", res);
+        const codes = res.map((category) => category.code);
+        console.log("categoryCodes", codes);
+        setCategoryCodes(codes);
+      } catch (error) {
+        console.log("Error fetching categories: ", error);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   const handleSubmit = async (values) => {
     console.log("submit", values);
@@ -79,15 +97,15 @@ const ModalAddGoods = ({ showModalAddGoods, setShowModalAddGoods }) => {
 
   return (
     <>
-      <Drawer
+      <Modal
         title="Thông tin sản phẩm"
         width={720}
-        onClose={onClose}
+        onCancel={onClose}
         open={showModalAddGoods}
         bodyStyle={{
           paddingBottom: 80,
         }}
-        extra={
+        footer={
           <Space>
             <Button onClick={onClose}>Huỷ</Button>
             <Button form="myForm" htmlType="submit" type="primary">
@@ -103,16 +121,10 @@ const ModalAddGoods = ({ showModalAddGoods, setShowModalAddGoods }) => {
                 <Select
                   placeholder="Chọn mã"
                   onChange={onChageCategory}
-                  options={[
-                    {
-                      value: "L-104466",
-                      label: "Đồ uống - L-104466",
-                    },
-                    {
-                      value: "L-943843",
-                      label: "Bánh kẹo - L-943843",
-                    },
-                  ]}
+                  options={categoryCodes.map((code) => ({
+                    value: code,
+                    label: code,
+                  }))}
                 />
               </Form.Item>
             </Col>
@@ -190,7 +202,7 @@ const ModalAddGoods = ({ showModalAddGoods, setShowModalAddGoods }) => {
             </Col> */}
           </Row>
         </Form>
-      </Drawer>
+      </Modal>
     </>
   );
 };

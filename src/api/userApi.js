@@ -10,11 +10,11 @@ const userApi = {
         return axiosApi.post(url, params);
     },
     changePassword: (params) => {
-        const url = "/auth/reset_password";
+        const url = "/auth/reset-password";
         return axiosApi.post(url, params);
     },
-    updateInfor:(params) => {
-        const url = "/user/update/{code}";
+    updateInfor:(id,params) => {
+        const url = `/user/update/${id}`;
         return axiosApi.post(url, params);
     }
     

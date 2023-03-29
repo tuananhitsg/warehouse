@@ -7,6 +7,7 @@ import {
   Form,
   Input,
   message,
+  Modal,
   Row,
   Select,
   Space,
@@ -33,18 +34,24 @@ const ModalGoodsDetail = ({
     setSize(value);
   };
 
+  // const convertSize = (value) => {
+  //   if (value === "1") {
+  //     return "0.3x0.2x0.3";
+  //   } else if (value === "2") {
+  //     return "0.5x0.3x0.4";
+  //   } else if (value === "3") {
+  //     return "0.6x0.4x0.4";
+  //   } else {
+  //     return value;
+  //   }
+  // }
+
   useEffect(() => {
     console.log("selectedId", selectedId);
     const fetchData = async (id) => {
       try {
         const res = await goodsApi.getGoodsById(id);
         console.log(res);
-        console.log(
-          "width - height - length",
-          res.width,
-          res.height,
-          res.length
-        );
         if (res) {
           if (res.length === 0.3 && res.width === 0.2 && res.height === 0.3) {
             form.setFieldsValue({ size: "1" });
@@ -73,12 +80,12 @@ const ModalGoodsDetail = ({
   return (
     <div className="modal-container">
       <div className="modal-header">
-        <Drawer
+        <Modal
           title="Chi tiết sản phẩm"
           width={640}
-          onClose={onClose}
+          onCancel={onClose}
           open={showModalGoodsDetail}
-          extra={
+          footer={
             <Space>
               <Button onClick={onClose}>Huỷ</Button>
               <Button type="primary" form="myForm" htmlType="submit">
@@ -142,7 +149,7 @@ const ModalGoodsDetail = ({
               
             </Row>
           </Form>
-        </Drawer>
+        </Modal>
       </div>
     </div>
   );

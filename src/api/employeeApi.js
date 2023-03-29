@@ -5,7 +5,7 @@ const employeeApi = {
         const url = "/user/get-all";
         return axiosApi.get(url);
     },
-    getEmployeesById: (id) => {
+    getEmployeeById: (id) => {
         const url = `/user/get-by/${id}`;
         return axiosApi.get(url);
     },

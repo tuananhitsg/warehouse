@@ -89,11 +89,13 @@ const EmployeeTable = () => {
     },
     {
       title: "Giới tính",
+      width: "15%",
       dataIndex: "sex",
       key: "sex",
     },
     {
       title: "Chức vụ",
+      width: "15%",
       dataIndex: "roles",
       key: "roles",
     },
@@ -111,6 +113,16 @@ const EmployeeTable = () => {
       ),
     },
   ];
+
+  const convertRoleName = (roleName) => {
+    if (roleName === "USER") {
+      return "Nhân viên";
+    } else if (roleName === "ADMIN") {
+      return "Quản lý";
+    } else {
+      return roleName;
+    }
+  };
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -120,7 +132,7 @@ const EmployeeTable = () => {
             return {
               key: item.code,
               ...item,
-              roles: item.roles[0].name,
+              roles: convertRoleName(item.roles[0].name)
             };
           });
           console.log(data);
@@ -183,8 +195,8 @@ const EmployeeTable = () => {
         sticky
         columns={columns}
         dataSource={listCategory}
-        pagination={{ pageSize: 6 }}
-        scroll={{ y: 350 }}
+        pagination={{ pageSize: 7 }}
+       
       />
       {showModalEmployeeDetail ? (
         <ModalEmployeeDetail

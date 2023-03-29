@@ -2,7 +2,7 @@ import axiosApi from "./axiosApi";
 
 const categoryApi = {
     getCategories: () => {
-        const url = "/category/";
+        const url = "/category/get-all";
         return axiosApi.get(url);
     },
     addCategory: (params) => {
