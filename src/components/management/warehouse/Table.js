@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-
 import {
   Space,
   Table,
@@ -22,11 +21,11 @@ import {
 
 import wareHouseApi from "../../../api/wareHouseApi";
 import { useDispatch, useSelector } from "react-redux";
-import { setReload } from "../../../redux/reloadSlice";
+import { setWareHouse } from "../../../redux/wareHouseSlice";
 import "./table.scss";
 // import ModalAddWareHouse from "./ModalAddWareHouse";
 
-const EmployeeTable = () => {
+const WarehouseTable = ({ setTab }) => {
   const [selectedId, setSelectedId] = useState([]);
   const [showModalAddWareHouse, setShowModalAddWareHouse] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -55,23 +54,19 @@ const EmployeeTable = () => {
   const showModal = () => {
     setIsModalOpen(true);
   };
-
+  const renderWareHouse = (id) => {
+    console.log(id);
+    dispatch(setWareHouse(id));
+    setTab(1);
+  };
   const columns = [
     {
       title: "Mã nhà kho",
       width: "15%",
       dataIndex: "code",
       key: "code",
-      render: (val) => {
-        return (
-          <a
-            onClick={() => {
-              showWarehouse(val);
-            }}
-          >
-            {val}
-          </a>
-        );
+      render: (text, record) => {
+        return <a onClick={() => renderWareHouse(record.code)}>{text}</a>;
       },
     },
     {
@@ -81,7 +76,7 @@ const EmployeeTable = () => {
       key: "name",
     },
     {
-      title: "Diện tích(m2)",
+      title: "Diện tích (m2)",
       dataIndex: "acreage",
       key: "acreage",
     },
@@ -91,8 +86,8 @@ const EmployeeTable = () => {
       key: "status",
       render: (status) => {
         console.log(status);
-        let color='green';
-        let name='';
+        let color = "green";
+        let name = "";
         if (status === "TRONG") {
           color = "green";
           name = "Khả dụng";
@@ -122,7 +117,7 @@ const EmployeeTable = () => {
     const fetchData = async () => {
       try {
         const res = await wareHouseApi.getAllWareHouse();
-        console.log("res:",res);
+        console.log("res:", res);
         if (res) {
           // const data = res.map((item) => {
           //   return {
@@ -201,4 +196,4 @@ const EmployeeTable = () => {
   );
 };
 
-export default EmployeeTable;
+export default WarehouseTable;

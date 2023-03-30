@@ -4,12 +4,12 @@ const warehouseSlice = createSlice({
     name: "warehouse",
     initialState: {},
     reducers: {
-        set: (state, action) => {
+        setWareHouse: (state, action) => {
             state.info = action.payload;
         },
 
     },
 });
 
-export const { setWarehouse } = warehouseSlice.actions;
+export const { setWareHouse } = warehouseSlice.actions;
 export default warehouseSlice.reducer;

@@ -19,8 +19,13 @@ const ModalEmployeeDetail = ({
   selectedId,
 }) => {
   const [form] = Form.useForm();
+  const [fullName, setFullName] = useState("");
   const [sex, setSex] = useState("");
   const [role, setRole] = useState("");
+
+  const onChangeName = (values) => {
+    setFullName(values);
+  };
   const onChangeSex = (values) => {
     console.log("values", values);
     setSex(values);
@@ -37,28 +42,31 @@ const ModalEmployeeDetail = ({
       return "Nhân viên";
     } else if (roleName === "ADMIN") {
       return "Quản lý";
-    } else {
-      return roleName;
-    }
+    } else if (roleName === "Nhân viên") {
+      return "USER";
+    } else if (roleName === "Quản lý") {
+      return "ADMIN";
+    } else return null;
   };
 
   const handleSubmit = async (values) => {
-    const { fullName, sex, role} = values;
-    const data = new FormData();
-    data.append("fullName", fullName);
-    data.append("sex", sex);
-    data.append("role", role);
-    console.log("data", data);
+    const { fullName, sex, roles } = values;
+    const data = {
+      fullName: fullName,
+      sex: sex,
+      role: convertRoleName(roles),
+    };
+    console.log("submit", data);
     //loi api
-    try{
+    try {
       const res = await employeeApi.updateEmployee(selectedId, data);
-      if(res){
+      if (res) {
         onClose();
         setTimeout(() => {
           message.success("Cập nhật thành công");
-        },3000);
+        }, 3000);
       }
-    }catch(error){
+    } catch (error) {
       console.log("error", error);
     }
   };
@@ -120,7 +128,7 @@ const ModalEmployeeDetail = ({
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item name="email" label="Email">
-                  <Input disabled/>
+                  <Input disabled />
                 </Form.Item>
               </Col>
               <Col span={12}>

@@ -24,9 +24,7 @@ const App = () => {
     if (userInLocalStorage) {
       dispatch(setUser(userInLocalStorage));
       navigate("/trang-chu");
-    } else {
-      navigate("/dang-nhap");
-    }
+    } 
   }, [dispatch, navigate]);
 
   return (

@@ -11,8 +11,8 @@ import {
   Select,
   notification,
 } from "antd";
-
-import Shelf from "./Shelf";
+import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
+// import Shelf from "./Shelf";
 import wareHouserApi from "../../../api/wareHouseApi";
 
 const arrCol = ["CL0001", "CL0002", "CL0003", "CL0004", "CL0005"];
@@ -35,50 +35,26 @@ const arrShelf = [
   "SS0015",
   "SS0016",
 ];
-const Warehouse = () => {
+const Warehouse = ({ setTab }) => {
   const [rows, setRows] = useState([]);
   const [columns, setColumns] = useState([]);
-  const [getShelves, setShelves] = useState([]);
-  const [getShelf, setShelf] = useState([]);
+  const [shelves, setShelves] = useState([]);
+  const [shelf, setShelf] = useState([]);
   useEffect(() => {
     const getShevles = async () => {
       try {
         const res = await wareHouserApi.getAllRow();
+        console.log("res: ", res);
         if (res) {
           setShelves(res);
-          const data = res.map((item) => {
-            return {
-              code: item.code,
-            };
-          });
         }
       } catch (error) {
         console.log("Fetch error: ", error);
       }
     };
     getShevles();
-    const getColumns = async () => {
-      try {
-        const res = await wareHouserApi.getAllColumn();
-        if (res) {
-          setColumns(res);
-        }
-      } catch (error) {
-        console.log("Fetch error: ", error);
-      }
-    };
   }, []);
-  const shelves = [
-    {
-      row: "code",
-      columns: [
-        {
-          id: "code",
-          status: "status",
-        },
-      ],
-    },
-  ];
+
   // const shelves = [
   //   {
   //     id: 1,
@@ -172,5 +148,75 @@ const Warehouse = () => {
   //   </Row>
   // </div>
   //);
+  return (
+    <div className="site-card-wrapper">
+      <div
+        className="warehouse-wrapper"
+        style={{ minHeight: "100vh", background: "", padding: "1rem" }}
+      >
+        <Row gutter={16}>
+          <div
+            className="warehouse-container"
+            style={{
+              background: "",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <Col span={20}>
+              <div className="warehouse-block">
+                <div className="warehouse-left">
+                  <span>STT</span>
+                  {[...Array(16)].map((_, i) => (
+                    <span key={i}>SS00{i + 1}</span>
+                  ))}
+                </div>
+                <table id="warehouse">
+                  <tr>
+                    {arrRow.map((item) => {
+                      return <td>{item}</td>;
+                    })}
+                  </tr>
+                  <>
+                    {arrCol.map((value, index) => {
+                      let number = 1;
+                      let agg = 1;
+                      const newArr = shelves.filter((item) => {
+                        if (item.codeColumn === value) {
+                          return item;
+                        }
+                      });
+                      return (
+                        <>
+                          <tr>
+                            {newArr.map((shelf, index) => {
+                              let temp = index + 1;
+                              if (shelf.codeColumn === value) {
+                                return (
+                                  <>
+                                    <td>
+                                      <span>
+                                        <Inventory2OutlinedIcon />
+                                      </span>
+                                    </td>
+                                  </>
+                                );
+                              }
+                              return <td title={shelf+number}></td>;
+                            })}
+                          </tr>
+                        </>
+                      );
+                    })}
+                  </>
+                </table>
+              </div>
+            </Col>
+          </div>
+        </Row>
+      </div>
+    </div>
+  );
 };
 export default Warehouse;
