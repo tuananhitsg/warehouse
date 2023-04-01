@@ -21,12 +21,15 @@ const App = () => {
   const user = useSelector((state) => state.userReducer);
   useEffect(() => {
     const userInLocalStorage = authService.getUser();
+    const token = authService.getLocalToken();
     if (userInLocalStorage) {
       dispatch(setUser(userInLocalStorage));
       navigate("/trang-chu");
-    } 
-  }, [dispatch, navigate]);
-
+    } else {
+      navigate("/dang-nhap");
+    }
+  }, []);
+  
   return (
     <div className="App">
       <Suspense fallback={<Loading />}>
@@ -36,12 +39,7 @@ const App = () => {
           <Route path="doi-mat-khau" element={<ChangePassword />} />
           <Route path="trang-chu" element={<HomePage />} />
           <Route element={<PrivateRoute />}>
-            <Route
-              path="/"
-              element={<HomePage />}
-              exact
-              isLoggedIn={user != null}
-            />
+            <Route path="/" element={<HomePage />} isLoggedIn={user != null} />
             <Route
               path="trang-chu"
               element={<HomePage />}

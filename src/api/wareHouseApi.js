@@ -33,7 +33,7 @@ const wareHouserApi = {
     const url = "/row-location/get-all";
     return axiosApi.get(url);
   },
-  getAllRowById: (id) =>{
+  getRowById: (id) =>{
     const url = `/row-location/get-by/${id}`;
     return axiosApi.get(url);
   },

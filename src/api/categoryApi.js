@@ -8,6 +8,10 @@ const categoryApi = {
     addCategory: (params) => {
         const url = "/category/add";
         return axiosApi.post(url, params);
+    },
+    getCategoryById: (id,params) => {
+        const url = `/category/get-by/${id}`;
+        return axiosApi.get(url,params);
     }
 }
 export default categoryApi;

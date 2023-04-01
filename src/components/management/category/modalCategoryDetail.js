@@ -30,22 +30,21 @@ const ModalCategoryDetail = ({
     console.log("submit", values);
   };
 
-  // useEffect(() => {
-  //   console.log("selectedId", selectedId);
-  //   const fetchData = async (id) => {
-  //     try {
-  //       const res = await categoryApi.getCategoryById(id);
-  //       console.log("res", res);
-  //       if (res.status === 200) {
-  //         const { data } = res;
-  //         setGoodsDetail(data);
-  //       }
-  //     } catch (error) {
-  //       console.log("error", error);
-  //     }
-  //   };
-  //   fetchData(selectedId);
-  // }, []);
+  useEffect(() => {
+    console.log("selectedId", selectedId);
+    const fetchData = async (id) => {
+      try {
+        const res = await categoryApi.getCategoryById(id);
+        console.log("res", res);
+        if (res) {
+          form.setFieldsValue({ ...res });
+        }
+      } catch (error) {
+        console.log("error", error);
+      }
+    };
+    fetchData(selectedId);
+  }, []);
   return (
     <div className="modal-container">
       <div className="modal-header">
@@ -58,7 +57,7 @@ const ModalCategoryDetail = ({
             <Space>
               <Button onClick={onClose}>Huỷ</Button>
               <Button type="primary" form="myForm" htmlType="submit">
-                Thêm
+                Xác nhận
               </Button>
             </Space>
           }

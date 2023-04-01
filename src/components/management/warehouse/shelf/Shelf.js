@@ -3,24 +3,19 @@ import ShelfItem from "../shelf/ShelfItem";
 import "./Shelf.scss";
 import wareHouserApi from "../../../../api/wareHouseApi";
 
-const Shelf = ({ items }) => {
-  // const [status, setStatus] = useState("");
-  // useEffect(() => {
-  //   const getItem = async () => {
-  //     try {
-  //       const res = await wareHouserApi.getAllColumn();
-  //       if (res) {
-  //         console.log(res);
-  //       }
-  //     } catch (error) {
-  //       console.log("Featch erro: ", error);
-  //     }
-  //   };
-  // }, []);
+const Shelf = ({ items, onShelfItemClick }) => {
   return (
     <div className="shelf">
       {items.map((item, index) => (
-        <ShelfItem key={index} status={item.status} />
+        <ShelfItem
+          key={index}
+          codeRow={item.codeRow}
+          //status={item.status}
+          status={item.codeRow} //hiênnj tạm xem vi tri
+          shelf={item}
+          onClick={() => onShelfItemClick(item.codeRow)}
+          //onClick={onShelfItemClick}
+        />
       ))}
     </div>
   );

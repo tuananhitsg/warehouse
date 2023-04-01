@@ -29,6 +29,7 @@ const LoginPage = () => {
       const { email, password } = values;
       const res = await userApi.login(values);
       if (res) {
+        console.log("res login:", res);
         localStorage.setItem("token", res.token);
         authService.setUser(res);
         dispatch(setUser(res));

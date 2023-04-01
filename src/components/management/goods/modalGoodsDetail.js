@@ -53,6 +53,7 @@ const ModalGoodsDetail = ({
         const res = await goodsApi.getGoodsById(id);
         console.log(res);
         if (res) {
+          form.setFieldsValue({ ...res });
           if (res.length === 0.3 && res.width === 0.2 && res.height === 0.3) {
             form.setFieldsValue({ size: "1" });
           } else if (
@@ -67,8 +68,6 @@ const ModalGoodsDetail = ({
             res.height === 0.4
           ) {
             form.setFieldsValue({ size: "3" });
-          } else {
-            form.setFieldsValue({ ...res });
           }
         }
       } catch (error) {
@@ -146,7 +145,6 @@ const ModalGoodsDetail = ({
                   />
                 </Form.Item>
               </Col>
-              
             </Row>
           </Form>
         </Modal>

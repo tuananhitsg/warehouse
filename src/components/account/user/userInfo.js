@@ -20,22 +20,49 @@ const { Title, Text } = Typography;
 const UserInfo = () => {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
-  console.log(user);
   const [code, setCode] = useState("");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
+  const [sex, setSex] = useState("");
+  const [role, setRole] = useState("");
   const handleInputChange = (e) => {
     setFullName(e.target.value);
   };
 
   useEffect(() => {
-    const user = authService.getUser();
-    setFullName(user.fullName);
-    setEmail(user.email);
-    setCode(user.code);
+    const userCode = authService.getUser().code;
+
+    // setFullName(user.fullName);
+    // setEmail(user.email);
+    // setCode(user.code);
+    // setRole(user.roles[0]);
+    // setSex(user.sex);
+    // setUser(user);
+    const fetchData = async (id) => {
+      try {
+        const res = await employeeApi.getEmployeeById(id);
+        console.log("res", res);
+        if (res) {
+          setFullName(res.fullName);
+          setEmail(res.email);
+          setCode(res.code);
+          setRole(res.roles[0].name);
+          setSex(res.sex);
+          console.log("res role:", role);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData(userCode);
   }, []);
-  console.log(fullName);
-  const handleUpdate = async (params) => {
+  const handleUpdate = async () => {
+    const params ={
+      fullName: fullName,
+      sex: sex,
+      role: role,
+    }
+    console.log("code va daata:", code, params);
     try {
       const res = await employeeApi.updateEmployee(code, params);
       console.log(user.code);
@@ -80,7 +107,7 @@ const UserInfo = () => {
                 </p>
               </Col>
               <Col span={14}>
-                <Input style={{ width: "50%" }} disabled value={code} />
+                <Input style={{ width: "50%" }} disabled value={code} name="code"/>
               </Col>
             </Row>
             <Row style={{ marginTop: "0.5rem" }} gutter={16}>
@@ -143,79 +170,6 @@ const UserInfo = () => {
                 <Button type="primary" htmlType="submit">
                   Lưu
                 </Button>
-              </Col>
-            </Row>
-          </Form>
-
-          <Form style={{ marginTop: "2rem" }}>
-            <Row style={{ marginTop: "0.5rem" }} gutter={16}>
-              <Col
-                span={10}
-                style={{ display: "flex", justifyContent: "flex-end" }}
-                className="gutter-row"
-              >
-                <p
-                  style={{
-                    color: "#4f4f4f",
-                    fontSize: "13px",
-                    fontWeight: "700",
-                  }}
-                >
-                  Mật khẩu hiện tại
-                </p>
-              </Col>
-              <Col span={14}>
-                <Input.Password style={{ width: "50%" }} />
-              </Col>
-            </Row>
-            <Row style={{ marginTop: "0.5rem" }} gutter={16}>
-              <Col
-                span={10}
-                style={{ display: "flex", justifyContent: "flex-end" }}
-                className="gutter-row"
-              >
-                <p
-                  style={{
-                    color: "#4f4f4f",
-                    fontSize: "13px",
-                    fontWeight: "700",
-                  }}
-                >
-                  Mật khẩu mới
-                </p>
-              </Col>
-              <Col span={14}>
-                <Input.Password style={{ width: "50%" }} />
-              </Col>
-            </Row>
-            <Row style={{ marginTop: "0.5rem" }} gutter={16}>
-              <Col
-                span={10}
-                style={{ display: "flex", justifyContent: "flex-end" }}
-                className="gutter-row"
-              >
-                <p
-                  style={{
-                    color: "#4f4f4f",
-                    fontSize: "13px",
-                    fontWeight: "700",
-                  }}
-                >
-                  Xác nhận mật khẩu
-                </p>
-              </Col>
-              <Col span={14}>
-                <Input.Password style={{ width: "50%" }} />
-              </Col>
-            </Row>
-            <Row style={{ marginTop: "0.5rem" }} gutter={16}>
-              <Col
-                span={10}
-                style={{ display: "flex", justifyContent: "flex-end" }}
-                className="gutter-row"
-              ></Col>
-              <Col span={14}>
-                <Button type="primary">Lưu</Button>
               </Col>
             </Row>
           </Form>

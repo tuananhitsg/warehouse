@@ -23,6 +23,7 @@ import wareHouseApi from "../../../api/wareHouseApi";
 import { useDispatch, useSelector } from "react-redux";
 import { setWareHouse } from "../../../redux/wareHouseSlice";
 import "./table.scss";
+import Warehouse from "./Warehouse";
 // import ModalAddWareHouse from "./ModalAddWareHouse";
 
 const WarehouseTable = ({ setTab }) => {

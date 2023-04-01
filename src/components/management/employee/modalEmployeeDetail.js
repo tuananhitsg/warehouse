@@ -51,11 +51,11 @@ const ModalEmployeeDetail = ({
 
   const handleSubmit = async (values) => {
     const { fullName, sex, roles } = values;
-    const data = {
-      fullName: fullName,
-      sex: sex,
-      role: convertRoleName(roles),
-    };
+
+    const data = new FormData();
+    data.append("fullName", fullName);
+    data.append("sex", sex);
+    data.append("role", convertRoleName(roles));
     console.log("submit", data);
     //loi api
     try {
