@@ -97,15 +97,15 @@ const ModalAddGoods = ({ showModalAddGoods, setShowModalAddGoods }) => {
 
   return (
     <>
-      <Modal
+      <Drawer
         title="Thông tin sản phẩm"
         width={720}
-        onCancel={onClose}
+        onClose={onClose}
         open={showModalAddGoods}
         bodyStyle={{
           paddingBottom: 80,
         }}
-        footer={
+        extra={
           <Space>
             <Button onClick={onClose}>Huỷ</Button>
             <Button form="myForm" htmlType="submit" type="primary">
@@ -202,7 +202,7 @@ const ModalAddGoods = ({ showModalAddGoods, setShowModalAddGoods }) => {
             </Col> */}
           </Row>
         </Form>
-      </Modal>
+      </Drawer>
     </>
   );
 };

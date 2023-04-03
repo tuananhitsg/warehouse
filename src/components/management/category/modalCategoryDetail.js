@@ -53,7 +53,7 @@ const ModalCategoryDetail = ({
           width={720}
           onCancel={onClose}
           open={showModalCategoryDetail}
-          footer={
+          extra={
             <Space>
               <Button onClick={onClose}>Huỷ</Button>
               <Button type="primary" form="myForm" htmlType="submit">

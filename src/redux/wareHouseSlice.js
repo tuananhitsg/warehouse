@@ -7,7 +7,6 @@ const warehouseSlice = createSlice({
         setWareHouse: (state, action) => {
             state.info = action.payload;
         },
-
     },
 });
 

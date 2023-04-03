@@ -15,7 +15,7 @@ const employeeApi = {
     },
     updateEmployee: (id, params) => {
         const url = `/user/update/${id}`;
-        return axiosApi.put(url, params);
+        return axiosApi.post(url, params);
     }
     
 }

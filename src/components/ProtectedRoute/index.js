@@ -18,7 +18,7 @@
 import { Outlet, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-const PrivateRoute = ({ children }) => {
+const PrivateRoute = () => {
   const isLoggedIn = useSelector((state) => state.userReducer !== null);
   return isLoggedIn ? <Outlet /> : <Navigate to="/dang-nhap" />;
 };

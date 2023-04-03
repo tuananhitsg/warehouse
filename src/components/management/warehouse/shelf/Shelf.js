@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ShelfItem from "../shelf/ShelfItem";
 import "./Shelf.scss";
-import wareHouserApi from "../../../../api/wareHouseApi";
 
 const Shelf = ({ items, onShelfItemClick }) => {
   return (

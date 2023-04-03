@@ -25,7 +25,7 @@ const wareHouserApi = {
     const url = "/column-location/get-all";
     return axiosApi.get(url);
   },
-  getAllColumnById: (id) =>{
+  getColumnById: (id) =>{
     const url = `/column-location/get-by/${id}`;
     return axiosApi.get(url);
   },
@@ -37,6 +37,9 @@ const wareHouserApi = {
     const url = `/row-location/get-by/${id}`;
     return axiosApi.get(url);
   },
-
+  getShelvesByWarehouseId:(id)=>{
+    const url =`/row-location/get-all-by/${id}`;
+    return axiosApi.get(url);
+  }
 };
 export default wareHouserApi;

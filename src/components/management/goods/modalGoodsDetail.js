@@ -84,7 +84,7 @@ const ModalGoodsDetail = ({
           width={640}
           onCancel={onClose}
           open={showModalGoodsDetail}
-          footer={
+          extra={
             <Space>
               <Button onClick={onClose}>Huỷ</Button>
               <Button type="primary" form="myForm" htmlType="submit">

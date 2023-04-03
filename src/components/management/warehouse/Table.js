@@ -23,10 +23,11 @@ import wareHouseApi from "../../../api/wareHouseApi";
 import { useDispatch, useSelector } from "react-redux";
 import { setWareHouse } from "../../../redux/wareHouseSlice";
 import "./table.scss";
-import Warehouse from "./Warehouse";
-// import ModalAddWareHouse from "./ModalAddWareHouse";
+import Warehouse from "./shelf/Warehouse";
+import ModalAddWareHouse from "./ModalAddWareHouse";
+import {Link} from "react-router-dom";
 
-const WarehouseTable = ({ setTab }) => {
+const WarehouseTable = ({  }) => {
   const [selectedId, setSelectedId] = useState([]);
   const [showModalAddWareHouse, setShowModalAddWareHouse] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -55,19 +56,19 @@ const WarehouseTable = ({ setTab }) => {
   const showModal = () => {
     setIsModalOpen(true);
   };
-  const renderWareHouse = (id) => {
-    console.log(id);
+  const handleClickCode = (id) => {
+    console.log("id kho: ", id);
     dispatch(setWareHouse(id));
-    setTab(1);
-  };
+  }
   const columns = [
     {
       title: "Mã nhà kho",
       width: "15%",
       dataIndex: "code",
       key: "code",
-      render: (text, record) => {
-        return <a onClick={() => renderWareHouse(record.code)}>{text}</a>;
+      render: (text) => {
+        // return <a>{text}</a>;
+        return  <Link to="/kho-hang" onClick={()=> handleClickCode(text)}>{text}</Link>;
       },
     },
     {
@@ -120,12 +121,7 @@ const WarehouseTable = ({ setTab }) => {
         const res = await wareHouseApi.getAllWareHouse();
         console.log("res:", res);
         if (res) {
-          // const data = res.map((item) => {
-          //   return {
-          //     key: item.code,
-          //     ...item,
-          //   };
-          // });
+
           setListCategory(res);
         }
       } catch (error) {
@@ -187,12 +183,12 @@ const WarehouseTable = ({ setTab }) => {
         dataSource={listCategory}
         pagination={{ pageSize: 7 }}
       />
-      {/* {showModalAddWareHouse ? (
+      {showModalAddWareHouse ? (
         <ModalAddWareHouse
           showModalAddWareHouse={showModalAddWareHouse}
           setShowModalAddWareHouse={setShowModalAddWareHouse}
         />
-      ) : null} */}
+      ) : null}
     </div>
   );
 };

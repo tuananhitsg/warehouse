@@ -67,16 +67,16 @@ const ModalAddEmployee = ({
 
   return (
     <>
-      <Modal
+      <Drawer
         title="Thông tin nhân viên"
         width={720}
         onClose={onClose}
-      
+        onCancel={onClose}
         open={showModalAddEmployee}
         bodyStyle={{
           paddingBottom: 80,
         }}
-        footer={
+        extra={
           <Space>
             <Button onClick={onClose}>Huỷ</Button>
             <Button form="myForm" htmlType="submit" type="primary">
@@ -136,7 +136,7 @@ const ModalAddEmployee = ({
             </Col>
           </Row>
         </Form>
-      </Modal>
+      </Drawer>
     </>
   );
 };

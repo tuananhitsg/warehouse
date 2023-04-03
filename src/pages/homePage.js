@@ -31,7 +31,7 @@ import IndexDashboard from "../components/management/dashboard/index";
 import IndexGoods from "../components/management/goods/index";
 import IndexCategory from "../components/management/category/index";
 import IndexEmployee from "../components/management/employee/index";
-import IndexWarehouse2 from "../components/management/warehouse/Warehouse";
+import IndexWarehouse2 from "../components/management/warehouse/shelf/Warehouse";
 import IndexWarehouse from "../components/management/warehouse/Index";
 import IndexUser from "../components/account/user/userInfo";
 
@@ -39,7 +39,6 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import authService from "../service/auth.service";
 import { setUser } from "../redux/userSlice";
-import Warehouse from "../components/management/warehouse/Warehouse";
 const { Header, Content, Footer, Sider } = Layout;
 const { Text } = Typography;
 

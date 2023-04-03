@@ -50,13 +50,14 @@ const ModalEmployeeDetail = ({
   };
 
   const handleSubmit = async (values) => {
-    const { fullName, sex, roles } = values;
+    const { fullName, sex, role } = values;
 
     const data = new FormData();
     data.append("fullName", fullName);
     data.append("sex", sex);
-    data.append("role", convertRoleName(roles));
+    data.append("role", convertRoleName(role));
     console.log("submit", data);
+    console.log("role", convertRoleName(role));
     //loi api
     try {
       const res = await employeeApi.updateEmployee(selectedId, data);

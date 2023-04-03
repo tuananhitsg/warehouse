@@ -53,10 +53,10 @@ const EmployeeTable = () => {
     selectedRowKeys,
     onChange: onSelectChange,
   };
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
+  // const [isModalOpen, setIsModalOpen] = useState(false);
+  // const showModal = () => {
+  //   setIsModalOpen(true);
+  // };
 
   const columns = [
     {
