@@ -10,7 +10,7 @@ const Shelf = ({ items, onShelfItemClick }) => {
           key={index}
           codeRow={item.codeRow}
           //status={item.status}
-          status={item.codeRow} //hiênnj tạm xem vi tri
+          status={item.status} //hiênnj tạm xem vi tri
           shelf={item}
           onClick={() => onShelfItemClick(item.codeRow)}
           //onClick={onShelfItemClick}

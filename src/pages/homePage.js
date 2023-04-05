@@ -31,9 +31,10 @@ import IndexDashboard from "../components/management/dashboard/index";
 import IndexGoods from "../components/management/goods/index";
 import IndexCategory from "../components/management/category/index";
 import IndexEmployee from "../components/management/employee/index";
-import IndexWarehouse2 from "../components/management/warehouse/shelf/Warehouse";
+import IndexWarehouse2 from "../components/management/warehouse/indexRoute";
 import IndexWarehouse from "../components/management/warehouse/Index";
 import IndexUser from "../components/account/user/userInfo";
+import IndexInbound from "../components/management/inbound/index";
 
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -127,8 +128,10 @@ const HomePage = () => {
     switch (itemClicked) {
       case 0:
         return <IndexDashboard />;
+      case 1.1:
+        return <IndexInbound />;
       case 3.1:
-        return <IndexWarehouse />;
+        return <IndexWarehouse2 />;
       case 4.1:
         return <IndexGoods />;
       case 4.2:

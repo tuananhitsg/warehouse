@@ -17,15 +17,19 @@ import categoryApi from "../../../api/categoryApi";
 import { setReload } from "../../../redux/reloadSlice";
 import { useDispatch, useSelector } from "react-redux";
 
-const ModalAddGoods = ({ showModalAddGoods, setShowModalAddGoods }) => {
+import AddressField from "../../addressField/addressField";
+
+const ModalAddReceipt = ({ showModalAddReceipt, setShowModalAddReceipt }) => {
   const dispatch = useDispatch();
   const reload = useSelector((state) => state.reloadReducer.reload);
   const [form] = Form.useForm();
   const [size, setSize] = useState("");
   const [categoryCodes, setCategoryCodes] = useState([]);
   const [categoryCode, setCategoryCode] = useState("");
+  const [goods, setGoods] = useState([]);
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
   const onChangeSize = async (values) => {
     console.log("values", values);
     setSize(values);
@@ -34,7 +38,7 @@ const ModalAddGoods = ({ showModalAddGoods, setShowModalAddGoods }) => {
     setCategoryCode(value);
   };
   const onClose = () => {
-    setShowModalAddGoods(false);
+    setShowModalAddReceipt(false);
   };
   useEffect(() => {
     const fetchCategories = async () => {
@@ -48,7 +52,18 @@ const ModalAddGoods = ({ showModalAddGoods, setShowModalAddGoods }) => {
         console.log("Error fetching categories: ", error);
       }
     };
+    const fetchGoods = async () => {
+      try {
+        const res = await goodsApi.getGoods();
+        if (res) {
+          setGoods(res);
+        }
+      } catch (error) {
+        console.log("Error fetching goods: ", error);
+      }
+    };
     fetchCategories();
+    fetchGoods();
   }, []);
 
   const handleSubmit = async (values) => {
@@ -97,14 +112,14 @@ const ModalAddGoods = ({ showModalAddGoods, setShowModalAddGoods }) => {
 
   return (
     <>
-      <Modal
-        title="Thông tin sản phẩm"
-        width={720}
+      <Drawer
+        title="Tạo hoá đơn nhập"
+        width={960}
         onCancel={onClose}
-        open={showModalAddGoods}
-        bodyStyle={{
-          paddingBottom: 80,
-        }}
+        open={showModalAddReceipt}
+        // bodyStyle={{
+        //   paddingBottom: 80,
+        // }}
         footer={
           <Space>
             <Button onClick={onClose}>Huỷ</Button>
@@ -115,99 +130,69 @@ const ModalAddGoods = ({ showModalAddGoods, setShowModalAddGoods }) => {
         }
       >
         <Form form={form} onFinish={handleSubmit} id="myForm" layout="vertical">
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item name="categoryCode" label="Loại sản phẩm">
-                <Select
-                  placeholder="Chọn loại sản phẩm"
-                  onChange={onChageCategory}
-                  // options={categoryCodes.map((code) => ({
-                  //   value: code,
-                  //   label: code,
-                  // }))}
-                  options={categories.map((category) => ({
-                    value: category.code,
-                    label: category.name,
-                  }))}
-                />
+          <Row>
+            <Col span={3}>Sản phẩm: </Col>
+            <Col span={21}>
+              <Form.Item name="goodsRequests">
+                <Row gutter={16}>
+                  <Col span={12}>
+                    <Form.Item name="name" label="Tên sản phẩm">
+                      <Input placeholder="Nhập tên sản phẩm" />
+                    </Form.Item>
+                  </Col>
+                  <Col span={12}>
+                    <Form.Item name="categoryCode" label="Loại sản phẩm">
+                      <Select
+                        placeholder="Chọn loại sản phẩm"
+                        onChange={onChageCategory}
+                        options={categories.map((category) => ({
+                          value: category.code,
+                          label: category.name,
+                        }))}
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col span={12}>
+                    <Form.Item name="quantity" label="Số lượng">
+                      <Input />
+                    </Form.Item>
+                  </Col>
+                  <Col span={12}>
+                    <Form.Item name="unit" label="Đơn vị">
+                      <Input />
+                    </Form.Item>
+                  </Col>
+                  <Col span={8}>
+                    <Form.Item name="length" label="Chiều dài">
+                      <Input />
+                    </Form.Item>
+                  </Col>
+                  <Col span={8}>
+                    <Form.Item name="width" label="Chiều rộng">
+                      <Input />
+                    </Form.Item>
+                  </Col>
+                  <Col span={8}>
+                    <Form.Item name="height" label="Chiều cao">
+                      <Input />
+                    </Form.Item>
+                  </Col>
+                </Row>
               </Form.Item>
             </Col>
-            <Col span={12}>
-              <Form.Item name="name" label="Tên sản phẩm">
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}></Col>
           </Row>
 
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item name="size" label="Kích thước">
-                <Select
-                  onChange={onChangeSize}
-                  options={[
-                    {
-                      value: "1",
-                      label: "0.3 X 0.2 X 0.3 (m)",
-                    },
-                    {
-                      value: "2",
-                      label: "0.5 X 0.3 X 0.4 (m)",
-                    },
-                    {
-                      value: "3",
-                      label: "0.6 X 0.4 X 0.4 (m)",
-                    },
-                  ]}
-                />
+          <Row>
+            <Col span={3}>Đối tác: </Col>
+            <Col span={21}>
+              <Form.Item name="partnerRequest">
+                <AddressField />
               </Form.Item>
             </Col>
-            {/* <Col span={8}>
-              <Form.Item name="width" label="Chiều rộng">
-                <Select
-                  onChange={onChangeSize}
-                  options={[
-                    {
-                      value: "1",
-                      label: "1",
-                    },
-                    {
-                      value: "2",
-                      label: "2",
-                    },
-                    {
-                      value: "3",
-                      label: "3",
-                    },
-                  ]}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item name="height" label="Chiều cao">
-                <Select
-                  onChange={onChangeSize}
-                  options={[
-                    {
-                      value: "1",
-                      label: "1",
-                    },
-                    {
-                      value: "2",
-                      label: "2",
-                    },
-                    {
-                      value: "3",
-                      label: "3",
-                    },
-                  ]}
-                />
-              </Form.Item>
-            </Col> */}
           </Row>
         </Form>
-      </Modal>
+      </Drawer>
     </>
   );
 };
-export default ModalAddGoods;
+export default ModalAddReceipt;

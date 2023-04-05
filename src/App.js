@@ -21,7 +21,7 @@ const ForgotPassword = lazy(() => import("./components/account/forgot"));
 const LoginForm = lazy(() => import("./components/account/loginForm"));
 const HomePage = lazy(() => import("./pages/homePage"));
 const LoginPage = lazy(() => import("./components/account/login"));
-const Warehouse = lazy(() => import("./components/management/warehouse/shelf/Warehouse"));
+const Warehouse = lazy(() => import("./components/management/warehouse/Warehouse"));
 const App = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -41,7 +41,7 @@ const App = () => {
     <div className="App">
       <Suspense fallback={<Loading />}>
         <Routes>
-          <Route path="kho-hang" element={<Warehouse />} />
+          {/* <Route path="kho-hang" element={<Warehouse />} /> */}
           <Route path="dang-nhap" element={<LoginPage />} />
           <Route path="quen-mat-khau" element={<ForgotPassword />} />
           <Route path="doi-mat-khau" element={<ChangePassword />} />

@@ -1,5 +1,5 @@
 import * as Yup from "yup";
-import * as regex from "../../resources/regexp";
+
 export const loginValues = {
   initial: {
     email: "",
@@ -29,7 +29,7 @@ export const registryValues = {
     email: Yup.string()
       .required("Tài khoản không được bỏ trống.")
       .matches(
-        /((09|03|07|08|05)+([0-9]{8})\b)|^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
+        /((09|03|07|08|05)+([0-9]{8})\b)|^(([^<>()[\]\.,;:\s@"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
         "Số điện thoại hoặc email không hợp lệ"
       ),
     password: Yup.string()

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import WareHouseDiagram from "./shelf/Warehouse";
+import WareHouseDiagram from "./Warehouse";
 import IndexWareHouse from "./Index";
 
 const IndexRouteWarehouse = () => {
@@ -7,10 +7,12 @@ const IndexRouteWarehouse = () => {
   return (
     <React.Fragment>
       {tab === 0 ? (
-        <WareHouseDiagram setTab={setTab} />
-      ) : (
         <IndexWareHouse setTab={setTab} />
+      ) : (
+        <WareHouseDiagram setTab={setTab} />
       )}
     </React.Fragment>
   );
 };
+
+export default IndexRouteWarehouse;

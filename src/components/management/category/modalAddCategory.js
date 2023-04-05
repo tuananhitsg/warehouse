@@ -57,15 +57,15 @@ const ModalAddCategory = ({
 
   return (
     <>
-      <Drawer
+      <Modal
         title="Thông tin loại sản phẩm"
         width={720}
-        onClose={onClose}
+        onCancel={onClose}
         open={showModalAddCategory}
         bodyStyle={{
           paddingBottom: 80,
         }}
-        extra={
+        footer={
           <Space>
             <Button onClick={onClose}>Huỷ</Button>
             <Button form="myForm" htmlType="submit" type="primary">
@@ -76,7 +76,7 @@ const ModalAddCategory = ({
       >
         <Form form={form} onFinish={handleSubmit} id="myForm" layout="vertical">
           <Row gutter={16}>
-            <Col span={12}>
+            <Col span={24}>
               <Form.Item name="name" label="Tên loại sản phẩm">
                 <Input />
               </Form.Item>
@@ -91,7 +91,7 @@ const ModalAddCategory = ({
             </Col>
           </Row>
         </Form>
-      </Drawer>
+      </Modal>
     </>
   );
 };

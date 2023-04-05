@@ -14,7 +14,7 @@ import {
   Space,
 } from "antd";
 import wareHouseApi from "../../../api/wareHouseApi";
-
+import "./ModalShelfInfo.scss";
 const ModalShelfInfo = ({ shelfCode, shelf, handleLogic }) => {
   const [form] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(true);
@@ -45,22 +45,16 @@ const ModalShelfInfo = ({ shelfCode, shelf, handleLogic }) => {
   };
 
   useEffect(() => {
-    // setGoods(shelf?.goods.name);
-    // setStatus(shelf?.status);
     form.setFieldsValue({
-      codeRow: shelf?.codeRow,
-      codeColumn: shelf?.codeColumn,
-      status: shelf?.status,
-      code: shelf?.goods?.code,
-      name: shelf.goods?.name,
-      unit: shelf.goods?.unit,
-      categoryName: shelf.goods?.categoryName,
+      ...shelf,
+      ...shelf.goods,
     });
   }, [shelf, form]);
+
   console.log("shelf trong modal: ", shelf);
   return (
     <Drawer
-      title="Thông tin kệ"
+      title="Thông tin vị trí "
       open={isModalOpen}
       width={720}
       //onOk={handleOk}
@@ -79,38 +73,51 @@ const ModalShelfInfo = ({ shelfCode, shelf, handleLogic }) => {
           <Col span={4}>Vị trí:</Col>
           <Col span={20}>
             <Form.Item name="position" rules={[{ required: true }]}>
-              <Input.Group compact>
-                <Form.Item name={"codeColumn"} noStyle>
-                  <Input
-                    disabled={true}
-                    style={{ width: "50%" }}
-                    placeholder="Mã cột"
-                  />
-                </Form.Item>
-                <Form.Item name={"codeRow"} noStyle>
-                  <Input
-                    disabled={true}
-                    style={{ width: "50%" }}
-                    placeholder="Mã hàng"
-                  />
-                </Form.Item>
-              </Input.Group>
+              <Space>
+                <Row gutter={16}>
+                  <Col span={12}>
+                    <Form.Item name="nameColumn" label="Cột">
+                      <Input readOnly />
+                    </Form.Item>
+                  </Col>
+                  <Col span={12}>
+                    <Form.Item name="nameRow" label="Tầng">
+                      <Input readOnly />
+                    </Form.Item>
+                  </Col>
+                  <Col span={24}>
+                    <Form.Item name="nameShelf" label="Tên kệ">
+                      <Input readOnly />
+                    </Form.Item>
+                  </Col>
+                </Row>
+              </Space>
             </Form.Item>
           </Col>
         </Row>
-
         <Row>
-          <Col span={4}>Trạng thái:</Col>
+          <Col span={4}>Tình trạng:</Col>
           <Col span={20}>
-            <Form.Item
-              name="status"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
-            >
-              <Input />
+            <Form.Item name="statusShelf">
+              <Space>
+                <Row gutter={16}>
+                  <Col span={12}>
+                    <Form.Item name="currentCapacity" label="Sức chứa hiện tại">
+                      <Input readOnly />
+                    </Form.Item>
+                  </Col>
+                  <Col span={12}>
+                    <Form.Item name="maxCapacity" label="Sức chứa tối đa">
+                      <Input readOnly />
+                    </Form.Item>
+                  </Col>
+                  <Col span={24}>
+                    <Form.Item name="status" label="Trạng thái">
+                      <Input readOnly />
+                    </Form.Item>
+                  </Col>
+                </Row>
+              </Space>
             </Form.Item>
           </Col>
         </Row>
@@ -118,7 +125,7 @@ const ModalShelfInfo = ({ shelfCode, shelf, handleLogic }) => {
           <Col span={4}>Sản phẩm:</Col>
           <Col span={20}>
             <Form.Item name="goods">
-              <Input.Group>
+              <Space>
                 <Row gutter={16}>
                   <Col span={12}>
                     <Form.Item name="code" label="Mã sản phẩm">
@@ -143,7 +150,7 @@ const ModalShelfInfo = ({ shelfCode, shelf, handleLogic }) => {
                     </Form.Item>
                   </Col>
                 </Row>
-              </Input.Group>
+              </Space>
             </Form.Item>
           </Col>
         </Row>

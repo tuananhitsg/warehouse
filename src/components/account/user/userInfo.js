@@ -107,7 +107,7 @@ const UserInfo = () => {
                 </p>
               </Col>
               <Col span={14}>
-                <Input style={{ width: "50%" }} disabled value={code} name="code"/>
+                <Input style={{ width: "50%" }} readOnly value={code} name="code"/>
               </Col>
             </Row>
             <Row style={{ marginTop: "0.5rem" }} gutter={16}>
@@ -156,7 +156,7 @@ const UserInfo = () => {
                   style={{ width: "50%" }}
                   value={email}
                   name="email"
-                  disabled
+                  readOnly
                 />
               </Col>
             </Row>

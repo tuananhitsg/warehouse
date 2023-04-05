@@ -42,22 +42,22 @@ const ModalEmployeeDetail = ({
       return "Nhân viên";
     } else if (roleName === "ADMIN") {
       return "Quản lý";
-    } else if (roleName === "Nhân viên") {
+    } else if (roleName === "user") {
       return "USER";
-    } else if (roleName === "Quản lý") {
+    } else if (roleName === "admin") {
       return "ADMIN";
     } else return null;
   };
 
   const handleSubmit = async (values) => {
-    const { fullName, sex, role } = values;
+    const { fullName, sex, roles } = values;
 
     const data = new FormData();
     data.append("fullName", fullName);
     data.append("sex", sex);
-    data.append("role", convertRoleName(role));
+    data.append("role",roles);
     console.log("submit", data);
-    console.log("role", convertRoleName(role));
+    console.log("convertedRole, role: ", convertRoleName(roles), roles);
     //loi api
     try {
       const res = await employeeApi.updateEmployee(selectedId, data);
@@ -94,12 +94,12 @@ const ModalEmployeeDetail = ({
   return (
     <div className="modal-container">
       <div className="modal-header">
-        <Modal
-          title="Chi tiết sản phẩm"
+        <Drawer
+          title="Chi tiết nhân viên"
           width={640}
-          onCancel={onClose}
+          onClose={onClose}
           open={showModalEmployeeDetail}
-          footer={
+          extra={
             <Space>
               <Button onClick={onClose}>Huỷ</Button>
               <Button type="primary" form="myForm" htmlType="submit">
@@ -117,7 +117,7 @@ const ModalEmployeeDetail = ({
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item name="code" label="Mã nhân viên">
-                  <Input disabled={true} />
+                  <Input readOnly />
                 </Form.Item>
               </Col>
               <Col span={12}>
@@ -129,7 +129,7 @@ const ModalEmployeeDetail = ({
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item name="email" label="Email">
-                  <Input disabled />
+                  <Input readOnly />
                 </Form.Item>
               </Col>
               <Col span={12}>
@@ -170,7 +170,7 @@ const ModalEmployeeDetail = ({
               </Col>
             </Row>
           </Form>
-        </Modal>
+        </Drawer>
       </div>
     </div>
   );

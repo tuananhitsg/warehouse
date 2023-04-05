@@ -13,7 +13,7 @@ import {
 } from "antd";
 
 import wareHouserApi from "../../../api/wareHouseApi";
-import addDressApi from "../../../api/addressApi";
+import addressApi from "../../../api/addressApi";
 import { setReload } from "../../../redux/reloadSlice";
 import { useDispatch, useSelector } from "react-redux";
 const { Option } = Select;
@@ -62,7 +62,7 @@ const ModalAddWareHouse = ({
   useEffect(() => {
     const fetchConversations = async () => {
       try {
-        const response = await addDressApi.getList("/p");
+        const response = await addressApi.getList("/p");
 
         //console.log(response);
         if (response) {
@@ -87,7 +87,7 @@ const ModalAddWareHouse = ({
       //console.log("run");
       const fetchConversations = async (id) => {
         try {
-          const response = await addDressApi.getList(`/p/${id}?depth=2`);
+          const response = await addressApi.getList(`/p/${id}?depth=2`);
 
           console.log("province res:", response);
           if (response) {
@@ -113,7 +113,7 @@ const ModalAddWareHouse = ({
     if (districtPicked !== 0) {
       const fetchConversations = async (id) => {
         try {
-          const response = await addDressApi.getList(`/d/${id}?depth=2`);
+          const response = await addressApi.getList(`/d/${id}?depth=2`);
 
           console.log(response);
           if (response) {

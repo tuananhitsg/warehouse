@@ -48,10 +48,10 @@ const ModalCategoryDetail = ({
   return (
     <div className="modal-container">
       <div className="modal-header">
-        <Modal
+        <Drawer
           title="Chi tiết loại sản phẩm"
           width={720}
-          onCancel={onClose}
+          onClose={onClose}
           open={showModalCategoryDetail}
           extra={
             <Space>
@@ -71,7 +71,7 @@ const ModalCategoryDetail = ({
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item name="code" label="Mã sản phẩm">
-                  <Input disabled={true} name="code" label="Mã loại sản phẩm" />
+                  <Input readOnly name="code" label="Mã loại sản phẩm" />
                 </Form.Item>
               </Col>
               <Col span={12}>
@@ -89,7 +89,7 @@ const ModalCategoryDetail = ({
               </Col>
             </Row>
           </Form>
-        </Modal>
+        </Drawer>
       </div>
     </div>
   );
