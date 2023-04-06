@@ -70,6 +70,13 @@ const ModalShelfInfo = ({ shelfCode, shelf, handleLogic }) => {
     >
       <Form form={form} id="myForm" layout="vertical">
         <Row>
+        <Col span={4}>Tên kho chứa:</Col>
+          <Col span={20}>
+            <Form.Item name="nameWarehouse">
+              <Input readOnly />
+            </Form.Item>
+
+          </Col>
           <Col span={4}>Vị trí:</Col>
           <Col span={20}>
             <Form.Item name="position" rules={[{ required: true }]}>

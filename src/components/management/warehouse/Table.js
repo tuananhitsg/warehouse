@@ -25,7 +25,7 @@ import { setWareHouse } from "../../../redux/wareHouseSlice";
 import "./table.scss";
 import Warehouse from "./Warehouse";
 import ModalAddWareHouse from "./ModalAddWareHouse";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const WarehouseTable = ({ setTab }) => {
   const [selectedId, setSelectedId] = useState([]);
@@ -60,7 +60,7 @@ const WarehouseTable = ({ setTab }) => {
     console.log("id kho: ", id);
     dispatch(setWareHouse(id));
     setTab(1);
-  }
+  };
   const columns = [
     {
       title: "Mã nhà kho",
@@ -68,8 +68,7 @@ const WarehouseTable = ({ setTab }) => {
       dataIndex: "code",
       key: "code",
       render: (text, record) => {
-         return <a onClick={()=> handleClickCode(record.code)}>{text}</a>;
-       ;
+        return <a onClick={() => handleClickCode(record.code)}>{text}</a>;
       },
     },
     {
@@ -84,21 +83,13 @@ const WarehouseTable = ({ setTab }) => {
       key: "acreage",
     },
     {
-      title: "Tình trạng",
-      dataIndex: "status",
-      key: "status",
-      render: (status) => {
-        console.log(status);
-        let color = "green";
-        let name = "";
-        if (status === "TRONG") {
-          color = "green";
-          name = "Khả dụng";
-        } else if (status === "DAY") {
-          color = "red";
-          name = "Đầy";
-        }
-        return <Badge color={color} text={name} />;
+      title: "Vị trí",
+      dataIndex: "location",
+      key: "location",
+      render: (text, record) => {
+        const { province, district, ward, address } = record.location;
+        const locationStr = `${address}, ${ward}, ${district}, ${province}`;
+        return <span>{locationStr}</span>;
       },
     },
     {
@@ -122,7 +113,6 @@ const WarehouseTable = ({ setTab }) => {
         const res = await wareHouseApi.getAllWareHouse();
         console.log("res:", res);
         if (res) {
-
           setListCategory(res);
         }
       } catch (error) {

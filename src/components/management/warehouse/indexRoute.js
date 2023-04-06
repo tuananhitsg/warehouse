@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import WareHouseDiagram from "./Warehouse";
-import IndexWareHouse from "./Index";
+import IndexWareHouse from "./index";
 
 const IndexRouteWarehouse = () => {
   const [tab, setTab] = useState(0);

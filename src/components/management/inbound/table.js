@@ -17,9 +17,10 @@ import {
   EditOutlined,
   UserAddOutlined,
   ReloadOutlined,
+  LoginOutlined,
 } from "@ant-design/icons";
 
-import goodsApi from "../../../api/goodsApi";
+import InboundApi from "../../../api/inboundApi";
 import { useDispatch, useSelector } from "react-redux";
 import { setReload } from "../../../redux/reloadSlice";
 import "./table.scss";
@@ -32,9 +33,11 @@ const InboundTable = () => {
   const [showModalAddReceipt, setShowModalAddReceipt] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [listGoods, setListGoods] = useState([]);
+  const [listReceipt, setListReceipt] = useState([]);
   const [refreshKey, setRefreshKey] = useState(0);
+  //reload trang sau khi them
   const reload = useSelector((state) => state.reloadReducer.reload);
+  const dispatch = useDispatch();
 
   const showModalDetail = (e) => {
     setShowModalGoodsDetail(true);
@@ -52,9 +55,39 @@ const InboundTable = () => {
     setIsModalOpen(true);
   };
 
+  //get good list
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await InboundApi.getAllReceipt();
+        console.log("res:", res);
+        if (res) {
+          setListReceipt(res);
+        }
+      } catch (error) {
+        console.log("Failed to fetch recepit list: ", error);
+      }
+    };
+    fetchData();
+  }, [reload]);
+
+  const handleInbound = async (id) => {
+    try {
+      const res = await InboundApi.putGoodsIntoShelf(id);
+      console.log("res inbound:", res);
+      if (res) {
+        message.success("Nhập kho thành công");
+        dispatch(setReload(!reload));
+      }
+    } catch (error) {
+      console.log("Failed to put goods: ", error);
+      message.error("Nhập kho thất bại");
+    }
+  };
+
   const columns = [
     {
-      title: "Mã sản phẩm",
+      title: "Mã phiếu nhập",
       width: "15%",
       dataIndex: "code",
       key: "code",
@@ -71,74 +104,62 @@ const InboundTable = () => {
       },
     },
     {
-      title: "Tên sản phẩm",
-      dataIndex: "name",
-      key: "name",
+      title: "Trạng thái",
+      dataIndex: "status",
+      key: "status",
+      render: (status) => {
+        let color = "green";
+
+        if (status === "Chưa nhập lên kệ") {
+          color = "error";
+        } else {
+          color = "cyan";
+        }
+        return (
+          <Tag color={color} key={status}>
+            {status?.toUpperCase()}
+          </Tag>
+        );
+      },
     },
     {
-      title: "Loại sản phẩm",
-      dataIndex: "categoryName",
-      key: "categoryName",
+      title: "Ngày nhập",
+      dataIndex: "createDate",
+      key: "createDate",
+      render: (createDate) => {
+        const date = new Date(createDate);
+        const formattedDate = date.toLocaleDateString("vi-VN", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        return formattedDate;
+      },
     },
     {
-      title: "Đơn vị",
-      width: "10%",
-      dataIndex: "unit",
-      key: "unit",
+      title: "Người nhập",
+      dataIndex: "createdBy",
+      key: "createdBy",
+      width: "20%",
     },
     {
-      title: "Chiều dài (mét)",
-      width: "12%",
-      dataIndex: "length",
-      key: "length",
-    },
-    {
-      title: "Chiều rộng (mét)",
-      width: "12%",
-      dataIndex: "width",
-      key: "width",
-    },
-    {
-      title: "Chiều cao (mét)",
-      width: "12%",
-      dataIndex: "height",
-      key: "height",
-    },
-    {
-      title: "Action",
+      title: "Hành động",
       key: "action",
-      fix: "right",
-      with: "10%",
-      render: (_, record) => (
-        <Space size="middle">
-          <a>
-            <DeleteOutlined />
-          </a>
+      dataIndex: "code",
+      width: "10%",
+      render: (text, record) => (
+        <Space>
+          <Button
+            onClick={() => handleInbound(record.code)}
+            type="primary"
+            icon={<LoginOutlined />}
+          />
         </Space>
       ),
     },
   ];
-  //get good list
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await goodsApi.getGoods();
-        if (res) {
-          // const data = res.map((item) => {
-          //   return {
-          //     key: item.code,
-          //     ...item,
-          //   };
-          // });
-          // setListGoods(data.reverse());
-          setListGoods(res.reverse());
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchData();
-  }, [reload]);
 
   const handleRefresh = () => {
     setIsLoading(true);
@@ -170,24 +191,17 @@ const InboundTable = () => {
             >
               Thêm
             </Button>
-            <Button
-              type="primary"
-              onClick={handleRefresh}
-              loading={isLoading}
-              icon={<ReloadOutlined />}
-              style={{ marginLeft: "8px" }}
-            >
-              Làm mới
-            </Button>
           </Col>
         </Row>
       </div>
       <Table
         sticky
         columns={columns}
-        dataSource={listGoods}
+        dataSource={listReceipt}
         pagination={{ pageSize: 10 }}
-        
+        // expandable={{
+        //   expandedRowRender: (record) => ()
+        // }}
       />
       {showModalGoodsDetail ? (
         <ModalGoodsDetail

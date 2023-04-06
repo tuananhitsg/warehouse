@@ -12,7 +12,8 @@ import {
   Space,
 } from "antd";
 import employeeApi from "../../../api/employeeApi";
-
+import { useDispatch } from "react-redux";
+import { setUser } from "../../../redux/userSlice";
 const ModalEmployeeDetail = ({
   showModalEmployeeDetail,
   setShowModalEmployeeDetail,
@@ -22,6 +23,7 @@ const ModalEmployeeDetail = ({
   const [fullName, setFullName] = useState("");
   const [sex, setSex] = useState("");
   const [role, setRole] = useState("");
+  const dispatch = useDispatch();
 
   const onChangeName = (values) => {
     setFullName(values);
@@ -55,13 +57,14 @@ const ModalEmployeeDetail = ({
     const data = new FormData();
     data.append("fullName", fullName);
     data.append("sex", sex);
-    data.append("role",roles);
+    data.append("role", roles);
     console.log("submit", data);
     console.log("convertedRole, role: ", convertRoleName(roles), roles);
     //loi api
     try {
       const res = await employeeApi.updateEmployee(selectedId, data);
       if (res) {
+        dispatch(setUser(res));
         onClose();
         setTimeout(() => {
           message.success("Cập nhật thành công");

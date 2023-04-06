@@ -17,6 +17,7 @@ import addressApi from "../../../api/addressApi";
 import { setReload } from "../../../redux/reloadSlice";
 import { useDispatch, useSelector } from "react-redux";
 const { Option } = Select;
+
 const ModalAddWareHouse = ({
   showModalAddWareHouse,
   setShowModalAddWareHouse,
@@ -24,9 +25,7 @@ const ModalAddWareHouse = ({
   const dispatch = useDispatch();
   const reload = useSelector((state) => state.reloadReducer.reload);
   const [form] = Form.useForm();
-  const [size, setSize] = useState("");
-  const [categoryCodes, setCategoryCodes] = useState([]);
-  const [categoryCode, setCategoryCode] = useState("");
+
 
   const [province, setProvince] = useState([]);
   const [districts, setDistricts] = useState([]);
@@ -34,28 +33,11 @@ const ModalAddWareHouse = ({
   const [provincePicked, setProvincePicked] = useState(0);
   const [districtPicked, setDistrictPicked] = useState(0);
   const [wardPicked, setWardPicked] = useState(0);
-
+  const [provinceGot, setProvinceGot] = useState("");
+  const [districtGot, setDistrictGot] = useState("");
+  const [wardGot, setWardGot] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const onChangeSize = async (values) => {
-    console.log("values", values);
-    setSize(values);
-  };
-  const onChageCategory = (value) => {
-    setCategoryCode(value);
-  };
-  const onChangeProvince = (value) => {
-    setProvincePicked(value);
-    console.log("provincePicked:", provincePicked);
-  };
-  const onChangeDistrict = (value) => {
-    setDistrictPicked(value);
-  };
-  const onSearch = (value) => {
-    console.log("search:", value);
-  };
-  const onChangeWard = (value) => {
-    setWardPicked(value);
-  };
+
   const onClose = () => {
     setShowModalAddWareHouse(false);
   };
@@ -134,6 +116,24 @@ const ModalAddWareHouse = ({
       fetchConversations(districtPicked);
     }
   }, [districtPicked]);
+  const onChangeProvince = (value, option) => {
+    console.log(`selected ${value}, ${option.label}`);
+    setProvincePicked(value);
+    setProvinceGot(option.label);
+  };
+  const onChangeDistrict = (value, options) => {
+    console.log(`selected ${value}`);
+    setDistrictPicked(value);
+    setDistrictGot(options.label);
+  };
+  const onChangeWard = (value, options) => {
+    console.log(`selected ${value}`);
+    setWardPicked(value);
+    setWardGot(options.label);
+  };
+  const onSearch = (value) => {
+    console.log("search:", value);
+  };
   const handleSubmit = async (values) => {
     console.log("submit", values);
     console.log("reload", reload);
@@ -142,12 +142,15 @@ const ModalAddWareHouse = ({
       length,
       width,
       height,
-      lengthShelve,
-      widthShelve,
-      heightShelve,
+      lengthShelf,
+      widthShelf,
+      heightShelf,
       province,
       district,
       ward,
+      address,
+      numberOfFloor,
+      lengthOfColumn,
     } = values;
     console.log("bieens values:", values);
     const data = {
@@ -155,13 +158,17 @@ const ModalAddWareHouse = ({
       length: length,
       width: width,
       height: height,
-      lengthShelve: lengthShelve,
-      widthShelve: widthShelve,
-      heightShelve: heightShelve,
+      lengthShelf: lengthShelf,
+      widthShelf: widthShelf,
+      heightShelf: heightShelf,
+      numberOfFloor: numberOfFloor,
+      lengthOfColumn: lengthOfColumn,
+
       location: {
-        province: provincePicked,
-        district: districtPicked,
-        ward: wardPicked,
+        province: provinceGot,
+        district: districtGot,
+        ward: wardGot,
+        address: address,
       },
     };
     console.log("data:", data);
@@ -174,7 +181,7 @@ const ModalAddWareHouse = ({
         form.resetFields();
         setTimeout(() => {
           message.success("Thêm nhà kho thành công!");
-        }, 500);
+        }, 3000);
       }
     } catch (error) {
       console.log("Loi roi:", error);
@@ -183,15 +190,15 @@ const ModalAddWareHouse = ({
 
   return (
     <>
-      <Drawer
+      <Modal
         title="Thông tin nhà kho"
         width={720}
-        onClose={onClose}
+        onCancel={onClose}
         open={showModalAddWareHouse}
         bodyStyle={{
           paddingBottom: 80,
         }}
-        extra={
+        footer={
           <Space>
             <Button onClick={onClose}>Huỷ</Button>
             <Button form="myForm" htmlType="submit" type="primary">
@@ -246,25 +253,37 @@ const ModalAddWareHouse = ({
                 rules={[{ required: true }]}
               >
                 <Space.Compact block>
-                  <Form.Item name="lengthShelve" noStyle>
+                  <Form.Item name="lengthShelf" noStyle>
                     <Input
                       style={{ width: "33%" }}
                       placeholder="Chiều dài kệ(m)"
                     />
                   </Form.Item>
-                  <Form.Item name="widthShelve" noStyle>
+                  <Form.Item name="widthShelf" noStyle>
                     <Input
                       style={{ width: "33%" }}
                       placeholder="Chiều rộng kệ(m)"
                     />
                   </Form.Item>
-                  <Form.Item name="heightShelve" noStyle>
+                  <Form.Item name="heightShelf" noStyle>
                     <Input
                       style={{ width: "33%" }}
                       placeholder="Chiều cao kệ(m)"
                     />
                   </Form.Item>
                 </Space.Compact>
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item name="numberOfFloor" label="Số tầng của kệ">
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item name="lengthOfColumn" label="Chiều dài mỗi cột">
+                <Input />
               </Form.Item>
             </Col>
           </Row>
@@ -277,7 +296,6 @@ const ModalAddWareHouse = ({
                   optionFilterProp="children"
                   onChange={onChangeProvince}
                   onSearch={onSearch}
-                  style={{ width: "100%" }}
                   filterOption={(input, option) =>
                     (option?.label ?? "")
                       .toLowerCase()
@@ -328,17 +346,18 @@ const ModalAddWareHouse = ({
           <Row gutter={16}>
             <Col span={24}>
               <Form.Item name="address">
-                <Input
+                <Input.TextArea
                   style={{
                     width: "100%",
                   }}
                   placeholder="Nhập địa chỉ kho"
+                  rows={3}
                 />
               </Form.Item>
             </Col>
           </Row>
         </Form>
-      </Drawer>
+      </Modal>
     </>
   );
 };
