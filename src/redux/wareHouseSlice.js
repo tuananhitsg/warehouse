@@ -7,8 +7,11 @@ const warehouseSlice = createSlice({
         setWareHouse: (state, action) => {
             state.info = action.payload;
         },
+        setReceipt: (state, action) => {
+            state.receipt = action.payload;
+        },
     },
 });
 
-export const { setWareHouse } = warehouseSlice.actions;
+export const { setWareHouse,setReceipt } = warehouseSlice.actions;
 export default warehouseSlice.reducer;

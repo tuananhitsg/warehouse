@@ -1,5 +1,6 @@
 $shelf-bg-available: #4caf50;
 $shelf-bg-full: #f44336;
+$shelf-bg-empty: #cdcdcd;
 
 .shelf {
   display: flex;
@@ -32,6 +33,13 @@ $shelf-bg-full: #f44336;
 
       &:hover {
         background-color: darken($shelf-bg-full, 10%);
+      }
+    }
+    &--empty {
+      background-color: $shelf-bg-empty;
+
+      &:hover {
+        background-color: darken($shelf-bg-empty, 10%);
       }
     }
   }

@@ -23,9 +23,8 @@ import {
 import InboundApi from "../../../api/inboundApi";
 import { useDispatch, useSelector } from "react-redux";
 import { setReload } from "../../../redux/reloadSlice";
-import "./table.scss";
-import ModalAddReceipt from "./modalAddReceipt";
-
+import "./Table.scss";
+import ModalAddReceipt from "./ModalAddReceipt";
 const InboundTable = () => {
   const [selectedId, setSelectedId] = useState([]);
   const [showModalGoodsDetail, setShowModalGoodsDetail] = useState(false);
@@ -70,9 +69,9 @@ const InboundTable = () => {
     fetchData();
   }, [reload]);
 
-  const handleInbound = async () => {
+  const handleInbound = async (id) => {
     try {
-      const res = await InboundApi.putGoodsIntoShelf(selectedId);
+      const res = await InboundApi.putGoodsIntoShelf(id);
       console.log("res inbound:", res);
       if (res) {
         message.success("Nhập kho thành công");
@@ -82,8 +81,6 @@ const InboundTable = () => {
       console.log("Failed to put goods: ", error);
       message.error("Nhập kho thất bại");
     }
-    setSelectedId(null);
-    setIsModalOpen(false);
   };
 
   const columns = [
@@ -123,13 +120,6 @@ const InboundTable = () => {
         );
       },
     },
-
-    {
-      title: "Người nhập",
-      dataIndex: "createdBy",
-      key: "createdBy",
-      width: "20%",
-    },
     {
       title: "Ngày nhập",
       dataIndex: "createDate",
@@ -147,6 +137,12 @@ const InboundTable = () => {
       },
     },
     {
+      title: "Người nhập",
+      dataIndex: "createdBy",
+      key: "createdBy",
+      width: "20%",
+    },
+    {
       title: "Hành động",
       key: "action",
       dataIndex: "code",
@@ -154,7 +150,7 @@ const InboundTable = () => {
       render: (text, record) => (
         <Space>
           <Button
-            onClick={() => setSelectedId(record.code)}
+            onClick={() => handleInbound(record.code)}
             type="primary"
             icon={<LoginOutlined />}
           />
@@ -162,7 +158,7 @@ const InboundTable = () => {
       ),
     },
   ];
-  console.log("selectedId:", selectedId);
+
   const handleRefresh = () => {
     setIsLoading(true);
     // ajax request after empty completing
@@ -172,11 +168,6 @@ const InboundTable = () => {
       setRefreshKey((oldKey) => oldKey + 1);
       message.success("Tải lại thành công");
     }, 1000);
-  };
-
-  const handleCancel = () => {
-    setIsModalOpen(false);
-    setSelectedId(null);
   };
   return (
     <div className="table-container">
@@ -210,18 +201,7 @@ const InboundTable = () => {
         //   expandedRowRender: (record) => ()
         // }}
       />
-      {selectedId ? (
-        <Modal
-          title="Xác nhận nhập kho"
-          onCancel={handleCancel}
-          onOk={handleInbound}
-          open={true}
-          cancelText="Huỷ"
-          okText="Xác nhận"
-        >
-          <p>Bạn muốn nhập kho sản phẩm có mã: {selectedId}?</p>
-        </Modal>
-      ) : null}
+     
       {showModalAddReceipt ? (
         <ModalAddReceipt
           showModalAddReceipt={showModalAddReceipt}

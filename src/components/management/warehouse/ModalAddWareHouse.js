@@ -26,7 +26,6 @@ const ModalAddWareHouse = ({
   const reload = useSelector((state) => state.reloadReducer.reload);
   const [form] = Form.useForm();
 
-
   const [province, setProvince] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
@@ -50,8 +49,8 @@ const ModalAddWareHouse = ({
         if (response) {
           const newResponse = response.map((val) => {
             return {
-              value: val.code,
               label: val.name,
+              value: val.code,
             };
           });
           setProvince(newResponse);
@@ -294,6 +293,9 @@ const ModalAddWareHouse = ({
                   showSearch
                   placeholder="Chọn tỉnh thành"
                   optionFilterProp="children"
+                  style={{
+                    width: "100%",
+                  }}
                   onChange={onChangeProvince}
                   onSearch={onSearch}
                   filterOption={(input, option) =>

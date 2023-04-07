@@ -166,7 +166,7 @@ const CategoryTable = () => {
         sticky
         columns={columns}
         dataSource={listCategory}
-        pagination={{ pageSize: 7 }}
+        pagination={{ pageSize: 10 }}
       
       />
       {showModalCategoryDetail ? (
