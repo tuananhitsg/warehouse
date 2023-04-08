@@ -14,5 +14,9 @@ const InboundApi = {
     const url = `/receipt-voucher/put-goods-on-shelf/${id}`;
     return axiosApi.post(url);
   },
+  getReceiptDetailById: (id) => {
+    const url = `/receipt-voucher/get-receipt-voucher-by/${id}`;
+    return axiosApi.get(url);
+  },
 };
 export default InboundApi;

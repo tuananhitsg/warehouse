@@ -24,14 +24,16 @@ import InboundApi from "../../../api/inboundApi";
 import { useDispatch, useSelector } from "react-redux";
 import { setReload } from "../../../redux/reloadSlice";
 import "./table.scss";
+//import component
 import ModalAddReceipt from "./modalAddReceipt";
+import TableReceipt from "./TableReceiptDetail";
 
 const InboundTable = () => {
   const [selectedId, setSelectedId] = useState(null);
   const [showModalGoodsDetail, setShowModalGoodsDetail] = useState(false);
   const [showModalAddReceipt, setShowModalAddReceipt] = useState(false);
   const [showModalConfirmPut, setShowModalConfirmPut] = useState(false);
-  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [listReceipt, setListReceipt] = useState([]);
   const [refreshKey, setRefreshKey] = useState(0);
@@ -46,13 +48,9 @@ const InboundTable = () => {
   const showModalAdd = () => {
     setShowModalAddReceipt(true);
   };
-const showModalConfirm = (code) => {
+  const showModalConfirm = (code) => {
     setShowModalConfirmPut(true);
     setSelectedId(code);
-}
-
-  const onSelectChange = (selectedId) => {
-    setSelectedRowKeys(selectedId);
   };
 
 
@@ -62,7 +60,6 @@ const showModalConfirm = (code) => {
     const fetchData = async () => {
       try {
         const res = await InboundApi.getAllReceipt();
-        console.log("res:", res);
         if (res) {
           setListReceipt(res);
         }
@@ -95,17 +92,6 @@ const showModalConfirm = (code) => {
       width: "15%",
       dataIndex: "code",
       key: "code",
-      render: (val) => {
-        return (
-          <a
-            onClick={() => {
-              showModalDetail(val);
-            }}
-          >
-            {val}
-          </a>
-        );
-      },
     },
     {
       title: "Trạng thái",
@@ -165,21 +151,14 @@ const showModalConfirm = (code) => {
       ),
     },
   ];
-  console.log("selectedId:", selectedId);
-  const handleRefresh = () => {
-    setIsLoading(true);
-    // ajax request after empty completing
-    setTimeout(() => {
-      setSelectedRowKeys([]);
-      setIsLoading(false);
-      setRefreshKey((oldKey) => oldKey + 1);
-      message.success("Tải lại thành công");
-    }, 1000);
-  };
-
+ 
   const handleCancel = () => {
     setShowModalConfirmPut(false);
     setSelectedId(null);
+  };
+  const handleExpand = (expanded, record) => {
+    setExpandedRowKeys(expanded ? [record.code] : []);
+    setSelectedId(record.code);
   };
   return (
     <div className="table-container">
@@ -205,13 +184,16 @@ const showModalConfirm = (code) => {
         </Row>
       </div>
       <Table
-        sticky
         columns={columns}
-        dataSource={listReceipt}
         pagination={{ pageSize: 10 }}
-        // expandable={{
-        //   expandedRowRender: (record) => ()
-        // }}
+        rowKey={(record) => record.code}
+        expandable={{
+          expandedRowRender:(record) =>( <TableReceipt record={record} />),
+          expandRowByClick: true,
+          onExpand: handleExpand,
+        }}
+        dataSource={listReceipt}
+
       />
       {showModalConfirmPut ? (
         <Modal
