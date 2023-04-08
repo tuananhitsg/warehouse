@@ -580,7 +580,7 @@ const ModalAddReceipt = ({ showModalAddReceipt, setShowModalAddReceipt }) => {
                 </Col>
                 <Col span={12}>
                   <Form.Item name="unit" label="Đơn vị">
-                    <Input />
+                    <Input readOnly/>
                   </Form.Item>
                 </Col>
                 <Col span={12}>
@@ -651,7 +651,7 @@ const ModalAddReceipt = ({ showModalAddReceipt, setShowModalAddReceipt }) => {
                 <Col span={8}>
                   <Form.Item label=" " name="district">
                     <Select
-                      showSearch0
+                      showSearch
                       placeholder="Chọn quận huyện"
                       optionFilterProp="children"
                       onChange={onChangeDistrict}

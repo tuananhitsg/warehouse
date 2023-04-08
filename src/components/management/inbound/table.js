@@ -27,9 +27,10 @@ import "./table.scss";
 import ModalAddReceipt from "./modalAddReceipt";
 
 const InboundTable = () => {
-  const [selectedId, setSelectedId] = useState([]);
+  const [selectedId, setSelectedId] = useState(null);
   const [showModalGoodsDetail, setShowModalGoodsDetail] = useState(false);
   const [showModalAddReceipt, setShowModalAddReceipt] = useState(false);
+  const [showModalConfirmPut, setShowModalConfirmPut] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [listReceipt, setListReceipt] = useState([]);
@@ -45,14 +46,16 @@ const InboundTable = () => {
   const showModalAdd = () => {
     setShowModalAddReceipt(true);
   };
+const showModalConfirm = (code) => {
+    setShowModalConfirmPut(true);
+    setSelectedId(code);
+}
+
   const onSelectChange = (selectedId) => {
     setSelectedRowKeys(selectedId);
   };
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
+
 
   //get good list
   useEffect(() => {
@@ -83,7 +86,7 @@ const InboundTable = () => {
       message.error("Nhập kho thất bại");
     }
     setSelectedId(null);
-    setIsModalOpen(false);
+    setShowModalConfirmPut(false);
   };
 
   const columns = [
@@ -125,13 +128,13 @@ const InboundTable = () => {
     },
 
     {
-      title: "Người nhập",
+      title: "Người tạo",
       dataIndex: "createdBy",
       key: "createdBy",
       width: "20%",
     },
     {
-      title: "Ngày nhập",
+      title: "Ngày tạo",
       dataIndex: "createDate",
       key: "createDate",
       render: (createDate) => {
@@ -149,12 +152,12 @@ const InboundTable = () => {
     {
       title: "Hành động",
       key: "action",
-      dataIndex: "code",
       width: "10%",
+      align: "center",
       render: (text, record) => (
         <Space>
           <Button
-            onClick={() => setSelectedId(record.code)}
+            onClick={() => showModalConfirm(record.code)}
             type="primary"
             icon={<LoginOutlined />}
           />
@@ -175,7 +178,7 @@ const InboundTable = () => {
   };
 
   const handleCancel = () => {
-    setIsModalOpen(false);
+    setShowModalConfirmPut(false);
     setSelectedId(null);
   };
   return (
@@ -210,7 +213,7 @@ const InboundTable = () => {
         //   expandedRowRender: (record) => ()
         // }}
       />
-      {selectedId ? (
+      {showModalConfirmPut ? (
         <Modal
           title="Xác nhận nhập kho"
           onCancel={handleCancel}
@@ -219,9 +222,10 @@ const InboundTable = () => {
           cancelText="Huỷ"
           okText="Xác nhận"
         >
-          <p>Bạn muốn nhập kho sản phẩm có mã: {selectedId}?</p>
+          <p>Bạn muốn nhập kho phiếu nhập {selectedId}?</p>
         </Modal>
       ) : null}
+
       {showModalAddReceipt ? (
         <ModalAddReceipt
           showModalAddReceipt={showModalAddReceipt}

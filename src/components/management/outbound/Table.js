@@ -17,18 +17,19 @@ import {
   EditOutlined,
   UserAddOutlined,
   ReloadOutlined,
-  LoginOutlined,
+  LogoutOutlined,
 } from "@ant-design/icons";
 
-import InboundApi from "../../../api/inboundApi";
+import OutboundApi from "../../../api/outboundApi";
 import { useDispatch, useSelector } from "react-redux";
 import { setReload } from "../../../redux/reloadSlice";
 import "./Table.scss";
-import ModalAddReceipt from "./ModalAddReceipt";
-const InboundTable = () => {
+import ModalAddReceipt from "./ModalAddDelivery";
+const OutboundTable = () => {
   const [selectedId, setSelectedId] = useState([]);
   const [showModalGoodsDetail, setShowModalGoodsDetail] = useState(false);
   const [showModalAddReceipt, setShowModalAddReceipt] = useState(false);
+  const [showModalConfirmPut, setShowModalConfirmPut] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [listReceipt, setListReceipt] = useState([]);
@@ -44,6 +45,10 @@ const InboundTable = () => {
   const showModalAdd = () => {
     setShowModalAddReceipt(true);
   };
+  const showModalConfirm = (code) => {
+    setShowModalConfirmPut(true);
+    setSelectedId(code);
+  };
   const onSelectChange = (selectedId) => {
     setSelectedRowKeys(selectedId);
   };
@@ -57,7 +62,7 @@ const InboundTable = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await InboundApi.getAllReceipt();
+        const res = await OutboundApi.getAllDelivery();
         console.log("res:", res);
         if (res) {
           setListReceipt(res);
@@ -69,18 +74,20 @@ const InboundTable = () => {
     fetchData();
   }, [reload]);
 
-  const handleInbound = async (id) => {
+  const handleInbound = async () => {
     try {
-      const res = await InboundApi.putGoodsIntoShelf(id);
+      const res = await OutboundApi.exportGoods(selectedId);
       console.log("res inbound:", res);
       if (res) {
-        message.success("Nhập kho thành công");
+        message.success("Xuất kho thành công");
         dispatch(setReload(!reload));
       }
     } catch (error) {
-      console.log("Failed to put goods: ", error);
-      message.error("Nhập kho thất bại");
+      console.log("Failed to export goods: ", error);
+      message.error("Xuất kho thất bại");
     }
+    setSelectedId(null);
+    setShowModalConfirmPut(false);
   };
 
   const columns = [
@@ -108,7 +115,7 @@ const InboundTable = () => {
       render: (status) => {
         let color = "green";
 
-        if (status === "Chưa nhập lên kệ") {
+        if (status === "Chưa xuất") {
           color = "error";
         } else {
           color = "cyan";
@@ -121,7 +128,7 @@ const InboundTable = () => {
       },
     },
     {
-      title: "Ngày nhập",
+      title: "Ngày tạo",
       dataIndex: "createDate",
       key: "createDate",
       render: (createDate) => {
@@ -137,7 +144,7 @@ const InboundTable = () => {
       },
     },
     {
-      title: "Người nhập",
+      title: "Người tạo",
       dataIndex: "createdBy",
       key: "createdBy",
       width: "20%",
@@ -145,14 +152,14 @@ const InboundTable = () => {
     {
       title: "Hành động",
       key: "action",
-      dataIndex: "code",
       width: "10%",
+      align: "center",
       render: (text, record) => (
         <Space>
           <Button
-            onClick={() => handleInbound(record.code)}
+            onClick={() => showModalConfirm(record.code)}
             type="primary"
-            icon={<LoginOutlined />}
+            icon={<LogoutOutlined />}
           />
         </Space>
       ),
@@ -168,6 +175,10 @@ const InboundTable = () => {
       setRefreshKey((oldKey) => oldKey + 1);
       message.success("Tải lại thành công");
     }, 1000);
+  };
+  const handleCancel = () => {
+    setShowModalConfirmPut(false);
+    setSelectedId(null);
   };
   return (
     <div className="table-container">
@@ -201,7 +212,18 @@ const InboundTable = () => {
         //   expandedRowRender: (record) => ()
         // }}
       />
-     
+      {showModalConfirmPut ? (
+        <Modal
+          title="Xác nhận nhập kho"
+          onCancel={handleCancel}
+          onOk={handleInbound}
+          open={true}
+          cancelText="Huỷ"
+          okText="Xác nhận"
+        >
+          <p>Bạn muốn xuất kho phiếu nhập {selectedId}?</p>
+        </Modal>
+      ) : null}
       {showModalAddReceipt ? (
         <ModalAddReceipt
           showModalAddReceipt={showModalAddReceipt}
@@ -212,4 +234,4 @@ const InboundTable = () => {
   );
 };
 
-export default InboundTable;
+export default OutboundTable;

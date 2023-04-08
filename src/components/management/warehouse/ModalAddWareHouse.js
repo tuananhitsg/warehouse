@@ -311,7 +311,7 @@ const ModalAddWareHouse = ({
             <Col span={8}>
               <Form.Item label=" " name="district">
                 <Select
-                  showSearch0
+                  showSearch
                   placeholder="Chọn quận huyện"
                   optionFilterProp="children"
                   onChange={onChangeDistrict}

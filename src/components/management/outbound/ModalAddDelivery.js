@@ -18,8 +18,8 @@ import { useDispatch, useSelector } from "react-redux";
 
 import goodsApi from "../../../api/goodsApi";
 import outboundApi from "../../../api/outboundApi";
-import inboundApi from "../../../api/inboundApi";
 import categoryApi from "../../../api/categoryApi";
+import partnerApi from "../../../api/partnerApi";
 
 const ModalAddReceipt = ({ showModalAddReceipt, setShowModalAddReceipt }) => {
   const dispatch = useDispatch();
@@ -27,16 +27,64 @@ const ModalAddReceipt = ({ showModalAddReceipt, setShowModalAddReceipt }) => {
   const [form] = Form.useForm();
 
   const [goods, setGoods] = useState([]);
-
- 
+  const [good, setGood] = useState("");
+  const [partners, setPartners] = useState([]);
+  const [partner, setPartner] = useState("");
+  const [selectedPartner, setSelectedPartner] = useState(null);
   const onSearch = (value) => {
     console.log("search:", value);
   };
   const onClose = () => {
     setShowModalAddReceipt(false);
   };
+  const onChangeGoods = (value) => {
+    console.log(`selected ${value}`);
+    setGood(value);
+  };
+  const onChangePartner = (value) => {
+    console.log(`selected ${value}`);
+    setPartner(value);
+    const partnerTemp = partners.find((item) => item.code === value);
+    setSelectedPartner(partnerTemp);
+    console.log("partnerTemp", partnerTemp);
+  };
+  useEffect(() => {
+    if (selectedPartner) {
+      form.setFieldsValue({
+        partnerPhone: selectedPartner.phone,
+      });
+    }
+  }, [onChangePartner]);
+
   const handleSubmit = async (values) => {
-    
+    const { code, quantity, partnerPhone, reason } = values;
+    console.log("values", values);
+    const data = {
+      email: "",
+      goodsRequests: [
+        {
+          goodCode: code,
+          quantity: quantity,
+        },
+      ],
+      partnerPhone: partnerPhone,
+      reason: reason,
+    };
+    console.log("data", data);
+    try {
+      const res = await outboundApi.createDelivery(data);
+      console.log("res", res);
+      if (res) {
+        dispatch(setReload(!reload));
+        onClose();
+        form.resetFields();
+        setTimeout(() => {
+          message.success("Tạo phiếu xuất thành công");
+        }, 3000);
+      }
+    } catch (error) {
+      console.log("Error create delivery: ", error);
+    }
   };
 
   useEffect(() => {
@@ -48,9 +96,29 @@ const ModalAddReceipt = ({ showModalAddReceipt, setShowModalAddReceipt }) => {
       } catch (error) {
         console.log("Error fetching goods: ", error);
       }
-    }
+    };
     fetchGoods();
+    fetchPartner();
   }, []);
+  const fetchPartner = async () => {
+    try {
+      const res = await partnerApi.getAll();
+      if (res) {
+        console.log("partner", res);
+        const newRes = res.map((item) => {
+          return {
+            ...item,
+            value: item.code,
+            label: item.name,
+          };
+        });
+        setPartners(newRes);
+      }
+    } catch (error) {
+      console.log("Error fetching partner: ", error);
+    }
+  };
+
   return (
     <>
       <Modal
@@ -76,10 +144,10 @@ const ModalAddReceipt = ({ showModalAddReceipt, setShowModalAddReceipt }) => {
             <Col span={21}>
               <Row gutter={16}>
                 <Col span={12}>
-                  <Form.Item name="categoryCode" label="Tên sản phẩm">
+                  <Form.Item name="code" label="Tên sản phẩm">
                     <Select
-                      placeholder="Chọn  sản phẩm"
-                      //onChange={onChageCategory}
+                      placeholder="Chọn sản phẩm"
+                      onChange={onChangeGoods}
                       options={goods.map((good) => ({
                         value: good.code,
                         label: good.name,
@@ -89,41 +157,7 @@ const ModalAddReceipt = ({ showModalAddReceipt, setShowModalAddReceipt }) => {
                 </Col>
                 <Col span={12}>
                   <Form.Item name="quantity" label="Số lượng">
-                    <Input placeholder="Nhập số lượng" />
-                  </Form.Item>
-                </Col>
-
-                <Col span={12}>
-                  <Form.Item name="unit" label="Đơn vị">
-                    <Select />
-                  </Form.Item>
-                </Col>
-                <Col span={24}>
-                  <Form.Item
-                    name="warehouse"
-                    label="Kích cỡ"
-                    rules={[{ required: true }]}
-                  >
-                    <Space.Compact block>
-                      <Form.Item name="length" noStyle>
-                        <Input
-                          style={{ width: "33%" }}
-                          placeholder="Chiều dài (m)"
-                        />
-                      </Form.Item>
-                      <Form.Item name="width" noStyle>
-                        <Input
-                          style={{ width: "33%" }}
-                          placeholder="Chiều rộng (m)"
-                        />
-                      </Form.Item>
-                      <Form.Item name="height" noStyle>
-                        <Input
-                          style={{ width: "33%" }}
-                          placeholder="Chiều cao (m)"
-                        />
-                      </Form.Item>
-                    </Space.Compact>
+                    <Input type="number" />
                   </Form.Item>
                 </Col>
               </Row>
@@ -136,12 +170,24 @@ const ModalAddReceipt = ({ showModalAddReceipt, setShowModalAddReceipt }) => {
               <Row gutter={16}>
                 <Col span={12}>
                   <Form.Item name="partnerName" label="Tên đối tác">
-                    <Input placeholder="Nhập tên đối tác" />
+                    <Select
+                      placeholder="Nhập tên đối tác"
+                      options={partners}
+                      onChange={onChangePartner}
+                      onSearch={onSearch}
+                      optionFilterProp="children"
+                      showSearch
+                      filterOption={(input, option) =>
+                        (option?.label ?? "")
+                          .toLowerCase()
+                          .includes(input.toLowerCase())
+                      }
+                    />
                   </Form.Item>
                 </Col>
                 <Col span={12}>
                   <Form.Item name="partnerPhone" label="Số điện thoại">
-                    <Select placeholder="Chọn số điện thoại" />
+                    <Input placeholder="Chọn số điện thoại" readOnly />
                   </Form.Item>
                 </Col>
               </Row>
@@ -154,6 +200,8 @@ const ModalAddReceipt = ({ showModalAddReceipt, setShowModalAddReceipt }) => {
                       }}
                       placeholder="Ghi chú"
                       rows={3}
+                      showCount
+                      maxLength={100}
                     />
                   </Form.Item>
                 </Col>
