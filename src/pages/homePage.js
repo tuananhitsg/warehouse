@@ -24,6 +24,7 @@ import {
   SettingOutlined,
   ProfileOutlined,
   ContainerOutlined,
+  TeamOutlined,
 } from "@ant-design/icons";
 import "./homePage.scss";
 
@@ -34,9 +35,10 @@ import IndexEmployee from "../components/management/employee/index";
 import IndexWarehouse2 from "../components/management/warehouse/indexRoute";
 import IndexWarehouse from "../components/management/warehouse/index";
 import IndexUser from "../components/account/user/userInfo";
-import IndexInbound from "../components/management/inbound/index";
+import IndexReceipt from "../components/management/inbound/index";
+import IndexPartner from "../components/management/partner/index";
 import IndexOutbound from "../components/management/outbound/index";
-
+import IndexInbound from "../components/management/inbound/inventoryInbound/indexInbound";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import authService from "../service/auth.service";
@@ -86,11 +88,9 @@ const HomePage = () => {
       getItem("Sản phẩm", "4.1"),
       getItem("Loại sản phẩm", "4.2"),
     ]),
-    getItem("Nhân viên", "5", <UserOutlined />, [
-      getItem("Nhân viên", "5.1"),
-      getItem("Đối tác", "5.2"),
-    ]),
-    getItem("Nhà kho", "6", <ContainerOutlined />),
+    getItem("Nhân viên", "5", <UserOutlined />),
+    getItem("Đối tác", "6", <TeamOutlined />),
+    getItem("Nhà kho", "7", <ContainerOutlined />),
   ];
 
   const {
@@ -129,10 +129,10 @@ const HomePage = () => {
     switch (itemClicked) {
       case 0:
         return <IndexDashboard />;
-      // case 1.1:
-      //   return <IndexInbound />;
-      case 1.2:
+      case 1.1:
         return <IndexInbound />;
+      case 1.2:
+        return <IndexReceipt />;
       case 2.1:
         return <IndexOutbound />;
       case 3.1:
@@ -141,9 +141,12 @@ const HomePage = () => {
         return <IndexGoods />;
       case 4.2:
         return <IndexCategory />;
-      case 5.1:
+      case 5:
         return <IndexEmployee />;
       case 6:
+        return <IndexPartner />;
+
+      case 7:
         return <IndexWarehouse2 />;
       // case "user":
       //   return <UserInfo />;

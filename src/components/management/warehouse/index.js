@@ -7,9 +7,6 @@ const { Title, Text } = Typography;
 const IndexWarehouse = ({ setTab }) => {
   return (
     <div className="site-card-wrapper">
-      <Title level={5} style={{ marginBottom: "1rem" }}>
-        Nhà kho
-      </Title>
       <Row>
         <Col span={24}>
           <WareHouseTable setTab={setTab} />

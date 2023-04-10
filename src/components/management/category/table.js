@@ -148,7 +148,7 @@ const CategoryTable = () => {
               icon={<UserAddOutlined />}
               style={{ marginLeft: "16px" }}
             >
-              Thêm
+              Tạo mới
             </Button>
             <Button
               type="primary"

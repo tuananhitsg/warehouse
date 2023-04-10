@@ -1,0 +1,25 @@
+.steps-bar-container {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.step-bar {
+  width: 50%;
+}
+
+//confirmation
+.form-header {
+  margin-top: 10rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  .confirm-img {
+    width: 10rem;
+  }
+  .form-title {
+    margin-top: 1rem;
+    text-align: center;
+  }
+}

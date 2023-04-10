@@ -99,19 +99,7 @@ const EmployeeTable = () => {
       dataIndex: "roles",
       key: "roles",
     },
-    {
-      title: "Action",
-      key: "action",
-      fix: "right",
-      width: "10%",
-      render: (_, record) => (
-        <Space size="middle">
-          <a>
-            <DeleteOutlined />
-          </a>
-        </Space>
-      ),
-    },
+   
   ];
 
   const convertRoleName = (roleName) => {
@@ -177,7 +165,7 @@ const EmployeeTable = () => {
               icon={<UserAddOutlined />}
               style={{ marginLeft: "16px" }}
             >
-              Thêm
+              Tạo mới
             </Button>
             <Button
               type="primary"

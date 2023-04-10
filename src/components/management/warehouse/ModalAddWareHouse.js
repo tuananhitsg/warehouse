@@ -179,7 +179,7 @@ const ModalAddWareHouse = ({
         dispatch(setReload(!reload));
         form.resetFields();
         setTimeout(() => {
-          message.success("Thêm nhà kho thành công!");
+          message.success("Tạo nhà kho thành công!");
         }, 3000);
       }
     } catch (error) {
@@ -194,9 +194,7 @@ const ModalAddWareHouse = ({
         width={720}
         onCancel={onClose}
         open={showModalAddWareHouse}
-        bodyStyle={{
-          paddingBottom: 80,
-        }}
+
         footer={
           <Space>
             <Button onClick={onClose}>Huỷ</Button>

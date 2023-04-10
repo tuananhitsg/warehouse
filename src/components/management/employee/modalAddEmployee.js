@@ -58,7 +58,7 @@ const ModalAddEmployee = ({
       dispatch(setReload(!reload));
       form.resetFields();
       setTimeout(() => {
-        message.success("Thêm nhân viên thành công!");
+        message.success("Tạo nhân viên thành công!");
       }, 500);
     } catch (error) {
       console.log(error);
@@ -73,9 +73,7 @@ const ModalAddEmployee = ({
         onClose={onClose}
         onCancel={onClose}
         open={showModalAddEmployee}
-        bodyStyle={{
-          paddingBottom: 80,
-        }}
+
         footer={
           <Space>
             <Button onClick={onClose}>Huỷ</Button>

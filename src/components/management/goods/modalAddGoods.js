@@ -87,7 +87,7 @@ const ModalAddGoods = ({ showModalAddGoods, setShowModalAddGoods }) => {
         dispatch(setReload(!reload));
         form.resetFields();
         setTimeout(() => {
-          message.success("Thêm sản phẩm thành công!");
+          message.success("Tạo sản phẩm thành công!");
         }, 500);
       }
     } catch (error) {
@@ -102,9 +102,7 @@ const ModalAddGoods = ({ showModalAddGoods, setShowModalAddGoods }) => {
         width={720}
         onCancel={onClose}
         open={showModalAddGoods}
-        bodyStyle={{
-          paddingBottom: 80,
-        }}
+
         footer={
           <Space>
             <Button onClick={onClose}>Huỷ</Button>

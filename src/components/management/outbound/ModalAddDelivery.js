@@ -126,9 +126,7 @@ const ModalAddReceipt = ({ showModalAddReceipt, setShowModalAddReceipt }) => {
         width={960}
         onCancel={onClose}
         open={showModalAddReceipt}
-        // bodyStyle={{
-        //   paddingBottom: 80,
-        // }}
+
         footer={
           <Space>
             <Button onClick={onClose}>Huỷ</Button>

@@ -8,9 +8,7 @@ const { Title, Text } = Typography;
 const IndexInbound = () => {
   return (
     <div className="site-card-wrapper">
-      <Title level={5} style={{ marginBottom: "1rem" }}>
-        Sản phẩm
-      </Title>
+
       
       <InboundTable></InboundTable>
     </div>

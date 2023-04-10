@@ -33,7 +33,6 @@ const TableReceipt = ({ record }) => {
         };
       });
       setListReceipt(data);
-
     }
   };
 
@@ -41,7 +40,6 @@ const TableReceipt = ({ record }) => {
     {
       title: "STT",
       dataIndex: "key",
-
     },
     {
       title: "Tên sản phẩm",
@@ -87,7 +85,11 @@ const TableReceipt = ({ record }) => {
 
   return (
     <>
-      <Table columns={columns} dataSource={listReceipt}  pagination={{ pageSize: 5 }}/>
+      <Table
+        columns={columns}
+        dataSource={listReceipt}
+        pagination={{ pageSize: 5 }}
+      />
     </>
   );
 };

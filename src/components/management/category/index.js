@@ -8,9 +8,7 @@ const { Title, Text } = Typography;
 const IndexCategory = () => {
   return (
     <div className="site-card-wrapper">
-      <Title level={5} style={{ marginBottom: "1rem" }}>
-        Loại sản phẩm
-      </Title>
+
 
       <CategoryTable></CategoryTable>
     </div>

@@ -92,19 +92,7 @@ const WarehouseTable = ({ setTab }) => {
         return <span>{locationStr}</span>;
       },
     },
-    {
-      title: "Action",
-      key: "action",
-      fix: "right",
-      width: "10%",
-      render: (_, record) => (
-        <Space size="middle">
-          <a>
-            <DeleteOutlined />
-          </a>
-        </Space>
-      ),
-    },
+   
   ];
 
   useEffect(() => {
@@ -154,7 +142,7 @@ const WarehouseTable = ({ setTab }) => {
               icon={<UserAddOutlined />}
               style={{ marginLeft: "16px" }}
             >
-              Thêm
+              Tạo mới
             </Button>
             <Button
               type="primary"

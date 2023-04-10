@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Input, Col, Row, Typography, Button, Modal } from "antd";
 
-import EmployeeTable from "./table";
+import PartnerTable from "./Table";
 const { Title, Text } = Typography;
 
 const IndexCategory = () => {
@@ -9,7 +9,7 @@ const IndexCategory = () => {
     <div className="site-card-wrapper">
 
 
-      <EmployeeTable></EmployeeTable>
+      <PartnerTable></PartnerTable>
     </div>
   );
 };

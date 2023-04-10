@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-
+import React, { useState, useEffect, useRef } from "react";
 import {
   Space,
   Input,
@@ -10,15 +9,15 @@ import {
   Row,
   Col,
   message,
+
 } from "antd";
 import {
-  DeleteOutlined,
-  SearchOutlined,
-  EditOutlined,
   UserAddOutlined,
   ReloadOutlined,
+  CheckOutlined,
+  SearchOutlined
 } from "@ant-design/icons";
-
+import Highlighter from 'react-highlight-words';
 import goodsApi from "../../../api/goodsApi";
 import { useDispatch, useSelector } from "react-redux";
 import { setReload } from "../../../redux/reloadSlice";
@@ -26,7 +25,14 @@ import "./table.scss";
 import ModalGoodsDetail from "./modalGoodsDetail";
 import ModalAddGoods from "./modalAddGoods";
 
-const GoodsTable = () => {
+const GoodsTable = ({
+  disableSelectButton,
+  rowSelection,
+  click,
+  cols,
+  components,
+  rowClassName,
+}) => {
   const [selectedId, setSelectedId] = useState([]);
   const [showModalGoodsDetail, setShowModalGoodsDetail] = useState(false);
   const [showModalAddGoods, setShowModalAddGoods] = useState(false);
@@ -36,6 +42,122 @@ const GoodsTable = () => {
   const [refreshKey, setRefreshKey] = useState(0);
   const reload = useSelector((state) => state.reloadReducer.reload);
 
+  //search on column
+  const [searchText, setSearchText] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState("");
+  const searchInput = useRef(null);
+  const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  };
+  const handleReset = (clearFilters) => {
+    clearFilters();
+    setSearchText("");
+  };
+  const getColumnSearchProps = (dataIndex) => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+      close,
+    }) => (
+      <div
+        style={{
+          padding: 8,
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <Input
+          ref={searchInput}
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          style={{
+            marginBottom: 8,
+            display: "block",
+          }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Tìm
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Làm trống
+          </Button>
+          {/* <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              confirm({
+                closeDropdown: false,
+              });
+              setSearchText(selectedKeys[0]);
+              setSearchedColumn(dataIndex);
+            }}
+          >
+            Filter
+          </Button> */}
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              close();
+            }}
+          >
+            Đóng
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? "#1890ff" : undefined,
+        }}
+      />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+    onFilterDropdownOpenChange: (visible) => {
+      if (visible) {
+        setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{
+            backgroundColor: "#ffc069",
+            padding: 0,
+          }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ""}
+        />
+      ) : (
+        text
+      ),
+  });
+  //modal
   const showModalDetail = (e) => {
     setShowModalGoodsDetail(true);
     setSelectedId(e);
@@ -74,11 +196,13 @@ const GoodsTable = () => {
       title: "Tên sản phẩm",
       dataIndex: "name",
       key: "name",
+      ...getColumnSearchProps("name"),
     },
     {
       title: "Loại sản phẩm",
       dataIndex: "categoryName",
       key: "categoryName",
+      ...getColumnSearchProps("categoryName"),
     },
     {
       title: "Đơn vị",
@@ -104,19 +228,6 @@ const GoodsTable = () => {
       dataIndex: "height",
       key: "height",
     },
-    {
-      title: "Action",
-      key: "action",
-      fix: "right",
-      with: "10%",
-      render: (_, record) => (
-        <Space size="middle">
-          <a>
-            <DeleteOutlined />
-          </a>
-        </Space>
-      ),
-    },
   ];
   //get good list
   useEffect(() => {
@@ -124,13 +235,6 @@ const GoodsTable = () => {
       try {
         const res = await goodsApi.getGoods();
         if (res) {
-          // const data = res.map((item) => {
-          //   return {
-          //     key: item.code,
-          //     ...item,
-          //   };
-          // });
-          // setListGoods(data.reverse());
           setListGoods(res.reverse());
         }
       } catch (error) {
@@ -155,12 +259,18 @@ const GoodsTable = () => {
       <div className="table-header">
         <Row gutter={{ xs: 8, sm: 16, md: 16, lg: 16 }}>
           <Col span={12}>
-            <Input
-              placeholder="Tìm kiếm sản phẩm theo mã, tên"
-              prefix={<SearchOutlined />}
-            />
-          </Col>
-          <Col span={12}>
+            {rowSelection ? (
+              <Button
+                type="primary"
+                disabled={disableSelectButton}
+                onClick={click}
+                loading={isLoading}
+                icon={<CheckOutlined />}
+                style={{ marginLeft: "16px" }}
+              >
+                Chọn
+              </Button>
+            ) : null}
             <Button
               type="primary"
               loading={isLoading}
@@ -168,26 +278,20 @@ const GoodsTable = () => {
               style={{ marginLeft: "16px" }}
               onClick={showModalAdd}
             >
-              Thêm
-            </Button>
-            <Button
-              type="primary"
-              onClick={handleRefresh}
-              loading={isLoading}
-              icon={<ReloadOutlined />}
-              style={{ marginLeft: "8px" }}
-            >
-              Làm mới
+              Tạo mới
             </Button>
           </Col>
         </Row>
       </div>
       <Table
+        rowSelection={rowSelection ? rowSelection : null}
         sticky
-        columns={columns}
+        columns={cols ? cols : columns}
         dataSource={listGoods}
         pagination={{ pageSize: 10 }}
-        
+        rowKey="code"
+        components={components}
+        rowClassName={rowClassName}
       />
       {showModalGoodsDetail ? (
         <ModalGoodsDetail

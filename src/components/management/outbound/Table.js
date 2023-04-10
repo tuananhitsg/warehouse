@@ -198,7 +198,7 @@ const OutboundTable = () => {
               style={{ marginLeft: "16px" }}
               onClick={showModalAdd}
             >
-              Thêm
+              Tạo mới
             </Button>
           </Col>
         </Row>

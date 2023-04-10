@@ -1,295 +1,4 @@
-// import React, { useEffect, useState } from "react";
-// import {
-//   Button,
-//   Col,
-//   Drawer,
-//   Form,
-//   Input,
-//   InputNumber,
-//   message,
-//   Modal,
-//   Row,
-//   Select,
-//   Space,
-// } from "antd";
 
-// import { setReload } from "../../../redux/reloadSlice";
-// import { useDispatch, useSelector } from "react-redux";
-// //import Api here
-// import inboundApi from "../../../api/inboundApi";
-// import partnerApi from "../../../api/partnerApi";
-// import addressApi from "../../../api/addressApi";
-
-// import FormProduct from "./FormProduct";
-
-// const ModalAddReceipt = ({ showModalAddReceipt, setShowModalAddReceipt }) => {
-//   const dispatch = useDispatch();
-//   const reload = useSelector((state) => state.reloadReducer.reload);
-//   const [form] = Form.useForm();
-//   const [province, setProvince] = useState([]);
-//   const [districts, setDistricts] = useState([]);
-//   const [wards, setWards] = useState([]);
-//   const [provincePicked, setProvincePicked] = useState(0);
-//   const [districtPicked, setDistrictPicked] = useState(0);
-//   const [wardPicked, setWardPicked] = useState(0);
-//   const [provinceGot, setProvinceGot] = useState("");
-//   const [districtGot, setDistrictGot] = useState("");
-//   const [wardGot, setWardGot] = useState("");
-//   const [isLoading, setIsLoading] = useState(false);
-
-//   const onClose = () => {
-//     setShowModalAddReceipt(false);
-//   };
-//   const onSearch = (value) => {
-//     console.log("search:", value);
-//   };
-//   useEffect(() => {
-//     fetchProvince();
-//     if (provincePicked !== 0) {
-//       //console.log("run");
-//       fetchDistrict(provincePicked);
-//     }
-//     if (districtPicked !== 0) {
-//       fetchWard(districtPicked);
-//     }
-//   }, [provincePicked, districtPicked]);
-//   const fetchProvince = async () => {
-//     try {
-//       const response = await addressApi.getList("/p");
-
-//       //console.log(response);
-//       if (response) {
-//         const newResponse = response.map((val) => {
-//           return {
-//             value: val.code,
-//             label: val.name,
-//           };
-//         });
-//         setProvince(newResponse);
-//       }
-//     } catch (error) {
-//       console.log("Failed to fetch conversation list: ", error);
-//     }
-//   };
-//   const fetchDistrict = async (id) => {
-//     try {
-//       const response = await addressApi.getList(`/p/${id}?depth=2`);
-
-//       console.log("province res:", response);
-//       if (response) {
-//         const { districts } = response;
-//         const newDistricts = districts.map((val) => {
-//           return {
-//             value: val.code,
-//             label: val.name,
-//           };
-//         });
-//         setDistricts(newDistricts);
-//       }
-//     } catch (error) {
-//       console.log("Failed to fetch conversation list: ", error);
-//     }
-//   };
-//   const fetchWard = async (id) => {
-//     try {
-//       const response = await addressApi.getList(`/d/${id}?depth=2`);
-
-//       console.log(response);
-//       if (response) {
-//         const { wards } = response;
-//         const newWards = wards.map((val) => {
-//           return {
-//             value: val.code,
-//             label: val.name,
-//           };
-//         });
-//         setWards(newWards);
-//       }
-//     } catch (error) {
-//       console.log("Failed to fetch conversation list: ", error);
-//     }
-//   };
-
-//   const onChangeProvince = (value, option) => {
-//     console.log(`selected ${value}, ${option.label}`);
-//     setProvincePicked(value);
-//     setProvinceGot(option.label);
-//   };
-//   const onChangeDistrict = (value, options) => {
-//     console.log(`selected ${value}`);
-//     setDistrictPicked(value);
-//     setDistrictGot(options.label);
-//   };
-//   const onChangeWard = (value, options) => {
-//     console.log(`selected ${value}`);
-//     setWardPicked(value);
-//     setWardGot(options.label);
-//   };
-//   const handleSubmit = async (values) => {
-//     const volume = values.length * values.width * values.height;
-//     const roundedNumber = Number(volume.toFixed(3));
-//     console.log("volume:", roundedNumber);
-//     const {
-//       categoryCode,
-//       height,
-//       length,
-//       name,
-//       quantity,
-//       unit,
-//       width,
-//       partnerName,
-//       phone,
-//       address,
-//       ward,
-//       district,
-//       province,
-//     } = values;
-//     const data = {
-//       email: "",
-//       goodsRequests: {
-//         volume: roundedNumber,
-//         categoryCode: categoryCode,
-//         name: name,
-//         quantity: quantity,
-//         unit: unit,
-//         height: height,
-//         length: length,
-//         width: width,
-//       },
-//       partnerRequest: {
-//         address: `${address}, ${ward}, ${district}, ${province}`,
-//         name: partnerName,
-//         phone: phone,
-//       },
-//     };
-//     console.log("data:", data);
-//     try {
-//       const res = await inboundApi.createReceipt(data);
-//       console.log("res:", res);
-//       if (res) {
-//         dispatch(setReload(!reload));
-//         form.resetFields();
-//         setTimeout(() => {
-//           message.success("Thêm nhà kho thành công!");
-//         }, 3000);
-//       }
-//     } catch (error) {
-//       console.log("error:", error);
-//     }
-//   };
-//   return (
-//     <>
-//       <Modal
-//         title="Tạo hoá đơn nhập"
-//         width={960}
-//         onCancel={onClose}
-//         open={showModalAddReceipt}
-//         // bodyStyle={{
-//         //   paddingBottom: 80,
-//         // }}
-//         footer={
-//           <Space>
-//             <Button onClick={onClose}>Huỷ</Button>
-//             <Button form="myForm" htmlType="submit" type="primary">
-//               Xác nhận
-//             </Button>
-//           </Space>
-//         }
-//       >
-//         <Form form={form} onFinish={handleSubmit} id="myForm" layout="vertical">
-//           <FormProduct/>
-//           <Row>
-//             <Col span={3}>Đối tác: </Col>
-//             <Col span={21}>
-//               <Row gutter={16}>
-//                 <Col span={12}>
-//                   <Form.Item name="partnerName" label="Tên đối tác">
-//                     <Input placeholder="Nhập tên đối tác" />
-//                   </Form.Item>
-//                 </Col>
-//                 <Col span={12}>
-//                   <Form.Item name="phone" label="Số điện thoại">
-//                     <Input placeholder="Nhập số điện thoại" />
-//                   </Form.Item>
-//                 </Col>
-//                 <Col span={8}>
-//                   <Form.Item label="Địa chỉ" name="province">
-//                     <Select
-//                       showSearch
-//                       placeholder="Chọn tỉnh thành"
-//                       optionFilterProp="children"
-//                       onChange={onChangeProvince}
-//                       onSearch={onSearch}
-//                       filterOption={(input, option) =>
-//                         (option?.label ?? "")
-//                           .toLowerCase()
-//                           .includes(input.toLowerCase())
-//                       }
-//                       options={province}
-//                     />
-//                   </Form.Item>
-//                 </Col>
-
-//                 <Col span={8}>
-//                   <Form.Item label=" " name="district">
-//                     <Select
-//                       showSearch0
-//                       placeholder="Chọn quận huyện"
-//                       optionFilterProp="children"
-//                       onChange={onChangeDistrict}
-//                       onSearch={onSearch}
-//                       style={{ width: "100%" }}
-//                       filterOption={(input, option) =>
-//                         (option?.label ?? "")
-//                           .toLowerCase()
-//                           .includes(input.toLowerCase())
-//                       }
-//                       options={districts}
-//                     />
-//                   </Form.Item>
-//                 </Col>
-//                 <Col span={8}>
-//                   <Form.Item label=" " name="ward">
-//                     <Select
-//                       showSearch
-//                       placeholder="Chọn phường/xã"
-//                       optionFilterProp="children"
-//                       onChange={onChangeWard}
-//                       onSearch={onSearch}
-//                       style={{ width: "100%" }}
-//                       filterOption={(input, option) =>
-//                         (option?.label ?? "")
-//                           .toLowerCase()
-//                           .includes(input.toLowerCase())
-//                       }
-//                       options={wards}
-//                     />
-//                   </Form.Item>
-//                 </Col>
-//               </Row>
-//               <Row gutter={16}>
-//                 <Col span={24}>
-//                   <Form.Item name="address">
-//                     <Input.TextArea
-//                       showCount
-//                       maxLength={100}
-//                       style={{
-//                         width: "100%",
-//                       }}
-//                       placeholder="Nhập địa chỉ kho"
-//                       rows={3}
-//                     />
-//                   </Form.Item>
-//                 </Col>
-//               </Row>
-//             </Col>
-//           </Row>
-//         </Form>
-//       </Modal>
-//     </>
-//   );
-// };
-// export default ModalAddReceipt;
 
 import React, { useEffect, useState } from "react";
 import {
@@ -381,7 +90,6 @@ const ModalAddReceipt = ({ showModalAddReceipt, setShowModalAddReceipt }) => {
   useEffect(() => {
     fetchProvince();
     if (provincePicked !== 0) {
-      //console.log("run");
       fetchDistrict(provincePicked);
     }
     if (districtPicked !== 0) {
@@ -391,8 +99,6 @@ const ModalAddReceipt = ({ showModalAddReceipt, setShowModalAddReceipt }) => {
   const fetchProvince = async () => {
     try {
       const response = await addressApi.getList("/p");
-
-      //console.log(response);
       if (response) {
         const newResponse = response.map((val) => {
           return {
@@ -486,7 +192,6 @@ const ModalAddReceipt = ({ showModalAddReceipt, setShowModalAddReceipt }) => {
       province,
     } = values;
     const data = {
-      email: "",
       goodsRequests: [
         {
           volume: roundedNumber,
@@ -497,13 +202,13 @@ const ModalAddReceipt = ({ showModalAddReceipt, setShowModalAddReceipt }) => {
           height: height,
           length: length,
           width: width,
-        },
+        }
       ],
       partnerRequest: {
         address: `${address}, ${ward}, ${district}, ${province}`,
         name: partnerName,
         phone: phone,
-      },
+      }
     };
     console.log("data:", data);
     try {
@@ -514,7 +219,7 @@ const ModalAddReceipt = ({ showModalAddReceipt, setShowModalAddReceipt }) => {
         onClose();
         form.resetFields();
         setTimeout(() => {
-          message.success("Thêm phiếu nhập thành công!");
+          message.success("Tạo phiếu nhập thành công!");
         }, 3000);
       }
     } catch (error) {
@@ -528,9 +233,7 @@ const ModalAddReceipt = ({ showModalAddReceipt, setShowModalAddReceipt }) => {
         width={960}
         onCancel={onClose}
         open={showModalAddReceipt}
-        // bodyStyle={{
-        //   paddingBottom: 80,
-        // }}
+
         footer={
           <Space>
             <Button onClick={onClose}>Huỷ</Button>

@@ -47,7 +47,7 @@ const ModalAddCategory = ({
         dispatch(setReload(!reload));
         form.resetFields();
         setTimeout(() => {
-          message.success("Thêm loại sản phẩm thành công!");
+          message.success("Tạo loại sản phẩm thành công!");
         }, 500);
       }
     } catch (error) {
@@ -62,9 +62,7 @@ const ModalAddCategory = ({
         width={720}
         onCancel={onClose}
         open={showModalAddCategory}
-        bodyStyle={{
-          paddingBottom: 80,
-        }}
+
         footer={
           <Space>
             <Button onClick={onClose}>Huỷ</Button>
