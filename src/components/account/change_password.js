@@ -116,11 +116,11 @@ const ChangePassword = () => {
       email: resetPasswordEmail,
       password: values.new_password,
     };
-    console.log("param:", params);
+  
 
     try {
       const response = await userApi.changePassword(params);
-      console.log("res:", response);
+     
 
       if (response) {
         message.success("Đổi mật khẩu thành công");

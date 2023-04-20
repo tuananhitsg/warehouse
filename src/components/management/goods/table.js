@@ -9,15 +9,16 @@ import {
   Row,
   Col,
   message,
-
+  InputNumber,
 } from "antd";
 import {
   UserAddOutlined,
   ReloadOutlined,
   CheckOutlined,
-  SearchOutlined
+  SearchOutlined,
 } from "@ant-design/icons";
-import Highlighter from 'react-highlight-words';
+import Highlighter from "react-highlight-words";
+import { useNavigate, useLocation } from "react-router-dom";
 import goodsApi from "../../../api/goodsApi";
 import { useDispatch, useSelector } from "react-redux";
 import { setReload } from "../../../redux/reloadSlice";
@@ -32,6 +33,8 @@ const GoodsTable = ({
   cols,
   components,
   rowClassName,
+  onCell,
+  isPickGoods,
 }) => {
   const [selectedId, setSelectedId] = useState([]);
   const [showModalGoodsDetail, setShowModalGoodsDetail] = useState(false);
@@ -40,8 +43,10 @@ const GoodsTable = ({
   const [isLoading, setIsLoading] = useState(false);
   const [listGoods, setListGoods] = useState([]);
   const [refreshKey, setRefreshKey] = useState(0);
-  const reload = useSelector((state) => state.reloadReducer.reload);
 
+  const reload = useSelector((state) => state.reloadReducer.reload);
+  const navigate = useNavigate();
+  const location = useLocation();
   //search on column
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
@@ -229,20 +234,76 @@ const GoodsTable = ({
       key: "height",
     },
   ];
+  const [quantity, setQuantity] = useState(1);
+  const handleQuantityChange = (value) => {
+    setQuantity(value);
+  };
   //get good list
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await goodsApi.getGoods();
-        if (res) {
-          setListGoods(res.reverse());
-        }
-      } catch (error) {
-        console.log(error);
+  // useEffect(() => {
+
+  //   fetchAllData();
+  // }, [reload]);
+  const fetchAllData = async () => {
+    try {
+      const res = await goodsApi.getGoods();
+      if (res) {
+        setListGoods(res.reverse());
       }
-    };
-    fetchData();
-  }, [reload]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  //get page of good list
+  const [tableParams, setTableParams] = useState({
+    pagination: {
+      current: 1,
+      page: 0,
+      pageSize: 5,
+    },
+  });
+
+  const fetchPageOfData = async () => {
+    const { page, pageSize } = tableParams.pagination;
+    console.log("page", page, pageSize);
+
+    try {
+      const res = await goodsApi.getPageOfGoods(page, pageSize);
+      navigate(`${location.pathname}?page=${page + 1}&size=${pageSize}`);
+      if (res) {
+        const { content, totalElements } = res;
+        //setListGoods(content);
+        setListGoods(content.map((item) => ({ ...item, quantity: 0 })));
+        console.log("content", listGoods);
+        setTableParams({
+          ...tableParams,
+          pagination: {
+            ...tableParams.pagination,
+            total: totalElements,
+          },
+        });
+      }
+    } catch (error) {
+      console.log("Failed to fetch page: ", error);
+    }
+  };
+  useEffect(() => {
+    fetchPageOfData();
+  }, [tableParams.pagination.current, reload]);
+
+  const handleTableChange = (pagination, filters, sorter) => {
+    setTableParams({
+      pagination: {
+        ...pagination,
+        page: pagination.current - 1,
+      },
+    });
+    navigate(
+      `${location.pathname}?page=${pagination.current}&size=${pagination.pageSize}`
+    );
+    if (pagination.pageSize !== tableParams.pagination.pageSize) {
+      setListGoods([]);
+    }
+  };
 
   const handleRefresh = () => {
     setIsLoading(true);
@@ -288,10 +349,13 @@ const GoodsTable = ({
         sticky
         columns={cols ? cols : columns}
         dataSource={listGoods}
-        pagination={{ pageSize: 10 }}
+        //pagination={{ pageSize: 5 }}
         rowKey="code"
         components={components}
         rowClassName={rowClassName}
+        pagination={{ ...tableParams.pagination }}
+        onChange={handleTableChange}
+        onCell={{ onCell }}
       />
       {showModalGoodsDetail ? (
         <ModalGoodsDetail

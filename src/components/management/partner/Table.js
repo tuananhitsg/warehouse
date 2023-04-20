@@ -1,3 +1,4 @@
+import "./table.scss";
 import React, { useState, useEffect } from "react";
 
 import {
@@ -17,8 +18,8 @@ import employeeApi from "../../../api/employeeApi";
 import { useDispatch, useSelector } from "react-redux";
 import { setReload } from "../../../redux/reloadSlice";
 import { setUser } from "../../../redux/userSlice";
+import { useNavigate, useLocation } from "react-router-dom";
 
-import "./table.scss";
 import ModalPartnerDetail from "./ModalPartnerDetail";
 import ModalAddPartner from "./ModalAddPartner";
 import partnerApi from "../../../api/partnerApi";
@@ -36,8 +37,10 @@ const PartnerTable = ({
   const [loading, setLoading] = useState(false);
   const [listPartner, setListPartner] = useState([]);
   const [refreshKey, setRefreshKey] = useState(0);
-  const dispatch = useDispatch();
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
   const reload = useSelector((state) => state.reloadReducer.reload);
 
   const showModalDetail = (e) => {
@@ -59,19 +62,77 @@ const PartnerTable = ({
   // const showModal = () => {
   //   setIsModalOpen(true);
   // };
-  useEffect(() => {
-    const fetchDataTable = async () => {
-      try {
-        const response = await partnerApi.getAll();
-        setListPartner(response);
-      } catch (error) {
-        console.log("Failed to fetch data table: ", error);
-        message.error("Lỗi tải dữ liệu");
-      }
-    };
-    fetchDataTable();
-  }, [reload]);
+  // useEffect(() => {
+  //   const fetchDataTable = async () => {
+  //     try {
+  //       const response = await partnerApi.getAll();
+  //       setListPartner(response);
+  //     } catch (error) {
+  //       console.log("Failed to fetch data table: ", error);
+  //       message.error("Lỗi tải dữ liệu");
+  //     }
+  //   };
+  //   fetchDataTable();
+  // }, [reload]);
+  //fetch
+  const [tableParams, setTableParams] = useState({
+    pagination: {
+      current: 1,
+      page: 1,
+      pageSize: 5,
+    },
+  });
 
+  const fetchPageOfData = async () => {
+    const { page, pageSize } = tableParams.pagination;
+    console.log("page", page, pageSize);
+
+    try {
+      const res = await partnerApi.getPageOfPartner(page, pageSize);
+      navigate(`${location.pathname}?page=${page}&size=${pageSize}`);
+      if (res) {
+        const { content, totalElements } = res;
+        console.log("content", content);
+
+        const data = content.map((item) => {
+          return {
+            ...item,
+            address: `${item.address.street}, ${item.address.ward}, ${item.address.district}, ${item.address.province}`,
+          };
+        });
+
+        console.log("data", data);
+        setListPartner(data);
+        setTableParams({
+          ...tableParams,
+          pagination: {
+            ...tableParams.pagination,
+            total: totalElements,
+          },
+        });
+      }
+    } catch (error) {
+      console.log("Failed to fetch page: ", error);
+    }
+  };
+  useEffect(() => {
+    fetchPageOfData();
+  }, [tableParams.pagination.current, reload]);
+
+  const handleTableChange = (pagination, filters, sorter) => {
+    setTableParams({
+      pagination: {
+        ...pagination,
+        page: pagination.current - 1,
+      },
+    });
+    navigate(
+      `${location.pathname}?page=${pagination.current}&size=${pagination.pageSize}`
+    );
+    if (pagination.pageSize !== tableParams.pagination.pageSize) {
+      setListPartner([]);
+    }
+  };
   const handleRefresh = () => {
     setLoading(true);
     // ajax request after empty completing
@@ -151,16 +212,17 @@ const PartnerTable = ({
         sticky
         columns={columns}
         dataSource={listPartner}
-        pagination={{ pageSize: 10 }}
         rowKey="code"
-        onRow={(record, rowIndex) => {
-          return {
-            onClick: (event) => {
-              click(record);
-            }, // click row
-          };
-        }}
-        loading={loading}
+        // onRow={(record, rowIndex) => {
+        //   return {
+        //     onClick: (event) => {
+        //       click(record);
+        //     }, // click row
+        //   };
+        // }}
+        pagination={{ ...tableParams.pagination }}
+        //loading={loading}
+        onChange={handleTableChange}
       />
       {showModalPartnerDetail ? (
         <ModalPartnerDetail

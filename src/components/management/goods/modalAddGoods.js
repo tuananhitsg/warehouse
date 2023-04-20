@@ -1,9 +1,10 @@
+import "../../utils/formError.scss";
 import React, { useEffect, useState } from "react";
 import {
   Button,
   Col,
   Drawer,
-  Form,
+  Form as FormAntd,
   Input,
   message,
   Modal,
@@ -16,11 +17,20 @@ import goodsApi from "../../../api/goodsApi";
 import categoryApi from "../../../api/categoryApi";
 import { setReload } from "../../../redux/reloadSlice";
 import { useDispatch, useSelector } from "react-redux";
+import {
+  Formik,
+  Form,
+  Field,
+  ErrorMessage,
+  FastField,
+  useFormik,
+} from "formik";
+import * as Yup from "yup";
 
 const ModalAddGoods = ({ showModalAddGoods, setShowModalAddGoods }) => {
   const dispatch = useDispatch();
   const reload = useSelector((state) => state.reloadReducer.reload);
-  const [form] = Form.useForm();
+
   const [size, setSize] = useState("");
   const [categoryCodes, setCategoryCodes] = useState([]);
   const [categoryCode, setCategoryCode] = useState("");
@@ -36,6 +46,20 @@ const ModalAddGoods = ({ showModalAddGoods, setShowModalAddGoods }) => {
   const onClose = () => {
     setShowModalAddGoods(false);
   };
+  const createGoodsValues = {
+    initial: {
+      categoryCode: "",
+      name: "",
+    },
+    validationSchema: Yup.object().shape({
+      categoryCode: Yup.string().oneOf(
+        categoryCodes,
+        "Vui lòng chọn loại sản phẩm!"
+      ),
+      name: Yup.string().required("Tên không được bỏ trống!"),
+    }),
+  };
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -51,14 +75,12 @@ const ModalAddGoods = ({ showModalAddGoods, setShowModalAddGoods }) => {
     fetchCategories();
   }, []);
 
-  const handleSubmit = async (values) => {
+  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     console.log("submit", values);
     console.log("reload", reload);
     const { categoryCode, name, size } = values;
 
-    let length;
-    let width;
-    let height;
+    let length, width, height;
     if (size === "1") {
       length = 0.3;
       width = 0.2;
@@ -72,26 +94,19 @@ const ModalAddGoods = ({ showModalAddGoods, setShowModalAddGoods }) => {
       width = 0.4;
       height = 0.4;
     }
-    const data = new FormData();
-    data.append("categoryCode", categoryCode ? categoryCode : "");
-    data.append("name", name ? name : "");
-    data.append("length", length ? length : "");
-    data.append("width", width ? width : "");
-    data.append("height", height ? height : "");
-
-    try {
-      const res = await goodsApi.addGoods(data);
-      console.log(res);
-      if (res) {
-        onClose();
-        dispatch(setReload(!reload));
-        form.resetFields();
-        setTimeout(() => {
-          message.success("Tạo sản phẩm thành công!");
-        }, 500);
-      }
-    } catch (error) {
-      console.log(error);
+    const data = {
+      categoryCode,
+      name,
+      length,
+      width,
+      height,
+      unit: "Thùng",
+    };
+    const res = await goodsApi.addGoods(data);
+    if (res) {
+      resetForm();
+      dispatch(setReload(!reload));
+      setSubmitting(false);
     }
   };
 
@@ -102,17 +117,111 @@ const ModalAddGoods = ({ showModalAddGoods, setShowModalAddGoods }) => {
         width={720}
         onCancel={onClose}
         open={showModalAddGoods}
-
-        footer={
-          <Space>
-            <Button onClick={onClose}>Huỷ</Button>
-            <Button form="myForm" htmlType="submit" type="primary">
-              Xác nhận
-            </Button>
-          </Space>
-        }
+        footer={null}
       >
-        <Form form={form} onFinish={handleSubmit} id="myForm" layout="vertical">
+        <div className="modal-add-goods">
+          <Formik
+            initialValues={{
+              ...createGoodsValues.initial,
+            }}
+            validationSchema={createGoodsValues.validationSchema}
+            onSubmit={handleSubmit}
+          >
+            {({ isSubmitting, handleSubmit, setFieldValue, resetForm }) => (
+              <FormAntd
+                layout="horizontal"
+                labelAlign="left"
+                labelCol={{ span: 6 }}
+                wrapperCol={{ span: 18 }}
+              >
+                <FormAntd.Item label="Loại sản phẩm" labelAlign="left">
+                  <Field
+                    name="categoryCode"
+                    as={Select}
+                    placeholder="Chọn loại sản phẩm"
+                    onChange={(value) => setFieldValue("categoryCode", value)}
+                    options={categories.map((category) => ({
+                      value: category.code,
+                      label: category.name,
+                    }))}
+                    className="form-field"
+                  />
+                  <ErrorMessage
+                    name="categoryCode"
+                    component="div"
+                    className="error-message"
+                  />
+                </FormAntd.Item>
+
+                <FormAntd.Item label="Tên sản phẩm" labelAlign="left">
+                  <Field
+                    name="name"
+                    as={Input}
+                    placeholder="Nhập tên sản phẩm"
+                    className="form-field"
+                  />
+                  <ErrorMessage
+                    name="name"
+                    component="div"
+                    className="error-message"
+                  />
+                </FormAntd.Item>
+
+                <FormAntd.Item label="Kích thước" labelAlign="left">
+                  <Field
+                    onChange={(value) => setFieldValue("size", value)}
+                    options={[
+                      {
+                        value: "1",
+                        label: "0.3 X 0.2 X 0.3 (m)",
+                      },
+                      {
+                        value: "2",
+                        label: "0.5 X 0.3 X 0.4 (m)",
+                      },
+                      {
+                        value: "3",
+                        label: "0.6 X 0.4 X 0.4 (m)",
+                      },
+                    ]}
+                    name="size"
+                    as={Select}
+                    placeholder="Chọn kích thước"
+                    className="form-field"
+                  />
+                  <ErrorMessage
+                    name="size"
+                    component="div"
+                    className="error-message"
+                  />
+                </FormAntd.Item>
+                <div className="btn-add-partner" style={{ marginTop: "50px" }}>
+                  <Row gutter={16} justify="end">
+                    <Col>
+                      <FormAntd.Item>
+                        <Button onClick={onClose}>Huỷ</Button>
+                      </FormAntd.Item>
+                    </Col>
+                    <Col>
+                      <FormAntd.Item>
+                        <Button
+                          type="primary"
+                          htmlType="submit"
+                          loading={isSubmitting}
+                          // disabled={!dirty || !isValid}
+                          onClick={handleSubmit}
+                        >
+                          Xác nhận
+                        </Button>
+                      </FormAntd.Item>
+                    </Col>
+                  </Row>
+                </div>
+              </FormAntd>
+            )}
+          </Formik>
+        </div>
+        {/* <Form onFinish={handleSubmit} id="myForm" layout="vertical">
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item name="categoryCode" label="Loại sản phẩm">
@@ -160,50 +269,8 @@ const ModalAddGoods = ({ showModalAddGoods, setShowModalAddGoods }) => {
                 />
               </Form.Item>
             </Col>
-            {/* <Col span={8}>
-              <Form.Item name="width" label="Chiều rộng">
-                <Select
-                  onChange={onChangeSize}
-                  options={[
-                    {
-                      value: "1",
-                      label: "1",
-                    },
-                    {
-                      value: "2",
-                      label: "2",
-                    },
-                    {
-                      value: "3",
-                      label: "3",
-                    },
-                  ]}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item name="height" label="Chiều cao">
-                <Select
-                  onChange={onChangeSize}
-                  options={[
-                    {
-                      value: "1",
-                      label: "1",
-                    },
-                    {
-                      value: "2",
-                      label: "2",
-                    },
-                    {
-                      value: "3",
-                      label: "3",
-                    },
-                  ]}
-                />
-              </Form.Item>
-            </Col> */}
           </Row>
-        </Form>
+        </Form> */}
       </Modal>
     </>
   );

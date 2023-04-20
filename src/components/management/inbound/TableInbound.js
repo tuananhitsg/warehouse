@@ -23,6 +23,7 @@ import {
 import InboundApi from "../../../api/inboundApi";
 import { useDispatch, useSelector } from "react-redux";
 import { setReload } from "../../../redux/reloadSlice";
+import { useNavigate } from "react-router-dom";
 import "./table.scss";
 //import component
 import ModalAddReceipt from "./modalAddReceipt";
@@ -40,6 +41,7 @@ const InboundTable = () => {
   //reload trang sau khi them
   const reload = useSelector((state) => state.reloadReducer.reload);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const showModalDetail = (e) => {
     setShowModalGoodsDetail(true);
@@ -56,20 +58,79 @@ const InboundTable = () => {
 
 
   //get good list
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await InboundApi.getAllReceipt();
-        if (res) {
-          setListReceipt(res);
-        }
-      } catch (error) {
-        console.log("Failed to fetch recepit list: ", error);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const res = await InboundApi.getAllReceipt();
+  //       if (res) {
+  //         setListReceipt(res);
+  //       }
+  //     } catch (error) {
+  //       console.log("Failed to fetch recepit list: ", error);
+  //     }
+  //   };
+  //   fetchData();
+  // }, [reload]);
+  const [tableParams, setTableParams] = useState({
+    pagination: {
+      current: 1,
+      page: 0,
+      pageSize: 5,
+    },
+  });
+  //get all purchase receipt
+  const [listPurchase, setListPurchase] = useState([]);
+  const fetchAllPurchases = async () =>{
+    try {
+      const res = await InboundApi.getAllPurchaseReceipt();
+      if (res) {
+        setListPurchase(res);
       }
-    };
-    fetchData();
-  }, [reload]);
+    } catch (error) {
+      console.log("Failed to fetch recepit list: ", error);
+    }
+  }
+  const fetchPageOfData = async () => {
+    const { page, pageSize } = tableParams.pagination;
+    console.log("page", page, pageSize);
 
+    try {
+      const res = await InboundApi.getPageOfReceipt(page, pageSize);
+      navigate(`/danh-sach-phieu-nhap?page=${page + 1}&size=${pageSize}`);
+      if (res) {
+        const { content, totalElements } = res;
+        setListReceipt(content);
+        setTableParams({
+          ...tableParams,
+          pagination: {
+            ...tableParams.pagination,
+            total: totalElements,
+          },
+        });
+        console.log("respage", res);
+      }
+    } catch (error) {
+      console.log("Failed to fetch page: ", error);
+    }
+  };
+  useEffect(() => {
+    fetchPageOfData();
+  }, [tableParams.pagination.current, reload]);
+
+  const handleTableChange = (pagination, filters, sorter) => {
+    setTableParams({
+      pagination: {
+        ...pagination,
+        page: pagination.current - 1,
+      },
+    });
+    navigate(
+      `/danh-sach-phieu-nhap?page=${pagination.current}&size=${pagination.pageSize}`
+    );
+    if (pagination.pageSize !== tableParams.pagination.pageSize) {
+      setListReceipt([]);
+    }
+  };
   const handleInbound = async () => {
     try {
       const res = await InboundApi.putGoodsIntoShelf(selectedId);
@@ -164,12 +225,12 @@ const InboundTable = () => {
     <div className="table-container">
       <div className="table-header">
         <Row gutter={{ xs: 8, sm: 16, md: 16, lg: 16 }}>
-          <Col span={12}>
+          {/* <Col span={12}>
             <Input
               placeholder="Tìm kiếm sản phẩm theo mã, tên"
               prefix={<SearchOutlined />}
             />
-          </Col>
+          </Col> */}
           <Col span={12}>
             <Button
               type="primary"
@@ -185,7 +246,7 @@ const InboundTable = () => {
       </div>
       <Table
         columns={columns}
-        pagination={{ pageSize: 10 }}
+        pagination={{ ...tableParams.pagination }}
         rowKey={(record) => record.code}
         expandable={{
           expandedRowRender:(record) =>( <TableReceipt record={record} />),
@@ -193,6 +254,7 @@ const InboundTable = () => {
           onExpand: handleExpand,
         }}
         dataSource={listReceipt}
+        onChange={handleTableChange}
 
       />
       {showModalConfirmPut ? (

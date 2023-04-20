@@ -53,7 +53,7 @@ const ForgotPassword = () => {
       localStorage.setItem("resetPasswordEmail", params.email);
       if (res.status === 204) {
         message.success(
-          "Link đổi mật khẩu sẽ được gửi tới mail " +
+          "Link đổi mật khẩu đã được gửi tới mail " +
             params.email +
             ", vui lòng kiểm tra mail."
         );

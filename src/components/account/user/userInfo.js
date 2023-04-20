@@ -41,14 +41,14 @@ const UserInfo = () => {
     const fetchData = async (id) => {
       try {
         const res = await employeeApi.getEmployeeById(id);
-        console.log("res", res);
+
         if (res) {
           setFullName(res.fullName);
           setEmail(res.email);
           setCode(res.code);
           setRole(res.roles[0].name);
           setSex(res.sex);
-          console.log("res role:", role);
+
         }
       } catch (error) {
         console.log(error);
@@ -62,10 +62,10 @@ const UserInfo = () => {
       sex: sex,
       role: role,
     }
-    console.log("code va daata:", code, params);
+
     try {
       const res = await employeeApi.updateEmployee(code, params);
-      console.log(user.code);
+
       if (res) {
         setTimeout(() => {
           message.success("Cập nhật thành công");
@@ -79,6 +79,7 @@ const UserInfo = () => {
     <div className="site-card-wrapper">
       <Row
         style={{
+          marginTop: "1rem",
           backgroundColor: "white",
           height: "80vh",
           borderRadius: "8px",

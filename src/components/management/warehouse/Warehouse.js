@@ -10,6 +10,8 @@ import {
   DatePicker,
   Select,
   notification,
+  Statistic,
+  message,
 } from "antd";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import Shelf from "./shelf/Shelf";
@@ -26,30 +28,42 @@ const Warehouse = ({ setTab }) => {
   const [selectedShelf, setSelectedShelf] = useState(null);
   const [selectedShelfCode, setSelectedShelfCode] = useState(null);
 
+  const [reportPos, setReportPos] = useState(null);
   // const handleBackward = () => {
   //   setTab(0);
   // };
 
-
-  useEffect(() => {
-    const getShevles = async () => {
-      try {
-        const res = await wareHouserApi.getShelvesByWarehouseId(WareHouseId);
-        console.log("shelves: ", res);
-        if (res) {
-          setShelves(res);
-        }
-      } catch (error) {
-        console.log("Fetch error: ", error);
+  const getShevles = async () => {
+    try {
+      const res = await wareHouserApi.getShelvesByWarehouseId(WareHouseId);
+     
+      if (res) {
+        setShelves(res);
       }
-    };
+    } catch (error) {
+      console.log("Fetch error: ", error);
+    }
+  };
+  const getShelfReporter = async () => {
+    try{
+      const res = await wareHouserApi.getReportStock(WareHouseId);
+      console.log("Report: ", res);
+      if (res) {
+        setReportPos(res);
+      }
+    }catch(error){
+      console.log("Fetch error: ", error);
+      message.error("Lấy dữ liệu report kệ thất bại");
+    }
+  }
+  useEffect(() => {
+    getShelfReporter();
     getShevles();
   }, []);
   const handleOpenModal = async (shelfCode) => {
     const getShelfById = async (id) => {
       try {
         const res = await wareHouserApi.getRowById(shelfCode);
-        console.log("Row: ", res);
         if (res) {
           setSelectedShelf(res);
           setOpen(true);
@@ -66,7 +80,8 @@ const Warehouse = ({ setTab }) => {
   };
 
   return (
-    <div className="warehouse-site-wrapper">
+    <>
+      {" "}
       <div className="warehouse-header">
         <Breadcrumb
           items={[
@@ -79,8 +94,37 @@ const Warehouse = ({ setTab }) => {
           ]}
         />
       </div>
-      <div className="warehouse-map">
-        <Shelf items={shelves} onShelfItemClick={handleOpenModal} />
+      <div className="warehouse-site-wrapper">
+        <div className="statistics-container">
+          <div className="statistics">
+            <Row gutter={16}>
+              <Col span={8}>
+                <Statistic
+                  title="Còn chỗ"
+                  value={reportPos?.["AVAILABLE"]}
+                  valueStyle={{ color: "#52c41a" }}
+                />
+              </Col>
+              <Col span={8}>
+                <Statistic
+                  title="Trống"
+                  value={reportPos?.["EMPTY"]}
+                  valueStyle={{ color: "#bfbfbf" }}
+                />
+              </Col>
+              <Col span={8}>
+                <Statistic
+                  title="Đã đầy"
+                  value={reportPos?.["FULL"]}
+                  valueStyle={{ color: "#f5222d" }}
+                />
+              </Col>
+            </Row>
+          </div>
+        </div>
+        <div className="warehouse-map">
+          <Shelf items={shelves} onShelfItemClick={handleOpenModal} />
+        </div>
       </div>
       {/* {open ? <ModalShelfInfo /> : null} */}
       {open && (
@@ -90,7 +134,7 @@ const Warehouse = ({ setTab }) => {
           handleLogic={handleModalLogic}
         />
       )}
-    </div>
+    </>
   );
 };
 export default Warehouse;

@@ -10,6 +10,7 @@ import {
   Input,
   Col,
   Row,
+  Tooltip,
 } from "antd";
 import {
   DeleteOutlined,
@@ -57,6 +58,29 @@ const EmployeeTable = () => {
   // const showModal = () => {
   //   setIsModalOpen(true);
   // };
+  //chhange active by clicking tag
+  const [showModalChangeActive, setshowModalChangeActive] = useState(false);
+  const onClose = () => {
+    setshowModalChangeActive(false);
+  };
+  const handleshowModalChangeActive = (record) => {
+    setshowModalChangeActive(true);
+    setSelectedId(record.code);
+    console.log("record", record);
+  };
+  const handleChangeActive = async () => {
+    const res = await employeeApi.changeAccountStatus(selectedId);
+    console.log("res", res);
+    try {
+      if (res.success) {
+        onClose();
+        message.success("Thay đổi trạng thái thành công!");
+        dispatch(setReload(!reload));
+      }
+    } catch (err) {
+      message.error("Thay đổi trạng thái thất bại!");
+    }
+  };
 
   const columns = [
     {
@@ -85,6 +109,7 @@ const EmployeeTable = () => {
     {
       title: "Email",
       dataIndex: "email",
+      width: "25%",
       key: "email",
     },
     {
@@ -99,7 +124,35 @@ const EmployeeTable = () => {
       dataIndex: "roles",
       key: "roles",
     },
-   
+    {
+      title: "Trạng thái",
+      dataIndex: "enabled",
+      key: "enabled",
+      render: (enabled, record) => {
+        let color = "green";
+        let name = "";
+        if (enabled) {
+          color = "green";
+          name = "Kích hoạt";
+        }
+        if (!enabled) {
+          color = "red";
+          name = "Khoá";
+        }
+        return (
+          <Tooltip placement="top" title={name}>
+            <Tag
+              color={color}
+              key={Tooltip}
+              onClick={() => handleshowModalChangeActive(record)}
+              className="active-tag"
+            >
+              {name.toUpperCase()}
+            </Tag>
+          </Tooltip>
+        );
+      },
+    },
   ];
 
   const convertRoleName = (roleName) => {
@@ -120,7 +173,7 @@ const EmployeeTable = () => {
             return {
               key: item.code,
               ...item,
-              roles: convertRoleName(item.roles[0].name)
+              roles: convertRoleName(item.roles[0].name),
             };
           });
           console.log(data);
@@ -151,12 +204,12 @@ const EmployeeTable = () => {
         }}
       >
         <Row gutter={{ xs: 8, sm: 16, md: 16, lg: 16 }}>
-          <Col span={12}>
+          {/* <Col span={12}>
             <Input
               placeholder="Tìm kiếm sản phẩm theo mã, tên"
               prefix={<SearchOutlined />}
             />
-          </Col>
+          </Col> */}
           <Col span={12}>
             <Button
               type="primary"
@@ -167,7 +220,7 @@ const EmployeeTable = () => {
             >
               Tạo mới
             </Button>
-            <Button
+            {/* <Button
               type="primary"
               onClick={handleRefresh}
               loading={loading}
@@ -175,7 +228,7 @@ const EmployeeTable = () => {
               style={{ marginLeft: "8px" }}
             >
               Làm mới
-            </Button>
+            </Button> */}
           </Col>
         </Row>
       </div>
@@ -183,8 +236,7 @@ const EmployeeTable = () => {
         sticky
         columns={columns}
         dataSource={listCategory}
-        pagination={{ pageSize: 10 }}
-       
+        pagination={{ pageSize: 5 }}
       />
       {showModalEmployeeDetail ? (
         <ModalEmployeeDetail
@@ -198,6 +250,33 @@ const EmployeeTable = () => {
           showModalAddEmployee={showModalAddEmployee}
           setShowModalAddEmployee={setShowModalAddEmployee}
         />
+      ) : null}
+      {showModalChangeActive ? (
+        <Modal
+          title="Xác nhận đổi trạng thái tài khoản"
+          open={showModalChangeActive}
+          onCancel={onClose}
+          footer={null}
+          width={360}
+        >
+          <Row gutter={16} justify={"center"}>
+            <Col>
+              <Button onClick={onClose} className="form-field">
+                Huỷ
+              </Button>
+            </Col>
+            <Col>
+              <Button
+                type="primary"
+                htmlType="submit"
+                onClick={handleChangeActive}
+                className="form-field"
+              >
+                Xác nhận
+              </Button>
+            </Col>
+          </Row>
+        </Modal>
       ) : null}
     </div>
   );

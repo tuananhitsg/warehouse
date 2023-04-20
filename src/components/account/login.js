@@ -1,3 +1,4 @@
+import "../utils/formError.scss";
 import { MailOutlined, LockOutlined } from "@ant-design/icons";
 import {
   Form as FormAnt,
@@ -17,7 +18,7 @@ import "./style.scss";
 import { setUser } from "../../redux/userSlice";
 import authService from "../../service/auth.service";
 import { Formik, Form, Field, ErrorMessage, FastField } from "formik";
-import { loginValues } from "./initValues";
+import { loginValues } from "../utils/initValues";
 const { Title, Text } = Typography;
 
 const LoginPage = () => {
@@ -33,7 +34,7 @@ const LoginPage = () => {
         localStorage.setItem("token", res.token);
         authService.setUser(res);
         dispatch(setUser(res));
-        navigate("/trang-chu");
+        navigate("/");
       }
     } catch (err) {
       message.error("Sai email hoặc mật khẩu");
@@ -74,10 +75,7 @@ const LoginPage = () => {
                       <ErrorMessage
                         name="email"
                         component="div"
-                        style={{
-                          fontWeight: "bold",
-                          color: "red",
-                        }}
+                        className="error-message"
                       />
                     </FormAnt.Item>
                     <FormAnt.Item>
@@ -92,10 +90,7 @@ const LoginPage = () => {
                       <ErrorMessage
                         name="password"
                         component="div"
-                        style={{
-                          fontWeight: "bold",
-                          color: "red",
-                        }}
+                        className="error-message"
                       />
                     </FormAnt.Item>
                     <FormAnt.Item>

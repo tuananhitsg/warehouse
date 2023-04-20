@@ -1,144 +1,247 @@
-// import React, { useState } from "react";
-// import {
-//   Breadcrumb,
-//   Layout,
-//   Menu,
-//   theme,
-//   Avatar,
-//   Dropdown,
-//   Button,
-//   Space,
-//   Typography,
-//   Modal,
-// } from "antd";
-// import {
-//   LoginOutlined,
-//   LogoutOutlined,
-//   BarChartOutlined,
-//   UserOutlined,
-//   HomeOutlined,
-//   TagsOutlined,
-//   ShoppingCartOutlined,
-//   InboxOutlined,
-//   DashboardOutlined,
-//   SettingOutlined,
-//   ProfileOutlined,
-//   ContainerOutlined,
-// } from "@ant-design/icons";
+import React, { useState } from "react";
+import "./Header.scss";
+import {
+  Breadcrumb,
+  Layout,
+  Menu,
+  theme,
+  Avatar,
+  Dropdown,
+  Typography,
+  message,
+  Button,
+  Space,
+  Modal,
+} from "antd";
+import {
+  UserOutlined,
+  ProfileOutlined,
+  LogoutOutlined,
+  ExclamationCircleOutlined,
+} from "@ant-design/icons";
 
-// import { useSelector } from "react-redux";
-// import { useNavigate } from "react-router-dom";
-// import authService from "../service/auth.service";
-// import { setUser } from "../redux/userSlice";
-// const { Text } = Typography;
+import { useSelector } from "react-redux";
+import authService from "../../../service/auth.service";
+import { setUser } from "../../../redux/userSlice";
+import { useNavigate, Link } from "react-router-dom";
+const { Text, Title } = Typography;
+const { Header } = Layout;
 
+const HeaderCustom = () => {
+  const navigate = useNavigate();
+
+  const {
+    token: { colorBgContainer },
+  } = theme.useToken();
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const handleOk = () => {
+    setIsModalOpen(false);
+    handleLogout();
+    //handle code for log out in here
+  };
+  const handleLogout = () => {
+    try {
+      localStorage.removeItem("token");
+      authService.removeUser();
+      navigate("/dang-nhap");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+  const items = [
+    {
+      label: "Thông tin",
+      key: "1",
+      icon: <ProfileOutlined />,
+    },
+    {
+      label: "Đăng xuất",
+      key: "2",
+      icon: <LogoutOutlined />,
+    },
+  ];
+  const handleMenuClick = (e) => {
+    console.log("click", e);
+    if (e.key === "2") {
+      handleLogout();
+    } else if (e.key === "1") {
+      navigate("/thong-tin");
+    }
+  };
+  const menuProps = {
+    items,
+    onClick: handleMenuClick,
+  };
+  // const warning = () => {
+  //   Modal.warning({
+  //     title: 'Đăng xuát',
+  //     content: 'some messages...some messages...',
+  //   });
+  // };
+  return (
+    <Header
+      className="header"
+      style={{
+        zIndex: 999,
+        padding: 0,
+        position: "sticky",
+        top: 0,
+        background: colorBgContainer,
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          height: "100%",
+          padding: "0 1rem",
+        }}
+      >
+        <div></div>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <Dropdown menu={menuProps}>
+            <Space>
+              <div
+                className="avt_group"
+                onClick={(e) => e.preventDefault()}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  //marginLeft: "0.5rem",
+                  justifyContent: "space-between",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "flex-end",
+                    flexDirection: "column",
+                    marginRight: "0.5rem",
+                  }}
+                >
+                  <Text style={{ fontWeight: "500", color: "#333" }}>
+                    {user?.fullName}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: "400",
+                      color: "#abb4bc",
+                    }}
+                  >
+                    {user?.roles}
+                  </Text>
+                </div>
+                <Avatar
+                  style={{
+                    color: "#f56a00",
+                    backgroundColor: "#fde3cf",
+
+                    width: "35px",
+                    height: "35px",
+                    marginRight: "6px",
+                  }}
+                  icon={<UserOutlined />}
+                ></Avatar>
+              </div>
+            </Space>
+          </Dropdown>
+        </div>
+      </div>
+      {/* <Modal
+        title="Đăng xuất"
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        width={360}
+        okText="Đăng xuất"
+        cancelText="Hủy"
+      >
+        <Title level={4}>Bạn có muốn đăng xuất?</Title>
+      </Modal> */}
+    </Header>
+  );
+};
+export { HeaderCustom };
 // const Header = () => {
-//     const {
-//         token: { colorBgContainer },
-//       } = theme.useToken();
+//   const {
+//     token: { colorBgContainer },
+//   } = theme.useToken();
+
+//   const [isModalOpen, setIsModalOpen] = useState(false);
+//   const navigate = useNavigate();
+
+//   const user = useSelector((state) => state.userReducer.info);
+
+//   const showModal = () => {
+//     setIsModalOpen(true);
+//   };
+
+//   const handleOk = () => {
+//     setIsModalOpen(false);
+//     handleLogout();
+//     //handle code for log out in here
+//   };
+//   const handleCancel = () => {
+//     setIsModalOpen(false);
+//   };
+//   const handleLogout = () => {
+//     localStorage.removeItem("token");
+//     authService.removeUser();
+//     navigate("/dang-nhap", { replace: true });
+//   };
+//   const handleMenuClick = (e) => {
+//     message.info("Click on menu item.");
+//     console.log("click", e);
+//   };
+//   const itemMenu = [
+//     {
+//       key: "1",
+//       // label: (
+//       //   <Link to={"/thong-tin"} className="profile">
+//       //     Thông tin
+//       //   </Link>
+//       // ),
+//     },
+//     {
+//       key: "2",
+//       // label: (
+//       //   <Link name="logout" onClick={handleLogout}>
+//       //     Đăng xuất
+//       //   </Link>
+//       // ),
+//     },
+//   ];
+//   const menuProps = {
+//     itemMenu,
+//     onClick: handleMenuClick,
+//   };
 //   return (
-//     <div
-//       style={{
-//         padding: 0,
-//         background: colorBgContainer,
-//       }}
-//     >
+//     <>
 //       <div
 //         style={{
-//           display: "flex",
-//           justifyContent: "space-between",
-//           alignItems: "center",
-//           height: "100%",
-//           padding: "0 1rem",
+//           padding: 0,
+//           background: colorBgContainer,
 //         }}
 //       >
-//         <div></div>
-//         <div style={{ display: "flex", alignItems: "center" }}>
-//           <Dropdown
-//             overlay={
-//               <>
-//                 <Menu onClick={onClickMenuUser}>
-//                   <Menu.Item
-//                     key="info"
-//                     style={{
-//                       padding: " 12px 12px",
-//                     }}
-//                   >
-//                     {" "}
-//                     <div onClick={() => handleUserInfo()}>
-//                       <ProfileOutlined />
-//                       <Text style={{ marginLeft: "12px" }}>Thông tin</Text>
-//                     </div>
-//                     <div>
-//                       <Text
-//                       // style={{
-//                       //   marginLeft: "12px",
-//                       // }}
-//                       ></Text>
-//                     </div>
-//                   </Menu.Item>
-//                   <Menu.Item
-//                     key="logout"
-//                     style={{
-//                       padding: " 12px 12px",
-//                     }}
-//                   >
-//                     <div onClick={() => showModal()}>
-//                       <LogoutOutlined />
-//                       <Text
-//                         style={{
-//                           marginLeft: "12px",
-//                         }}
-//                       >
-//                         Đăng xuất
-//                       </Text>
-//                     </div>
-//                   </Menu.Item>
-//                 </Menu>
-//               </>
-//             }
-//             trigger={["click"]}
-//           >
-//             <div
-//               className="avt_group"
-//               onClick={(e) => e.preventDefault()}
-//               style={{
-//                 display: "flex",
-//                 alignItems: "center",
-//                 //marginLeft: "0.5rem",
-//                 justifyContent: "space-between",
-//               }}
-//             >
-//               <Avatar
-//                 style={{
-//                   color: "#f56a00",
-//                   backgroundColor: "#fde3cf",
-
-//                   width: "35px",
-//                   height: "35px",
-//                   marginRight: "6px",
-//                 }}
-//               >
-//                 {/* {user?.lastName[0]} */}A
-//               </Avatar>
-//               <div style={{ display: "flex", flexDirection: "column" }}>
-//                 <Text style={{ fontWeight: "500", color: "#333" }}>
-//                   {user?.fullName}
-//                 </Text>
-//                 <Text
-//                   style={{
-//                     fontSize: "12px",
-//                     fontWeight: "400",
-//                     color: "#abb4bc",
-//                   }}
-//                 >
-//                   {user?.roles}
-//                 </Text>
-//               </div>
-//             </div>
-//           </Dropdown>
-//         </div>
+//         <Dropdown.Button
+//           menu={menuProps}
+//           placement="bottom"
+//           icon={<UserOutlined />}
+//         >
+//           Dropdown
+//         </Dropdown.Button>
 //       </div>
-//     </div>
+//     </>
 //   );
 // };
+// export { Header };

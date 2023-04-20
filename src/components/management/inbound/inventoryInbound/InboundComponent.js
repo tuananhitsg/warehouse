@@ -15,7 +15,7 @@ const InboundComponent = () => {
   const [current, setCurrent] = useState(0);
   const [isSuccess, setIsSuccess] = useState(false);
   const partner = useSelector((state) => state.inboundReducer.info);
-
+  const goods = useSelector((state) => state.inboundReducer.goods);
   const next = () => {
     setCurrent(current + 1);
   };
@@ -73,7 +73,7 @@ const InboundComponent = () => {
           {<LeftOutlined />}
         </Button>
         <Steps className="step-bar" current={current} items={items} />
-        <Button
+        {/* <Button
           style={{
             marginLeft: "50px",
           }}
@@ -82,7 +82,7 @@ const InboundComponent = () => {
           type="primary"
         >
           {<RightOutlined />}
-        </Button>
+        </Button> */}
       </div>
       <div style={contentStyle}>{steps[current].content}</div>
     </>
