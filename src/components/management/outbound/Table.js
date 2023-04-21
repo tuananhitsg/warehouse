@@ -184,12 +184,12 @@ const OutboundTable = () => {
     <div className="table-container">
       <div className="table-header">
         <Row gutter={{ xs: 8, sm: 16, md: 16, lg: 16 }}>
-          <Col span={12}>
+          {/* <Col span={12}>
             <Input
               placeholder="Tìm kiếm sản phẩm theo mã, tên"
               prefix={<SearchOutlined />}
             />
-          </Col>
+          </Col> */}
           <Col span={12}>
             <Button
               type="primary"
@@ -207,7 +207,7 @@ const OutboundTable = () => {
         sticky
         columns={columns}
         dataSource={listReceipt}
-        pagination={{ pageSize: 10 }}
+        pagination={{ pageSize: 5 }}
         // expandable={{
         //   expandedRowRender: (record) => ()
         // }}

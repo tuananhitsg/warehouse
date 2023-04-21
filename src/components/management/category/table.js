@@ -87,19 +87,19 @@ const CategoryTable = () => {
       dataIndex: "description",
       key: "description",
     },
-    {
-      title: "Action",
-      key: "action",
-      fix: "right",
-      width: "10%",
-      render: (_, record) => (
-        <Space size="middle">
-          <a>
-            <DeleteOutlined />
-          </a>
-        </Space>
-      ),
-    },
+    // {
+    //   title: "Action",
+    //   key: "action",
+    //   fix: "right",
+    //   width: "10%",
+    //   render: (_, record) => (
+    //     <Space size="middle">
+    //       <a>
+    //         <DeleteOutlined />
+    //       </a>
+    //     </Space>
+    //   ),
+    // },
   ];
   useEffect(() => {
     const fetchData = async () => {
@@ -134,13 +134,13 @@ const CategoryTable = () => {
     <div className="table-container">
       <div className="table-header">
         <Row gutter={{ xs: 8, sm: 16, md: 16, lg: 16 }}>
-          <Col span={12}>
+          {/* <Col span={12}>
             <Input
               placeholder="Tìm kiếm sản phẩm theo mã, tên"
               prefix={<SearchOutlined />}
             />
-          </Col>
-          <Col span={12}>
+          </Col> */}
+          <Col >
             <Button
               type="primary"
               onClick={showModalAdd}
@@ -150,7 +150,7 @@ const CategoryTable = () => {
             >
               Tạo mới
             </Button>
-            <Button
+            {/* <Button
               type="primary"
               onClick={handleRefresh}
               loading={loading}
@@ -158,7 +158,7 @@ const CategoryTable = () => {
               style={{ marginLeft: "8px" }}
             >
               Làm mới
-            </Button>
+            </Button> */}
           </Col>
         </Row>
       </div>
@@ -166,7 +166,7 @@ const CategoryTable = () => {
         sticky
         columns={columns}
         dataSource={listCategory}
-        pagination={{ pageSize: 10 }}
+        pagination={{ pageSize: 5 }}
       
       />
       {showModalCategoryDetail ? (

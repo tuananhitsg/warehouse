@@ -1,15 +1,19 @@
 import React from "react";
 import { Outlet, Navigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import AuthService from "../../service/auth.service";
+const AdminProtectedRoute = ({ roleName }) => {
+  // const isLogin = useSelector((state) => state.userReducer.info);
+  // const isAdmin = isLogin.roles.includes(roleName);
+  const isLogin = AuthService.getLocalToken();
+  const isAdmin = AuthService.getUser().roles.includes(roleName);
+  console.log("isAdmin" , isAdmin);
 
-const AdminProtectedRoute = () => {
-  const currentUser = JSON.parse(localStorage.getItem("user"));
-  const isLoggedIn = !!currentUser;
-  console.log("currentUserInProtectedRoute", currentUser);
-  return currentUser.roles[0] === "ADMIN" && isLoggedIn ? (
+  return isLogin && isAdmin ?  (
     <Outlet />
   ) : (
-    <Navigate to="/landingPage"/>
+    <Navigate to="/landingPage" replace />
   );
 };
 
-export default AdminProtectedRoute;
+export { AdminProtectedRoute };

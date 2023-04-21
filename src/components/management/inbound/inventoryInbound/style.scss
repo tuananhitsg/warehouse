@@ -9,17 +9,58 @@
 }
 
 //confirmation
-.form-header {
-  margin-top: 10rem;
+.form-confirmation {
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  .confirm-img {
-    width: 10rem;
+  background-color: #fff;
+  .form-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    .confirm-img {
+      width: 10rem;
+      margin: auto;
+    }
+    .form-title {
+      margin-top: 1rem;
+      text-align: center;
+    }
   }
-  .form-title {
-    margin-top: 1rem;
-    text-align: center;
+
+  .form-content {
+    margin-top: 2rem;
+    display: inline-block;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+
+    .ant-form-item .ant-form-item-label > label {
+      font-size: 18px;
+      font-weight: 500;
+    }
+    .form-text {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      font-size: 16px;
+      gap: 10px;
+    }
+    .item-text {
+      // margin-bottom: 5px;
+      // padding-top: 3px;
+    }
+    .btn-submit {
+      margin-top: 50px;
+      width: 50%;
+      height: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-bottom: 20px;
+      font-size: 20px;
+      font-weight: 700;
+    }
   }
 }

@@ -83,7 +83,12 @@ const WarehouseTable = ({ setTab }) => {
       key: "acreage",
     },
     {
-      title: "Vị trí",
+      title:"Thể tích (m3)",
+      dataIndex:"volume",
+      key:"volume"
+    }
+    ,{
+      title: "Địa chỉ",
       dataIndex: "location",
       key: "location",
       render: (text, record) => {
@@ -128,12 +133,12 @@ const WarehouseTable = ({ setTab }) => {
         }}
       >
         <Row gutter={{ xs: 8, sm: 16, md: 16, lg: 16 }}>
-          <Col span={12}>
+          {/* <Col span={12}>
             <Input
               placeholder="Tìm kiếm sản phẩm theo mã, tên"
               prefix={<SearchOutlined />}
             />
-          </Col>
+          </Col> */}
           <Col span={12}>
             <Button
               type="primary"
@@ -144,7 +149,7 @@ const WarehouseTable = ({ setTab }) => {
             >
               Tạo mới
             </Button>
-            <Button
+            {/* <Button
               type="primary"
               onClick={handleRefresh}
               loading={loading}
@@ -152,7 +157,7 @@ const WarehouseTable = ({ setTab }) => {
               style={{ marginLeft: "8px" }}
             >
               Làm mới
-            </Button>
+            </Button> */}
           </Col>
         </Row>
       </div>
@@ -160,7 +165,7 @@ const WarehouseTable = ({ setTab }) => {
         sticky
         columns={columns}
         dataSource={listCategory}
-        pagination={{ pageSize: 10 }}
+        pagination={{ pageSize: 5 }}
       />
       {showModalAddWareHouse ? (
         <ModalAddWareHouse

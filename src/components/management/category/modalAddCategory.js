@@ -1,57 +1,43 @@
+import "../../utils/formError.scss";
 import React, { useEffect, useState } from "react";
 import {
   Button,
   Col,
   Drawer,
-  Form,
+  Form as FormAntd,
   Input,
   message,
   Row,
   Select,
   Space,
+  Modal,
 } from "antd";
 
 import categoryApi from "../../../api/categoryApi";
 import { setReload } from "../../../redux/reloadSlice";
 import { useDispatch, useSelector } from "react-redux";
-import Modal from "antd/es/modal/Modal";
 
+import { Formik, Form, Field, ErrorMessage, FastField } from "formik";
+import { createCategoryValues } from "../../utils/initValues";
 const ModalAddCategory = ({
   showModalAddCategory,
   setShowModalAddCategory,
 }) => {
   const dispatch = useDispatch();
   const reload = useSelector((state) => state.reloadReducer.reload);
-  const [form] = Form.useForm();
   // const [isLoading, setIsLoading] = useState(false);
 
   const onClose = () => {
     setShowModalAddCategory(false);
   };
 
-  const handleSubmit = async (params) => {
-    console.log("submit", params);
-    console.log("reload", reload);
-    const { description, name } = params;
-    console.log("name", name);
-
-    const data = new FormData();
-    data.append("description", description ? description : "");
-    data.append("name", name ? name : "");
-
-    try {
-      const res = await categoryApi.addCategory(data);
-      console.log(res);
-      if (res) {
-        onClose();
-        dispatch(setReload(!reload));
-        form.resetFields();
-        setTimeout(() => {
-          message.success("Tạo loại sản phẩm thành công!");
-        }, 500);
-      }
-    } catch (error) {
-      console.log(error);
+  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+    const res = await categoryApi.addCategory(values);
+    console.log(res);
+    if (res.code) {
+      resetForm();
+      dispatch(setReload(!reload));
+      setSubmitting(false);
     }
   };
 
@@ -62,33 +48,85 @@ const ModalAddCategory = ({
         width={720}
         onCancel={onClose}
         open={showModalAddCategory}
-
-        footer={
-          <Space>
-            <Button onClick={onClose}>Huỷ</Button>
-            <Button form="myForm" htmlType="submit" type="primary">
-              Xác nhận
-            </Button>
-          </Space>
-        }
+        footer={null}
       >
-        <Form form={form} onFinish={handleSubmit} id="myForm" layout="vertical">
-          <Row gutter={16}>
-            <Col span={24}>
-              <Form.Item name="name" label="Tên loại sản phẩm">
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}></Col>
-          </Row>
-          <Row gutter={16}>
-            <Col span={24}>
-              <Form.Item name="description" label="Mô tả">
-                <Input.TextArea rows={4} placeholder="Nhập mô tả..." />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form>
+        <div className="modal-add-category">
+          <Formik
+            initialValues={{ ...createCategoryValues.initial }}
+            validationSchema={createCategoryValues.validationSchema}
+            onSubmit={handleSubmit}
+            enableReinitialize
+          >
+            {({
+              isSubmitting,
+              values,
+              errors,
+              touched,
+              setFieldValue,
+              handleSubmit,
+            }) => (
+              <FormAntd
+                layout="horizontal"
+                labelAlign="left"
+                labelCol={{ span: 5 }}
+                wrapperCol={{ span: 19 }}
+              >
+                <FormAntd.Item labelAlign="left" label="Tên loại sản phẩm">
+                  <Field
+                    as={Input}
+                    name="name"
+                    placeholder="Nhập tên loại sản phẩm"
+                    className="form-field"
+                  />
+                  <ErrorMessage
+                    name="name"
+                    component="div"
+                    className="error-message"
+                  />
+                </FormAntd.Item>
+                <FormAntd.Item labelAlign="left" label="Mô tả">
+                  <Field
+                    as={Input.TextArea}
+                    name="description"
+                    placeholder="Nhập mô tả"
+                    className="form-field"
+                    maxLength={100}
+                    autoSize={{ minRows: 3 }}
+                    showCount
+                    style={{ resize: "none" }}
+                  />
+                  <ErrorMessage
+                    name="description"
+                    component="div"
+                    className="error-message"
+                  />
+                </FormAntd.Item>
+                <div className="btn-add-partner" style={{ marginTop: "50px" }}>
+                  <Row gutter={16} justify="end">
+                    <Col>
+                      <FormAntd.Item>
+                        <Button onClick={onClose}>Huỷ</Button>
+                      </FormAntd.Item>
+                    </Col>
+                    <Col>
+                      <FormAntd.Item>
+                        <Button
+                          type="primary"
+                          htmlType="submit"
+                          loading={isSubmitting}
+                          // disabled={!dirty || !isValid}
+                          onClick={handleSubmit}
+                        >
+                          Xác nhận
+                        </Button>
+                      </FormAntd.Item>
+                    </Col>
+                  </Row>
+                </div>
+              </FormAntd>
+            )}
+          </Formik>
+        </div>
       </Modal>
     </>
   );

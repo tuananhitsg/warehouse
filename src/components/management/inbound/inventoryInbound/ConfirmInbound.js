@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setReload } from "../../../../redux/reloadSlice";
 import { setPartner, setGoods } from "../../../../redux/inboundSlice";
 import ResultPage from "../../../pages/ResultPage";
+
 const Confirmation = ({ setIsSucess }) => {
   const partner = useSelector((state) => state.inboundReducer.info);
   const goods = useSelector((state) => state.inboundReducer.goods);
@@ -36,7 +37,7 @@ const Confirmation = ({ setIsSucess }) => {
             width: item.width,
             length: item.length,
             unit: item.unit,
-            quantity: 1,
+            quantity: item.quantity,
             categoryCode: item.categoryCode,
           };
         }),
@@ -47,26 +48,18 @@ const Confirmation = ({ setIsSucess }) => {
         phone: partner.phone,
       },
     };
-    try {
-      const res = await inboundApi.createReceipt(data);
-      console.log("res:", res);
-      if (res) {
-        dispatch(setReload(!reload));
-        dispatch(setGoods(null));
-        dispatch(setPartner(null));
-        message.success("Tạo phiếu nhập thành công!");
-        setIsSucess(true);
-      }
-    } catch (error) {
-      console.log("error:", error);
-      message.error("Tạo phiếu nhập thất bại!");
-    } finally {
-      setLoading(false);
+
+    setLoading(true);
+    const res = await inboundApi.createPurchaseReceipt(data);
+    console.log("res:", res);
+    if (res) {
+      dispatch(setReload(!reload));
+      setIsSucess(true);
     }
   };
 
   return (
-    <div>
+    <div className="form-confirmation">
       <Row>
         <Col span={24}>
           <div className="form-header">
@@ -76,37 +69,55 @@ const Confirmation = ({ setIsSucess }) => {
               alt="confirm"
               onClick={handleSubmit}
             />
-            <h2 className="form-title">Xác nhận đơn nhập hàng</h2>
+            <h2 className="form-title">Xác nhận phiếu mua hàng</h2>
           </div>
         </Col>
         <Col span={24}>
-          <div className="form-content"></div>
+          <div className="form-content">
+            <Form
+              layout="horizontal"
+              labelAlign="left"
+              labelCol={{
+                span: 8,
+              }}
+              wrapperCol={{
+                span: 16,
+              }}
+            >
+              <Form.Item label="Đối tác" className="form-item-label">
+                <div className="form-text">
+                  <div className="item-text">
+                    {partner.name}, {partner.phone}, {partner.address.street},{" "}
+                    {partner.address.ward}, {partner.address.district},{" "}
+                    {partner.address.province}
+                  </div>
+                </div>
+              </Form.Item>
+              <Form.Item label="Sản phẩm" className="form-item-label">
+                <div className="form-text">
+                  {goods?.map((item) => {
+                    return (
+                      <div key={item.code} className="item-text">
+                        {item.name} - {item.quantity} {item.unit}
+                      </div>
+                    );
+                  })}
+                </div>
+              </Form.Item>
+
+              <Button
+                className="btn-submit"
+                type="primary"
+                htmlType="submit"
+                loading={loading}
+                onClick={handleSubmit}
+              >
+                Xác nhận
+              </Button>
+            </Form>
+          </div>
         </Col>
       </Row>
-      {/* <div className="form-content__item">
-          <div className="form-content__item__title">Mã đối tác</div>
-          <div className="form-content__item__value">{data.partnerCode}</div>
-        </div>
-        <div className="form-content__item">
-          <div className="form-content__item__title">Tên đối tác</div>
-          <div className="form-content__item__value">{data.partnerName}</div>
-        </div>
-        <div className="form-content__item">
-          <div className="form-content__item__title">Số điện thoại</div>
-          <div className="form-content__item__value">{data.partnerPhone}</div>
-        </div>
-        <div className="form-content__item">
-          <div className="form-content__item__title">Địa chỉ</div>
-          <div className="form-content__item__value">{data.partnerAddress}</div>
-        </div>
-        <div className="form-content__item">
-          <div className="form-content__item__title">Ngày nhập</div>
-          <div className="form-content__item__value">{data.date}</div>
-        </div>
-        <div className="form-content__item">
-          <div className="form-content__item__title">Tổng số lượng</div>
-          <div className="form-content__item__value">{data.totalQuantity}</div> 
-        </div> */}
     </div>
   );
 };

@@ -1,33 +1,26 @@
+import "../../utils/formError.scss";
 import React, { useEffect, useState } from "react";
-import {
-  Button,
-  Col,
-  Drawer,
-  Modal,
-  Form,
-  Input,
-  message,
-  Row,
-  Select,
-  Space,
-} from "antd";
-import addressApi from "../../../api/addressApi";
-import employeeApi from "../../../api/employeeApi";
+import { Button, Col, Modal, Form as FormAntd, Input, Row, Select } from "antd";
+
 import { setReload } from "../../../redux/reloadSlice";
 import { useDispatch, useSelector } from "react-redux";
+
 import partnerApi from "../../../api/partnerApi";
+import addressApi from "../../../api/addressApi";
+
+import { Formik, Field, ErrorMessage } from "formik";
+import { createPartnerValues } from "../../utils/initValues";
 
 const ModalAddPartner = ({ showModalAddPartner, setShowModalAddPartner }) => {
   const dispatch = useDispatch();
   const reload = useSelector((state) => state.reloadReducer.reload);
-  const [form] = Form.useForm();
 
   const [province, setProvince] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
-  const [provincePicked, setProvincePicked] = useState(0);
-  const [districtPicked, setDistrictPicked] = useState(0);
-  const [wardPicked, setWardPicked] = useState(0);
+  const [provincePicked, setProvincePicked] = useState(null);
+  const [districtPicked, setDistrictPicked] = useState(null);
+  const [wardPicked, setWardPicked] = useState(null);
   const [provinceGot, setProvinceGot] = useState("");
   const [districtGot, setDistrictGot] = useState("");
   const [wardGot, setWardGot] = useState("");
@@ -36,28 +29,30 @@ const ModalAddPartner = ({ showModalAddPartner, setShowModalAddPartner }) => {
     setShowModalAddPartner(false);
   };
 
-  const handleSubmit = async (values) => {
-    const { address, name, phone} = values;
-
+  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+    const { street, province, district, ward, phone, name } = values;
+    console.log("values:", values);
     const data = {
-      address: `${address}, ${wardGot}, ${districtGot}, ${provinceGot}`,
-      name: name,
+      address: {
+        street: street,
+        province: province,
+        district: district,
+        ward: ward,
+      },
       phone: phone,
+      name: name,
     };
     console.log("formdata:", data);
 
-    try {
-      const res = await partnerApi.create(data);
-      console.log(res);
-      onClose();
+    const res = await partnerApi.create(data);
+    console.log(res);
+    if (res.code) {
+      resetForm();
       dispatch(setReload(!reload));
-      form.resetFields();
-      setTimeout(() => {
-        message.success("Tạo đối tác thành công!");
-      }, 500);
-    } catch (error) {
-      console.log(error);
-      message.error("Tạo đối tác thất bại!");
+      setSubmitting(false);
+      setProvincePicked(null);
+      setDistrictPicked(null);
+      setWardPicked(null);
     }
   };
   useEffect(() => {
@@ -154,98 +149,182 @@ const ModalAddPartner = ({ showModalAddPartner, setShowModalAddPartner }) => {
         onClose={onClose}
         onCancel={onClose}
         open={showModalAddPartner}
-        footer={
-          <Space>
-            <Button onClick={onClose}>Huỷ</Button>
-            <Button form="myForm" htmlType="submit" type="primary">
-              Xác nhận
-            </Button>
-          </Space>
-        }
+        footer={null}
       >
-        <Form form={form} onFinish={handleSubmit} id="myForm" layout="vertical">
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item name="name" label="Tên đối tác">
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item name="phone" label="Số điện thoại">
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="Địa chỉ" name="province">
-                <Select
-                  showSearch
-                  placeholder="Chọn tỉnh thành"
-                  optionFilterProp="children"
-                  onChange={onChangeProvince}
-                  onSearch={onSearch}
-                  filterOption={(input, option) =>
-                    (option?.label ?? "")
-                      .toLowerCase()
-                      .includes(input.toLowerCase())
-                  }
-                  options={province}
-                />
-              </Form.Item>
-            </Col>
-
-            <Col span={8}>
-              <Form.Item label=" " name="district">
-                <Select
-                  showSearch
-                  placeholder="Chọn quận huyện"
-                  optionFilterProp="children"
-                  onChange={onChangeDistrict}
-                  onSearch={onSearch}
-                  style={{ width: "100%" }}
-                  filterOption={(input, option) =>
-                    (option?.label ?? "")
-                      .toLowerCase()
-                      .includes(input.toLowerCase())
-                  }
-                  options={districts}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label=" " name="ward">
-                <Select
-                  showSearch
-                  placeholder="Chọn phường/xã"
-                  optionFilterProp="children"
-                  onChange={onChangeWard}
-                  onSearch={onSearch}
-                  style={{ width: "100%" }}
-                  filterOption={(input, option) =>
-                    (option?.label ?? "")
-                      .toLowerCase()
-                      .includes(input.toLowerCase())
-                  }
-                  options={wards}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={16}>
-            <Col span={24}>
-              <Form.Item name="address">
-                <Input.TextArea
-                  showCount
-                  maxLength={100}
-                  style={{
-                    width: "100%",
-                  }}
-                  placeholder="Nhập địa chỉ"
-                  rows={3}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form>
+        <div className="modal-add-partner">
+          <Formik
+            initialValues={{ ...createPartnerValues.initial }}
+            validationSchema={createPartnerValues.validationSchema}
+            onSubmit={handleSubmit}
+          >
+            {({ isSubmitting, handleSubmit, setFieldValue, resetForm }) => (
+              <FormAntd
+                layout="horizontal"
+                labelAlign="left"
+                labelCol={{
+                  span: 5,
+                }}
+                wrapperCol={{
+                  span: 19,
+                }}
+              >
+                <FormAntd.Item label="Tên đối tác" labelAlign="left">
+                  <Field
+                    name="name"
+                    as={Input}
+                    placeholder="Nhập tên đối tác"
+                    className="form-field"
+                  />
+                  <ErrorMessage
+                    name="name"
+                    component="div"
+                    className="error-message"
+                  />
+                </FormAntd.Item>
+                <FormAntd.Item label="Số điện thoại" labelAlign="left">
+                  <Field
+                    name="phone"
+                    as={Input}
+                    placeholder="Nhập số điện thoại"
+                    className="form-field"
+                  />
+                  <ErrorMessage
+                    name="phone"
+                    component="div"
+                    className="error-message"
+                  />
+                </FormAntd.Item>
+                <FormAntd.Item label="Địa chỉ" labelAlign="left">
+                  <Row gutter={16}>
+                    <Col span={8}>
+                      <Field
+                        name="province"
+                        as={Select}
+                        value={provincePicked}
+                        showSearch
+                        placeholder="Chọn tỉnh thành"
+                        optionFilterProp="children"
+                        onChange={(value, option) => {
+                          onChangeProvince(value, option);
+                          setFieldValue("province", option.label);
+                        }}
+                        onSearch={onSearch}
+                        filterOption={(input, option) =>
+                          (option?.label ?? "")
+                            .toLowerCase()
+                            .includes(input.toLowerCase())
+                        }
+                        options={province}
+                      />
+                    </Col>
+                    <Col span={8}>
+                      <Field
+                        name="district"
+                        as={Select}
+                        showSearch
+                        placeholder="Chọn quận huyện"
+                        value={districtPicked}
+                        optionFilterProp="children"
+                        onChange={(value, option) => {
+                          onChangeDistrict(value, option);
+                          setFieldValue("district", option.label);
+                        }}
+                        onSearch={onSearch}
+                        filterOption={(input, option) =>
+                          (option?.label ?? "")
+                            .toLowerCase()
+                            .includes(input.toLowerCase())
+                        }
+                        options={districts}
+                      />
+                    </Col>
+                    <Col span={8}>
+                      <Field
+                        name="ward"
+                        as={Select}
+                        showSearch
+                        value={wardPicked}
+                        placeholder="Chọn phường xã"
+                        optionFilterProp="children"
+                        onChange={(value, option) => {
+                          onChangeWard(value, option);
+                          setFieldValue("ward", option.label);
+                        }}
+                        onSearch={onSearch}
+                        filterOption={(input, option) =>
+                          (option?.label ?? "")
+                            .toLowerCase()
+                            .includes(input.toLowerCase())
+                        }
+                        options={wards}
+                      />
+                    </Col>
+                    <Col span={8}>
+                      <ErrorMessage
+                        name="province"
+                        component="div"
+                        className="error-message"
+                      />
+                    </Col>
+                    <Col span={8}>
+                      <ErrorMessage
+                        name="district"
+                        component="div"
+                        className="error-message"
+                      />
+                    </Col>
+                    <Col span={8}>
+                      <ErrorMessage
+                        name="ward"
+                        component="div"
+                        className="error-message"
+                      />
+                    </Col>
+                  </Row>
+                </FormAntd.Item>
+                <FormAntd.Item label="Địa chỉ cụ thể" labelAlign="left">
+                  <Field
+                    name="street"
+                    as={Input.TextArea}
+                    placeholder="Nhập địa chỉ cụ thể"
+                    className="form-field"
+                    maxLength={100}
+                    autoSize={{ minRows: 3 }}
+                    showCount
+                    style={{ resize: "none" }}
+                  />
+                  <ErrorMessage
+                    name="address"
+                    component="div"
+                    className="error-message"
+                  />
+                </FormAntd.Item>
+                <div className="btn-add-partner" style={{ marginTop: "50px" }}>
+                  <Row gutter={16} justify="end">
+                    <Col>
+                      <FormAntd.Item>
+                        <Button onClick={onClose}>Huỷ</Button>
+                      </FormAntd.Item>
+                    </Col>
+                    <Col>
+                      <FormAntd.Item>
+                        <Button
+                          type="primary"
+                          htmlType="submit"
+                          loading={isSubmitting}
+                          // disabled={!dirty || !isValid}
+                          onClick={handleSubmit}
+                        >
+                          Xác nhận
+                        </Button>
+                      </FormAntd.Item>
+                    </Col>
+                  </Row>
+                </div>
+              </FormAntd>
+            )}
+          </Formik>
+        </div>
       </Modal>
     </>
   );
