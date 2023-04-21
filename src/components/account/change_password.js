@@ -94,19 +94,19 @@ const ChangePassword = () => {
       return;
     }
 
-    if (values.new_password == "") {
+    if (values.new_password === "") {
       message.error("Vui lòng nhập mật khẩu mới!");
       stopLoading(0);
       return;
     }
 
-    if (values.new_password != values.repeat_password) {
+    if (values.new_password !== values.repeat_password) {
       message.error("Mật khẩu mới không khớp");
       stopLoading(0);
       return;
     }
 
-    if (testResult.score == 1 || testResult.score == 0) {
+    if (testResult.score === 1 || testResult.score === 0) {
       message.error("Vui lòng chọn mật khẩu an toàn hơn");
       stopLoading(0);
       return;
