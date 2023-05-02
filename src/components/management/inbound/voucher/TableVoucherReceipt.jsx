@@ -20,14 +20,14 @@ import {
   LoginOutlined,
 } from "@ant-design/icons";
 
-import InboundApi from "../../../api/inboundApi";
+import InboundApi from "../../../../api/inboundApi";
 import { useDispatch, useSelector } from "react-redux";
-import { setReload } from "../../../redux/reloadSlice";
+import { setReload } from "../../../../redux/reloadSlice";
 import { useNavigate, useLocation } from "react-router-dom";
-// import "./table.scss";
+import "../table.scss";
 //import component
-import ModalAddReceipt from "./modalAddReceipt";
-import TableReceipt from "./TableReceiptDetail";
+// import ModalAddReceipt from "./modalAddReceipt";
+import TableReceipt from "./TableVoucherDetail";
 
 const InboundTable = () => {
   const [selectedId, setSelectedId] = useState(null);
@@ -200,6 +200,7 @@ const InboundTable = () => {
         return formattedDate;
       },
     },
+   
     {
       title: "Hành động",
       key: "action",
@@ -211,6 +212,7 @@ const InboundTable = () => {
             onClick={() => showModalConfirm(record.code)}
             type="primary"
             icon={<LoginOutlined />}
+            disabled={record.status !== "Chưa nhập lên kệ"}
           />
         </Space>
       ),
@@ -267,14 +269,14 @@ const InboundTable = () => {
         </Modal>
       ) : null}
 
-      {showModalAddReceipt ? (
+      {/* {showModalAddReceipt ? (
         <ModalAddReceipt
           showModalAddReceipt={showModalAddReceipt}
           setShowModalAddReceipt={setShowModalAddReceipt}
         />
-      ) : null}
+      ) : null} */}
     </div>
   );
 };
 
-export default InboundTable;
+export { InboundTable};

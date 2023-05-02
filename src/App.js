@@ -35,8 +35,10 @@ import IndexUser from "./components/account/user/userInfo";
 import IndexReceipt from "./components/management/inbound/index";
 import IndexPartner from "./components/management/partner/index";
 import IndexOutbound from "./components/management/outbound/index";
-import IndexInbound from "./components/management/inbound/inventoryInbound/indexInbound";
+import IndexPurchase from "./components/management/inbound/purchasingProcess/indexPurchase";
+import IndexInbound from "./components/management/inbound/inboundProcess/IndexInbound";
 import { TablePurchaseReceipt } from "./components/management/inbound/purchase/index";
+import { InboundTable } from "./components/management/inbound/voucher/index";
 
 import LoginPage from "./components/account/login";
 import ChangePassword from "./components/account/change_password";
@@ -92,16 +94,22 @@ const router = createBrowserRouter([
           },
           {
             path: "tao-phieu-mua",
-            element: <IndexInbound />,
+            element: <IndexPurchase />,
           },
           {
             path: "danh-sach-phieu-mua",
             element: <TablePurchaseReceipt />,
           },
           {
-            path: "danh-sach-phieu-nhap",
-            element: <IndexReceipt />,
+            path: "tao-phieu-nhap",
+            element: <IndexInbound />,
           },
+          {
+            path: "danh-sach-phieu-nhap",
+            // element: <IndexReceipt />,
+            element: <InboundTable />,
+          },
+        
           {
             path: "tao-phieu-xuat",
             element: <IndexOutbound />,

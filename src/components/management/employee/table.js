@@ -35,8 +35,8 @@ const EmployeeTable = () => {
   const [loading, setLoading] = useState(false);
   const [listCategory, setListCategory] = useState([]);
   const [refreshKey, setRefreshKey] = useState(0);
-  const dispatch = useDispatch();
 
+  const dispatch = useDispatch();
   const reload = useSelector((state) => state.reloadReducer.reload);
 
   const showModalDetail = (e) => {

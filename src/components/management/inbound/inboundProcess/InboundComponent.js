@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Button, Modal, Breadcrumb, Steps, theme } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 
-import PickingPartner from "./PickingPartner";
-import PickingGoods from "./PickingGoods";
+// import PickingPartner from "./PickingPartner";
+// import PickingGoods from "./PickingGoods";
 import Confirmation from "./ConfirmInbound";
-import PickingGood from "./editablerow";
+import PickingPurchasesReceipt from "./PickingPurchaseReceipt";
+import SelectingGoods from "./SelectingGoods";
+import SelectingWarehouse from "./SelectingWarehouse";
 import ResultPage from "../../../pages/ResultPage";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -24,19 +26,19 @@ const InboundComponent = () => {
   };
   const steps = [
     {
-      title: "Đối tác",
-      content: <PickingPartner next={next} />,
+      title: "Chọn phiếu mua",
+      content: <PickingPurchasesReceipt next={next} />,
     },
     {
-      title: "Sản phẩm",
-      content: <PickingGoods next={next} />,
+      title: "Chọn sản phẩm",
+      content: <SelectingGoods next={next} />,
     },
     // {
-    //   title: "Test",
-    //   content: <PickingGood next={next} />,
+    //   title: "Chọn vị trí",
+    //   content: <SelectingWarehouse next={next} />,
     // },
     {
-      title: "Xác nhận",
+      title: "Hoàn tất",
       content: isSuccess ? (
         <ResultPage setIsSuccess={setIsSuccess} setCurrent={setCurrent} />
       ) : (

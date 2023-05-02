@@ -20,7 +20,6 @@ export const loginValues = {
   }),
 };
 
-
 export const forgotValues = {
   initial: {
     email: "",
@@ -32,7 +31,6 @@ export const forgotValues = {
       .required("Email không được bỏ trống."),
   }),
 };
-
 
 export const createEmployeeValues = {
   initial: {
@@ -126,5 +124,15 @@ export const createWarehouseValues = {
     district: Yup.string().required("Chưa chọn quận/huyện."),
     ward: Yup.string().required("Chưa chọn phường/xã."),
     address: Yup.string().required("Vui lòng nhập địa chỉ."),
+  }),
+};
+export const selectBin = {
+  initial: {
+    quantity: "",
+    codeWarehouse: "",
+  },
+  validationSchema: Yup.object().shape({
+    quantity: Yup.number().required("Chưa nhập số lượng."),
+    codeWarehouse: Yup.string().required("Chưa chọn kho."),
   }),
 };

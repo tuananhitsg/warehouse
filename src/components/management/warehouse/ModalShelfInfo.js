@@ -70,30 +70,36 @@ const ModalShelfInfo = ({ shelfCode, shelf, handleLogic }) => {
     >
       <Form form={form} id="myForm" layout="vertical">
         <Row>
-        <Col span={4}>Tên kho chứa:</Col>
+          <Col span={4}>Tên kho chứa:</Col>
           <Col span={20}>
             <Form.Item name="nameWarehouse">
               <Input readOnly />
             </Form.Item>
-
           </Col>
+
           <Col span={4}>Vị trí:</Col>
           <Col span={20}>
             <Form.Item name="position" rules={[{ required: true }]}>
               <Space>
                 <Row gutter={16}>
                   <Col span={12}>
-                    <Form.Item name="nameColumn" label="Cột">
-                      <Input readOnly bordered/>
-                    </Form.Item>
-                  </Col>
-                  <Col span={12}>
-                    <Form.Item name="nameRow" label="Tầng">
+                    <Form.Item name="codeBin" label="Mã kệ">
                       <Input readOnly />
                     </Form.Item>
                   </Col>
-                  <Col span={24}>
+                  <Col span={12}>
                     <Form.Item name="nameShelf" label="Tên kệ">
+                      <Input readOnly />
+                    </Form.Item>
+                  </Col>
+
+                  <Col span={12}>
+                    <Form.Item name="nameColumn" label="Cột">
+                      <Input readOnly bordered />
+                    </Form.Item>
+                  </Col>
+                  <Col span={12}>
+                    <Form.Item name="nameBin" label="Tầng">
                       <Input readOnly />
                     </Form.Item>
                   </Col>
@@ -131,34 +137,36 @@ const ModalShelfInfo = ({ shelfCode, shelf, handleLogic }) => {
         <Row>
           <Col span={4}>Sản phẩm:</Col>
           <Col span={20}>
-            <Form.Item name="goods">
-              <Space>
-                <Row gutter={16}>
-                  <Col span={12}>
-                    <Form.Item name="code" label="Mã sản phẩm">
-                      <Input />
-                    </Form.Item>
-                  </Col>
-                  <Col span={12}>
-                    <Form.Item name="name" label="Tên sản phẩm">
-                      <Input />
-                    </Form.Item>
-                  </Col>
-                </Row>
-                <Row gutter={16}>
-                  <Col span={12}>
-                    <Form.Item name="unit" label="Đơn vị">
-                      <Input />
-                    </Form.Item>
-                  </Col>
-                  <Col span={12}>
-                    <Form.Item name="categoryName" label="Loại sản phẩm">
-                      <Input />
-                    </Form.Item>
-                  </Col>
-                </Row>
-              </Space>
-            </Form.Item>
+            {shelf.goods ? (
+              <Form.Item name="goods">
+                <Space>
+                  <Row gutter={16}>
+                    <Col span={12}>
+                      <Form.Item name="code" label="Mã sản phẩm">
+                        <Input readOnly bordered={false} />
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item name="name" label="Tên sản phẩm">
+                        <Input readOnly bordered={false} />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                  <Row gutter={16}>
+                    <Col span={12}>
+                      <Form.Item name="unit" label="Đơn vị">
+                        <Input readOnly bordered={false} />
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item name="categoryName" label="Loại sản phẩm">
+                        <Input readOnly bordered={false} />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                </Space>
+              </Form.Item>
+            ) : "Trống"}
           </Col>
         </Row>
       </Form>

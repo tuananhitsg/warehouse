@@ -186,7 +186,12 @@ const ModalAddWareHouse = ({
       console.log("Loi roi:", error);
     }
   };
-
+  const restrictInputToNumbers = (event) => {
+    const numericKeys = /[0-9]/;
+    if (!numericKeys.test(event.key)) {
+      event.preventDefault();
+    }
+  };
   return (
     <>
       <Modal
@@ -194,7 +199,6 @@ const ModalAddWareHouse = ({
         width={720}
         onCancel={onClose}
         open={showModalAddWareHouse}
-
         footer={
           <Space>
             <Button onClick={onClose}>Huỷ</Button>
@@ -224,18 +228,21 @@ const ModalAddWareHouse = ({
                     <Input
                       style={{ width: "33%" }}
                       placeholder="Chiều dài kho(m)"
+                      onKeyPress={restrictInputToNumbers}
                     />
                   </Form.Item>
                   <Form.Item name="width" noStyle>
                     <Input
                       style={{ width: "33%" }}
                       placeholder="Chiều rộng kho(m)"
+                      onKeyPress={restrictInputToNumbers}
                     />
                   </Form.Item>
                   <Form.Item name="height" noStyle>
                     <Input
                       style={{ width: "33%" }}
                       placeholder="Chiều cao kho(m)"
+                      onKeyPress={restrictInputToNumbers}
                     />
                   </Form.Item>
                 </Space.Compact>
@@ -254,18 +261,21 @@ const ModalAddWareHouse = ({
                     <Input
                       style={{ width: "33%" }}
                       placeholder="Chiều dài kệ(m)"
+                      onKeyPress={restrictInputToNumbers}
                     />
                   </Form.Item>
                   <Form.Item name="widthShelf" noStyle>
                     <Input
                       style={{ width: "33%" }}
                       placeholder="Chiều rộng kệ(m)"
+                      onKeyPress={restrictInputToNumbers}
                     />
                   </Form.Item>
                   <Form.Item name="heightShelf" noStyle>
                     <Input
                       style={{ width: "33%" }}
                       placeholder="Chiều cao kệ(m)"
+                      onKeyPress={restrictInputToNumbers}
                     />
                   </Form.Item>
                 </Space.Compact>
@@ -275,12 +285,12 @@ const ModalAddWareHouse = ({
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item name="numberOfFloor" label="Số tầng của kệ">
-                <Input />
+                <Input onKeyPress={restrictInputToNumbers} />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item name="lengthOfColumn" label="Chiều dài mỗi cột">
-                <Input />
+                <Input onKeyPress={restrictInputToNumbers} />
               </Form.Item>
             </Col>
           </Row>

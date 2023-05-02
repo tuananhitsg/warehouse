@@ -63,7 +63,9 @@ const ForgotPassword = () => {
       }
     } catch (error) {
       console.log("Failed:", error);
-      message.error("Mail không chính xác");
+      if (error.response.status === 404) {
+        message.error("Email không tồn tại");
+      }
     } finally {
       stopLoading(1);
     }

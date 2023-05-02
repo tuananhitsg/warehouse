@@ -20,7 +20,7 @@ import {
   ExclamationCircleOutlined,
 } from "@ant-design/icons";
 
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import authService from "../../../service/auth.service";
 import { setUser } from "../../../redux/userSlice";
 import { useNavigate, Link } from "react-router-dom";
@@ -29,6 +29,7 @@ const { Header } = Layout;
 
 const HeaderCustom = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const {
     token: { colorBgContainer },
@@ -48,6 +49,7 @@ const HeaderCustom = () => {
     try {
       localStorage.removeItem("token");
       authService.removeUser();
+      dispatch(setUser(null));
       navigate("/dang-nhap");
     } catch (err) {
       console.log(err);
@@ -138,7 +140,9 @@ const HeaderCustom = () => {
                       color: "#abb4bc",
                     }}
                   >
-                    {user?.roles}
+                    {user?.roles.includes("ADMIN")
+                      ? "Quản trị viên"
+                      : "Nhân viên"}
                   </Text>
                 </div>
                 <Avatar

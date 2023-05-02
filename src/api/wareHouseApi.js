@@ -22,39 +22,48 @@ const wareHouserApi = {
     const url = `/shelve-storage/get-by/${id}`;
     return axiosApi.get(url);
   },
-  getAllColumn: () =>{
+  getAllColumn: () => {
     const url = "/column-location/get-all";
     return axiosApi.get(url);
   },
-  getColumnById: (id) =>{
+  getColumnById: (id) => {
     const url = `/column-location/get-by/${id}`;
     return axiosApi.get(url);
   },
   //BinController
-  getAllRow: () =>{
+  getAllRow: () => {
     const url = "/bin-location/get-all";
     return axiosApi.get(url);
   },
-  getRowById: (id) =>{
+  getBinById: (id) => {
     const url = `/bin-location/get-by/${id}`;
     return axiosApi.get(url);
   },
-  getShelvesByWarehouseId:(id)=>{
-    const url =`/bin-location/get-all-by/${id}`;
+  getShelvesByWarehouseId: (id) => {
+    const url = `/bin-location/get-all-by/${id}`;
     return axiosApi.get(url);
   },
-  getReportStock: (id) =>{
+  getReportStock: (id) => {
     const url = `/bin-location/report-stock-position/${id}`;
     return axiosApi.get(url);
   },
-  getUsableBin: (codeWarehouse) =>{
-    const url = `/bin-location/usable-position-by-goods/${codeWarehouse}`;
-    return axiosApi.get(url);
-  },
-  getBinsByStatus: (codeWarehouse,params) =>{
-    const url = `/bin-location/filter-status-by/${codeWarehouse}`;
-    return axiosApi.get(url,params);
-  },
 
+  getUsableBin: (codeWarehouse, params) => {
+    const url = `/api/bin-location/usable-position-by-goods/${codeWarehouse}`;
+    return axiosApi
+      .post(url, params)
+      .then((res) => {
+        console.log("res: ", res);
+        return res.data;
+      })
+      .catch((err) => {
+        console.log("err: ", err);
+        throw err;
+      });
+  },
+  getBinsByStatus: (codeWarehouse, params) => {
+    const url = `/bin-location/filter-status-by/${codeWarehouse}`;
+    return axiosApi.get(url, params);
+  },
 };
 export default wareHouserApi;

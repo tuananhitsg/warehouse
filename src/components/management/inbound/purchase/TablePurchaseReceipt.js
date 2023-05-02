@@ -29,7 +29,7 @@ import "../table.scss";
 import ModalAddReceipt from "../modalAddReceipt";
 import TablePurchaseDetail from "./TablePurChaseDetail";
 
-const TablePurchaseReceipt = () => {
+const TablePurchaseReceipt = ({ inboundCols, handleClick }) => {
   const [selectedId, setSelectedId] = useState(null);
   const [showModalGoodsDetail, setShowModalGoodsDetail] = useState(false);
   const [showModalAddReceipt, setShowModalAddReceipt] = useState(false);
@@ -120,21 +120,21 @@ const TablePurchaseReceipt = () => {
   //       setListReceipt([]);
   //     }
   //   };
-  const handleInbound = async () => {
-    try {
-      const res = await InboundApi.putGoodsIntoShelf(selectedId);
-      console.log("res inbound:", res);
-      if (res) {
-        message.success("Nhập kho thành công");
-        dispatch(setReload(!reload));
-      }
-    } catch (error) {
-      console.log("Failed to put goods: ", error);
-      message.error("Nhập kho thất bại");
-    }
-    setSelectedId(null);
-    setShowModalConfirmPut(false);
-  };
+  // const handleInbound = async () => {
+  //   try {
+  //     const res = await InboundApi.putGoodsIntoShelf(selectedId);
+  //     console.log("res inbound:", res);
+  //     if (res) {
+  //       message.success("Nhập kho thành công");
+  //       dispatch(setReload(!reload));
+  //     }
+  //   } catch (error) {
+  //     console.log("Failed to put goods: ", error);
+  //     message.error("Nhập kho thất bại");
+  //   }
+  //   setSelectedId(null);
+  //   setShowModalConfirmPut(false);
+  // };
 
   const columns = [
     {
@@ -156,7 +156,8 @@ const TablePurchaseReceipt = () => {
         } else if (status === "DONE") {
           color = "cyan";
           name = "Đã hoàn thành";
-        }
+        } 
+        
         return (
           <Tag color={color} key={name}>
             {name?.toUpperCase()}
@@ -170,22 +171,6 @@ const TablePurchaseReceipt = () => {
       dataIndex: "createdBy",
       key: "createdBy",
     },
-    // {
-    //   title: "Ngày tạo",
-    //   dataIndex: "createDate",
-    //   key: "createDate",
-    //   render: (createDate) => {
-    //     const date = new Date(createDate);
-    //     const formattedDate = date.toLocaleDateString("vi-VN", {
-    //       year: "numeric",
-    //       month: "2-digit",
-    //       day: "2-digit",
-    //       hour: "2-digit",
-    //       minute: "2-digit",
-    //     });
-    //     return formattedDate;
-    //   },
-    // },
     {
       title: "Đối tác",
       dataIndex: "partner",
@@ -195,21 +180,6 @@ const TablePurchaseReceipt = () => {
         return partner?.name;
       },
     },
-    // {
-    //   title: "Hành động",
-    //   key: "action",
-    //   width: "10%",
-    //   align: "center",
-    //   render: (text, record) => (
-    //     <Space>
-    //       <Button
-    //         onClick={() => showModalConfirm(record.code)}
-    //         type="primary"
-    //         icon={<LoginOutlined />}
-    //       />
-    //     </Space>
-    //   ),
-    // },
   ];
 
   const handleCancel = () => {
@@ -222,29 +192,8 @@ const TablePurchaseReceipt = () => {
   };
   return (
     <div className="table-container">
-      <div className="table-header">
-        <Row gutter={{ xs: 8, sm: 16, md: 16, lg: 16 }}>
-          {/* <Col span={12}>
-            <Input
-              placeholder="Tìm kiếm sản phẩm theo mã, tên"
-              prefix={<SearchOutlined />}
-            />
-          </Col> */}
-          <Col span={12}>
-            <Button
-              type="primary"
-              loading={isLoading}
-              icon={<UserAddOutlined />}
-              style={{ marginLeft: "16px" }}
-              onClick={showModalAdd}
-            >
-              Tạo mới
-            </Button>
-          </Col>
-        </Row>
-      </div>
       <Table
-        columns={columns}
+        columns={ inboundCols ? inboundCols : columns}
         dataSource={listReceipt}
         // onChange={handleTableChange}
         // pagination={{ ...tableParams.pagination }}
@@ -257,11 +206,11 @@ const TablePurchaseReceipt = () => {
           onExpand: handleExpand,
         }}
       />
-      {showModalConfirmPut ? (
+      {/* {showModalConfirmPut ? (
         <Modal
           title="Xác nhận nhập kho"
           onCancel={handleCancel}
-          onOk={handleInbound}
+          //onOk={handleInbound}
           open={true}
           cancelText="Huỷ"
           okText="Xác nhận"
@@ -275,7 +224,7 @@ const TablePurchaseReceipt = () => {
           showModalAddReceipt={showModalAddReceipt}
           setShowModalAddReceipt={setShowModalAddReceipt}
         />
-      ) : null}
+      ) : null} */}
     </div>
   );
 };

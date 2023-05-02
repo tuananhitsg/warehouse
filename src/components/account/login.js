@@ -32,7 +32,9 @@ const LoginPage = () => {
       if (res) {
         console.log("res login:", res);
         localStorage.setItem("token", res.token);
+        localStorage.setItem("refreshToken", res.refreshToken);
         authService.setUser(res);
+
         dispatch(setUser(res));
         navigate("/");
       }

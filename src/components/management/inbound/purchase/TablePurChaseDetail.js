@@ -4,7 +4,7 @@ import { RightOutlined, LoginOutlined } from "@ant-design/icons";
 
 import InboundApi from "../../../../api/inboundApi";
 
-const TablePurchaseDetail = ({ record }) => {
+const TablePurchaseDetail = ({ record, inboundCols }) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [receiptList, setReceiptList] = useState([]);
   // const [loading, setLoading] = useState(false);
@@ -25,11 +25,12 @@ const TablePurchaseDetail = ({ record }) => {
       const data = res.purchaseDetails.map((item) => {
         return {
           key: ++i,
+          code: item.goods.code,
           name: item.goods.name,
           categoryName: item.goods.categoryName,
           unit: item.goods.unit,
           quantityPurchased: item.quantityPurchased,
-          quantityActual: item.quantityActual,
+          quantityRemaining: item.quantityRemaining,
           status: item.status,
         };
       });
@@ -41,6 +42,11 @@ const TablePurchaseDetail = ({ record }) => {
     {
       title: "STT",
       dataIndex: "key",
+    },
+    {
+      title: "Mã sản phẩm",
+      dataIndex: "code",
+      key: "code",
     },
     {
       title: "Tên sản phẩm",
@@ -64,9 +70,9 @@ const TablePurchaseDetail = ({ record }) => {
       key: "quantityPurchased",
     },
     {
-      title: "Số lượng thực nhập",
-      dataIndex: "quantityActual",
-      key: "quantityActual",
+      title: "Số lượng chưa nhập",
+      dataIndex: "quantityRemaining",
+      key: "quantityRemaining",
     },
     {
       title: "Trạng thái",
@@ -80,6 +86,9 @@ const TablePurchaseDetail = ({ record }) => {
           name = "Chưa tạo";
         } else if (status === "DONE") {
           color = "cyan";
+          name = "Đã nhập hết";
+        } else if (status === "CREATED") {
+          color = "blue";
           name = "Đã tạo";
         }
         return (
@@ -89,21 +98,6 @@ const TablePurchaseDetail = ({ record }) => {
         );
       },
     },
-    {
-      title: "Thao tác",
-      dataIndex: "action",
-      key: "action",
-      align: "center",
-      render: (text, record) => (
-        <Space>
-          <Button
-            onClick={() => showModalConfirm(record.code)}
-            type="primary"
-            icon={<LoginOutlined />}
-          />
-        </Space>
-      ),
-    },
   ];
   const showModalConfirm = (code) => {
     setShowModalConfirmPut(true);
@@ -112,7 +106,7 @@ const TablePurchaseDetail = ({ record }) => {
   return (
     <>
       <Table
-        columns={columns}
+        columns={inboundCols ? inboundCols : columns}
         dataSource={listReceipt}
         pagination={{ pageSize: 5 }}
       />

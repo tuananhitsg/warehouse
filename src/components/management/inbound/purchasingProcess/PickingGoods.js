@@ -17,30 +17,12 @@ const PickingGoods = ({ next }) => {
 
   const [selectedQuantities, setSelectedQuantities] = useState({});
 
-  // const onSelectChange = (selectedIds, selectedRows) => {
-  //   setSelectedRowKeys(selectedIds);
-  //   setDisableSelectButton(false);
-  //   console.log("selectedRows: ", selectedRows);
-  //   const updatedSelectedRows = selectedRows.map((row) => ({
-  //     ...row,
-  //     quantity: selectedGoods.find((item) => item.code === row.code)?.quantity || 1,
-  //   }));
-  //   setSelectedGoods(updatedSelectedRows);
-  // };
-
-  // const handleQuantityChange = (record, value) => {
-  //   console.log("value ", value);
-  //   console.log("record ", record);
-
-  //   const updatedSelectedRows = selectedGoods.map((item) => {
-  //     if (item?.code === record?.code) {
-  //       return { ...item, quantity: value };
-  //     }
-  //     return item;
-  //   });
-
-  //   setSelectedGoods(updatedSelectedRows);
-  // };
+  const restrictInputToNumbers = (event) => {
+    const numericKeys = /[0-9]/;
+    if (!numericKeys.test(event.key)) {
+      event.preventDefault();
+    }
+  };
   const onSelectChange = (selectedIds, selectedRows) => {
     setSelectedRowKeys(selectedIds);
     setDisableSelectButton(false);
@@ -129,6 +111,7 @@ const PickingGoods = ({ next }) => {
         <InputNumber
           defaultValue={1}
           min={1}
+          onKeyPress={restrictInputToNumbers}
           onChange={(value) => handleQuantityChange(record, value)}
         />
       ),
