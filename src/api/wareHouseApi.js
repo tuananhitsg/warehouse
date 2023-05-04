@@ -49,21 +49,12 @@ const wareHouserApi = {
   },
 
   getUsableBin: (codeWarehouse, params) => {
-    const url = `/api/bin-location/usable-position-by-goods/${codeWarehouse}`;
-    return axiosApi
-      .post(url, params)
-      .then((res) => {
-        console.log("res: ", res);
-        return res.data;
-      })
-      .catch((err) => {
-        console.log("err: ", err);
-        throw err;
-      });
+    const url = `/bin-location/usable-position-by-goods/${codeWarehouse}`;
+    return axiosApi.post(url, params);
   },
-  getBinsByStatus: (codeWarehouse, params) => {
+  getBinsByStatus: (codeWarehouse, status) => {
     const url = `/bin-location/filter-status-by/${codeWarehouse}`;
-    return axiosApi.get(url, params);
+    return axiosApi.get(url, { status });
   },
 };
 export default wareHouserApi;

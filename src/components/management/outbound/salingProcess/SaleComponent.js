@@ -2,17 +2,14 @@ import React, { useEffect, useState } from "react";
 import { Button, Modal, Breadcrumb, Steps, theme } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 
-// import PickingPartner from "./PickingPartner";
-// import PickingGoods from "./PickingGoods";
+import PickingPartner from "./PickingPartner";
+import PickingGoods from "./PickingGoods";
 import Confirmation from "./ConfirmInbound";
-import PickingPurchasesReceipt from "./PickingPurchaseReceipt";
-import SelectingGoods from "./SelectingGoods";
-import SelectingWarehouse from "./SelectingWarehouse";
-import InboundReSultPage from "../../../pages/InboundReSultPage";
+import ResultPage from "../../../pages/ResultPage";
 
 import { useDispatch, useSelector } from "react-redux";
 import "./style.scss";
-const InboundComponent = () => {
+const SaleComponent = () => {
   const { token } = theme.useToken();
   const [current, setCurrent] = useState(0);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -26,23 +23,23 @@ const InboundComponent = () => {
   };
   const steps = [
     {
-      title: "Chọn phiếu mua",
-      content: <PickingPurchasesReceipt next={next} />,
+      title: "Đối tác",
+      content: <PickingPartner next={next} />,
     },
     {
-      title: "Chọn sản phẩm",
-      content: <SelectingGoods next={next} />,
+      title: "Sản phẩm",
+      content: <PickingGoods next={next} />,
     },
     // {
-    //   title: "Chọn vị trí",
-    //   content: <SelectingWarehouse next={next} />,
+    //   title: "Test",
+    //   content: <PickingGood next={next} />,
     // },
     {
-      title: "Hoàn tất",
+      title: "Xác nhận",
       content: isSuccess ? (
-        <InboundReSultPage setIsSuccess={setIsSuccess} setCurrent={setCurrent} />
+        <ResultPage setIsSuccess={setIsSuccess} setCurrent={setCurrent} />
       ) : (
-        <Confirmation next={next} setIsSucess={setIsSuccess} isSale={true} />
+        <Confirmation next={next} setIsSucess={setIsSuccess} />
       ),
     },
   ];
@@ -90,4 +87,4 @@ const InboundComponent = () => {
     </>
   );
 };
-export default InboundComponent;
+export default SaleComponent;

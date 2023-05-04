@@ -5,14 +5,14 @@ import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 // import PickingPartner from "./PickingPartner";
 // import PickingGoods from "./PickingGoods";
 import Confirmation from "./ConfirmInbound";
-import PickingPurchasesReceipt from "./PickingPurchaseReceipt";
+import PickingSalesReceipt from "./PickingSalesReceipt";
 import SelectingGoods from "./SelectingGoods";
-import SelectingWarehouse from "./SelectingWarehouse";
-import InboundReSultPage from "../../../pages/InboundReSultPage";
+//import SelectingWarehouse from "./SelectingWarehouse";
+import ResultPage from "../../../pages/ResultPage";
 
 import { useDispatch, useSelector } from "react-redux";
 import "./style.scss";
-const InboundComponent = () => {
+const OutboundComponent = () => {
   const { token } = theme.useToken();
   const [current, setCurrent] = useState(0);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -26,8 +26,8 @@ const InboundComponent = () => {
   };
   const steps = [
     {
-      title: "Chọn phiếu mua",
-      content: <PickingPurchasesReceipt next={next} />,
+      title: "Chọn phiếu bán",
+      content: <PickingSalesReceipt next={next} />,
     },
     {
       title: "Chọn sản phẩm",
@@ -40,7 +40,7 @@ const InboundComponent = () => {
     {
       title: "Hoàn tất",
       content: isSuccess ? (
-        <InboundReSultPage setIsSuccess={setIsSuccess} setCurrent={setCurrent} />
+        <ResultPage setIsSuccess={setIsSuccess} setCurrent={setCurrent} />
       ) : (
         <Confirmation next={next} setIsSucess={setIsSuccess} isSale={true} />
       ),
@@ -90,4 +90,4 @@ const InboundComponent = () => {
     </>
   );
 };
-export default InboundComponent;
+export default OutboundComponent;

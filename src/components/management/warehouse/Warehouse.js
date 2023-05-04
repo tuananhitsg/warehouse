@@ -28,11 +28,16 @@ const Warehouse = ({
   visible,
   setVisible,
   setShowSelectedBin,
+  params,
 }) => {
   const WareHouseId = useSelector((state) => state.wareHouseReducer.info);
+  const WareHouseCode = params?.codeWarehouse;
+  const dataUseableBin = params?.params;
   console.log("WareHouseId: ", WareHouseId);
-  const params = useSelector((state) => state.wareHouseReducer.usableBin);
-  console.log("Params: ", params);
+  // const params = useSelector(
+  //   (state) => state.wareHouseReducer?.usableBin?.params
+  // );
+  console.log("Params codeGoods: ", params);
   const [shelves, setShelves] = useState([]);
   const [open, setOpen] = useState(false);
   const [selectedShelf, setSelectedShelf] = useState(null);
@@ -55,16 +60,20 @@ const Warehouse = ({
       console.log("Fetch error: ", error);
     }
   };
+  useEffect(() => {
+    getShelfReporter();
+    params ? getUsableBin() : getShevles();
+  }, [params]);
   const getUsableBin = async () => {
     try {
-      const res = await wareHouserApi.getUsableBin(WareHouseId, params);
+      const res = await wareHouserApi.getUsableBin(WareHouseCode, dataUseableBin);
       console.log("Usable: ", res);
-      // if (res) {
-      //   setShelves(res);
-      // }
+      if (res) {
+        setShelves(res);
+      }
     } catch (error) {
       console.log("Fetch error: ", error);
-      message.error("Lấy dữ liệu kệ thất bại");
+      message.error("Lấy dữ liệu kệ khả dụng thất bại");
     }
   };
   const getShelfReporter = async () => {
@@ -79,11 +88,19 @@ const Warehouse = ({
       message.error("Lấy dữ liệu report kệ thất bại");
     }
   };
-  useEffect(() => {
-    getShelfReporter();
-    getShevles();
-    getUsableBin();
-  }, []);
+  const getBinByStatus = async (status) => {
+    try {
+      const res = await wareHouserApi.getBinsByStatus(WareHouseId, status);
+      console.log("Report: ", res);
+      if (res) {
+        setShelves(res);
+      }
+    } catch (error) {
+      console.log("Fetch error: ", error);
+      message.error("Lấy dữ liệu status kệ thất bại");
+    }
+  };
+
   const handleOpenModal = async (shelfCode) => {
     const getShelfById = async (id) => {
       try {
@@ -131,25 +148,31 @@ const Warehouse = ({
           <div className="statistics">
             <Row gutter={16}>
               <Col span={8}>
-                <Statistic
-                  title="Còn chỗ"
-                  value={reportPos?.["AVAILABLE"]}
-                  valueStyle={{ color: "#52c41a" }}
-                />
+                <div onClick={() => getBinByStatus("Còn chỗ")}>
+                  <Statistic
+                    title="Còn chỗ"
+                    value={reportPos?.["AVAILABLE"]}
+                    valueStyle={{ color: "#52c41a" }}
+                  />
+                </div>
               </Col>
               <Col span={8}>
-                <Statistic
-                  title="Trống"
-                  value={reportPos?.["EMPTY"]}
-                  valueStyle={{ color: "#bfbfbf" }}
-                />
+                <div onClick={() => getBinByStatus("Trống")}>
+                  <Statistic
+                    title="Trống"
+                    value={reportPos?.["EMPTY"]}
+                    valueStyle={{ color: "#bfbfbf" }}
+                  />
+                </div>
               </Col>
               <Col span={8}>
-                <Statistic
-                  title="Đã đầy"
-                  value={reportPos?.["FULL"]}
-                  valueStyle={{ color: "#f5222d" }}
-                />
+                <div onClick={() => getBinByStatus("Đã đầy")}>
+                  <Statistic
+                    title="Đã đầy"
+                    value={reportPos?.["FULL"]}
+                    valueStyle={{ color: "#f5222d" }}
+                  />
+                </div>
               </Col>
             </Row>
           </div>

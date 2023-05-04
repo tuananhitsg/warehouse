@@ -2,16 +2,16 @@ import axiosApi from "./axiosApi";
 
 const OutboundApi = {
   // sale receipt
-  createSalesReceipt: () => {
-    const url = "/sales-receipt/create";
-    return axiosApi.post(url);
+  createSalesReceipt: (data) => {
+    const url = "/sale-receipt/create";
+    return axiosApi.post(url, data);
   },
   getAllSalesReceipts: () => {
-    const url = "/sales-receipt/get-all";
+    const url = "/sale-receipt/get-all";
     return axiosApi.get(url);
   },
   getSalesReceiptByCode: (code) => {
-    const url = `/sales-receipt/get-by/${code}`;
+    const url = `/sale-receipt/get-by/${code}`;
     return axiosApi.get(url);
   },
   //delivery voucher
@@ -27,7 +27,7 @@ const OutboundApi = {
     const url = `/delivery-voucher/get-delivery-by/${code}`;
     return axiosApi.get(url);
   },
-  createDelivery: (id,data) => {
+  createDelivery: (id, data) => {
     const url = `/delivery-voucher/create/${id}`;
     return axiosApi.post(url, data);
   },

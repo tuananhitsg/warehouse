@@ -37,6 +37,18 @@ const goodsApi = {
     const url = `/goods/search/${keyword}`;
     return axiosApi.get(url);
   },
+  updateGoods: (id, data) => {
+    const url = `/goods/update/${id}`;
+    return axiosApi.post(url, data);
+  },
+  getCurrentQuantityByGoodsCode: (id) => {
+    const url = `/goods/get-current-quantity-by/${id}`;
+    return axiosApi.get(url);
+  },
+  getCurrentQuantityAllGoods: () => {
+    const url = `/goods/count-quantity`;
+    return axiosApi.get(url);
+  }
 };
 
 export default goodsApi;

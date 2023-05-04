@@ -1,0 +1,78 @@
+// .steps-bar-container {
+//   margin-top: 10px;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+// }
+// .step-bar {
+//   width: 50%;
+// }
+
+// //confirmation
+// .form-confirmation {
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   background-color: #fff;
+//   .form-header {
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+//     flex-direction: column;
+
+//     .confirm-img {
+//       width: 10rem;
+//       margin: auto;
+//     }
+//     .form-title {
+//       margin-top: 1rem;
+//       text-align: center;
+//     }
+//   }
+
+//   .form-content {
+//     margin-top: 2rem;
+//     display: inline-block;
+//     position: relative;
+//     left: 50%;
+//     transform: translateX(-50%);
+
+//     .ant-form-item .ant-form-item-label > label {
+//       font-size: 18px;
+//       font-weight: 500;
+//     }
+//     .form-text {
+//       display: flex;
+//       flex-direction: column;
+//       justify-content: flex-start;
+//       font-size: 16px;
+//       gap: 10px;
+//     }
+//     .item-text {
+//       // margin-bottom: 5px;
+//       // padding-top: 3px;
+//     }
+//     .btn-submit {
+//       margin-top: 50px;
+//       width: 50%;
+//       height: 50px;
+//       left: 50%;
+//       transform: translateX(-50%);
+//       margin-bottom: 20px;
+//       font-size: 20px;
+//       font-weight: 700;
+//     }
+//   }
+// }
+.form-confirmation {
+  display: flex;
+  justify-content: center;
+  align-items: center; /* Thêm dòng này để căn giữa theo trục Y */
+  height: 100vh; /* Đặt chiều cao 100% để div đầy đủ chiều cao của màn hình */
+  
+  .form-content {
+    /* Thêm đoạn mã này để giảm chiều rộng của form */
+    max-width: 500px;
+    width: 100%;
+  }
+}

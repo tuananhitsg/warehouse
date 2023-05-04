@@ -5,7 +5,7 @@ import IndexInbound from "../management/inbound/index";
 import { useDispatch, useSelector } from "react-redux";
 import { setPartner, setGoods } from "../../redux/inboundSlice";
 
-const ResultPage = ({ setCurrent, setIsSucess }) => {
+const ResultPage = ({ setCurrent, setIsSucess, isSale }) => {
   const partner = useSelector((state) => state.inboundReducer.info);
   const goods = useSelector((state) => state.inboundReducer.goods);
   const [showImport, setShowImport] = useState(false);
@@ -20,7 +20,7 @@ const ResultPage = ({ setCurrent, setIsSucess }) => {
   };
   const handleImportClick = () => {
     setShowImport(true);
-    navigate("/tao-phieu-nhap");
+    isSale ? navigate("/tao-phieu-xuat") : navigate("/tao-phieu-nhap");
   };
   return (
     <Result
@@ -28,10 +28,10 @@ const ResultPage = ({ setCurrent, setIsSucess }) => {
       title="Tạo phiếu mua hàng thành công"
       extra={[
         <Button type="primary" key="console" onClick={handleReset}>
-          Tạo phiếu mua hàng mới
+          {isSale ? "Tạo phiếu bán hàng mới" : "Tạo phiếu mua hàng mới"}
         </Button>,
         <Button key="import" onClick={handleImportClick}>
-          Nhập hàng vào kho
+          {isSale ? "Xuất kho" : "Nhập kho"}
         </Button>,
       ]}
     />

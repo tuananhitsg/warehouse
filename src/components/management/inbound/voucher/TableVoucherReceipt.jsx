@@ -232,7 +232,7 @@ const InboundTable = () => {
       <div className="table-header">
         <Row gutter={{ xs: 8, sm: 16, md: 16, lg: 16 }}>
           <Col span={12}>
-            <Button
+            {/* <Button
               type="primary"
               loading={isLoading}
               icon={<UserAddOutlined />}
@@ -240,7 +240,7 @@ const InboundTable = () => {
               onClick={showModalAdd}
             >
               Tạo mới
-            </Button>
+            </Button> */}
           </Col>
         </Row>
       </div>

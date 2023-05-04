@@ -13,6 +13,9 @@ const inboundSlice = createSlice({
     setPurchased: (state, action) => {
       state.purchased = action.payload;
     },
+    setSalesVoucher: (state, action) => {
+      state.salesVoucher = action.payload;
+    },
     setBinCode: (state, action) => {
       state.binCode = action.payload;
     },
@@ -26,6 +29,6 @@ const inboundSlice = createSlice({
   },
 });
 
-export const { setPartner, setGoods, setPurchased, setBinCode, setReceipt } =
+export const { setPartner, setGoods, setPurchased, setSalesVoucher,setBinCode, setReceipt } =
   inboundSlice.actions;
 export default inboundSlice.reducer;

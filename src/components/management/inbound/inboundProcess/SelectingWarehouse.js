@@ -48,6 +48,7 @@ const SelectingWarehouse = ({ next, show, setShow }) => {
   const selectedBin = useSelector((state) => state.inboundReducer.binCode);
   //test
   const [warehouseMap, setWarehouseMap] = useState(false);
+ 
 
   console.log("record code", record.code);
   const selectBin = {
@@ -116,9 +117,10 @@ const SelectingWarehouse = ({ next, show, setShow }) => {
       quantity: parseInt(values.quantity, 10),
     };
     console.log("params", params);
-    dispatch(
-      setUsableBin({ codeWarehouse: values.warehouseCode, params: params })
-    );
+    // dispatch(
+    //   setUsableBin({ codeWarehouse: values.warehouseCode, params: params })
+    // );
+    setWarehouseMap({ codeWarehouse: values.warehouseCode, params: params });
     setVisible(true);
     //setWarehouseMap(true);
   };
@@ -213,6 +215,7 @@ const SelectingWarehouse = ({ next, show, setShow }) => {
                   visible={visible}
                   setVisible={setVisible}
                   setShowSelectedBin={setShowSelectedBin}
+                  params={warehouseMap}
                 />
               ) : null}
             </Col>
