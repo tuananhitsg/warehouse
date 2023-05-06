@@ -156,8 +156,8 @@ const TablePurchaseReceipt = ({ inboundCols, handleClick }) => {
         } else if (status === "DONE") {
           color = "cyan";
           name = "Đã hoàn thành";
-        } 
-        
+        }
+
         return (
           <Tag color={color} key={name}>
             {name?.toUpperCase()}
@@ -193,7 +193,7 @@ const TablePurchaseReceipt = ({ inboundCols, handleClick }) => {
   return (
     <div className="table-container">
       <Table
-        columns={ inboundCols ? inboundCols : columns}
+        columns={inboundCols ? inboundCols : columns}
         dataSource={listReceipt}
         // onChange={handleTableChange}
         // pagination={{ ...tableParams.pagination }}

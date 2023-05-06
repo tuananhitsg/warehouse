@@ -16,12 +16,12 @@ import {
 import OutboundApi from "../../../../api/outboundApi";
 import { useDispatch, useSelector } from "react-redux";
 import { setReload } from "../../../../redux/reloadSlice";
-import { setPartner, setGoods } from "../../../../redux/inboundSlice";
+//import { setPartner, setGoods } from "../../../../redux/inboundSlice";
 import ResultPage from "../../../pages/ResultPage";
 
 const Confirmation = ({ setIsSucess }) => {
-  const partner = useSelector((state) => state.inboundReducer.info);
-  const goods = useSelector((state) => state.inboundReducer.goods);
+  const partner = useSelector((state) => state.outboundReducer.info);
+  const goods = useSelector((state) => state.outboundReducer.goods);
   const reload = useSelector((state) => state.reloadReducer.reload);
   const dispatch = useDispatch();
 

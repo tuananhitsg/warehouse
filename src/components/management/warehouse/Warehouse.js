@@ -66,7 +66,10 @@ const Warehouse = ({
   }, [params]);
   const getUsableBin = async () => {
     try {
-      const res = await wareHouserApi.getUsableBin(WareHouseCode, dataUseableBin);
+      const res = await wareHouserApi.getUsableBin(
+        WareHouseCode,
+        dataUseableBin
+      );
       console.log("Usable: ", res);
       if (res) {
         setShelves(res);
@@ -127,6 +130,7 @@ const Warehouse = ({
     handleModalLogic();
     setVisible(false);
     setShowSelectedBin(true);
+    message.success(`Chọn kệ thành công cho sản phẩm:  ${dataUseableBin.codeGoods}`);
     dispatch(setBinCode(selectedShelfCode));
   };
   return (

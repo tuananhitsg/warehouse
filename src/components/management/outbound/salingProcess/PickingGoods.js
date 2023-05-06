@@ -12,7 +12,7 @@ import {
 import TableGoods from "../../goods/table";
 
 import { useDispatch } from "react-redux";
-import { setGoods } from "../../../../redux/inboundSlice";
+import { setGoods } from "../../../../redux/outboundSlice";
 import FormItem from "antd/es/form/FormItem";
 import goodsApi from "../../../../api/goodsApi";
 const PickingGoods = ({ next }) => {

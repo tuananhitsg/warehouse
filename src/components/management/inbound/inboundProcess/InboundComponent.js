@@ -10,6 +10,8 @@ import SelectingGoods from "./SelectingGoods";
 import SelectingWarehouse from "./SelectingWarehouse";
 import InboundReSultPage from "../../../pages/InboundReSultPage";
 
+import { setReceipt } from "../../../../redux/inboundSlice";
+
 import { useDispatch, useSelector } from "react-redux";
 import "./style.scss";
 const InboundComponent = () => {
@@ -18,11 +20,14 @@ const InboundComponent = () => {
   const [isSuccess, setIsSuccess] = useState(false);
   const partner = useSelector((state) => state.inboundReducer.info);
   const goods = useSelector((state) => state.inboundReducer.goods);
+  const receipt = useSelector((state) => state.inboundReducer.receipt)
+  const dispatch = useDispatch();
   const next = () => {
     setCurrent(current + 1);
   };
   const prev = () => {
     setCurrent(current - 1);
+    dispatch(setReceipt(null));
   };
   const steps = [
     {
@@ -42,7 +47,7 @@ const InboundComponent = () => {
       content: isSuccess ? (
         <InboundReSultPage setIsSuccess={setIsSuccess} setCurrent={setCurrent} />
       ) : (
-        <Confirmation next={next} setIsSucess={setIsSuccess} isSale={true} />
+        <Confirmation next={next} setIsSuccess={setIsSuccess} isSale={true} />
       ),
     },
   ];
@@ -60,7 +65,7 @@ const InboundComponent = () => {
     marginTop: 16,
     minHeight: "80vh",
   };
-
+  console.log("isSuccess:", isSuccess);
   return (
     <>
       <div className="steps-bar-container">

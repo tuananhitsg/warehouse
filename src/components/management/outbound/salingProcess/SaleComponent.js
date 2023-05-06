@@ -13,8 +13,8 @@ const SaleComponent = () => {
   const { token } = theme.useToken();
   const [current, setCurrent] = useState(0);
   const [isSuccess, setIsSuccess] = useState(false);
-  const partner = useSelector((state) => state.inboundReducer.info);
-  const goods = useSelector((state) => state.inboundReducer.goods);
+  const partner = useSelector((state) => state.outboundReducer.info);
+  const goods = useSelector((state) => state.outboundReducer.goods);
   const next = () => {
     setCurrent(current + 1);
   };
@@ -37,7 +37,7 @@ const SaleComponent = () => {
     {
       title: "Xác nhận",
       content: isSuccess ? (
-        <ResultPage setIsSuccess={setIsSuccess} setCurrent={setCurrent} />
+        <ResultPage setIsSuccess={setIsSuccess} setCurrent={setCurrent} isSale={true}/>
       ) : (
         <Confirmation next={next} setIsSucess={setIsSuccess} />
       ),

@@ -26,9 +26,12 @@ const inboundSlice = createSlice({
         state.receipt = [action.payload];
       }
     },
+    resetReceipt: (state) => {
+      state.receipt = null;
+    },
   },
 });
 
-export const { setPartner, setGoods, setPurchased, setSalesVoucher,setBinCode, setReceipt } =
+export const { setPartner, setGoods, setPurchased, setSalesVoucher,setBinCode, setReceipt,resetReceipt } =
   inboundSlice.actions;
 export default inboundSlice.reducer;

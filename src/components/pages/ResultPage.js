@@ -25,7 +25,7 @@ const ResultPage = ({ setCurrent, setIsSucess, isSale }) => {
   return (
     <Result
       status="success"
-      title="Tạo phiếu mua hàng thành công"
+      title={isSale?"Tạo phiếu bán hàng thành công":"Tạo phiếu mua hàng thành công"}
       extra={[
         <Button type="primary" key="console" onClick={handleReset}>
           {isSale ? "Tạo phiếu bán hàng mới" : "Tạo phiếu mua hàng mới"}

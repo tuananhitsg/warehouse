@@ -147,6 +147,7 @@ const Sidebar = () => {
       getItem(<Link to={"/tao-phieu-ban"}>Tạo phiếu bán</Link>, "2.1"),
       getItem(<Link to={"/danh-sach-phieu-ban"}>Phiếu bán</Link>, "2.2"),
       getItem(<Link to={"/tao-phieu-xuat"}>Tạo phiếu xuất</Link>, "2.3"),
+      getItem(<Link to={"/danh-sach-phieu-xuat"}>Phiếu xuất</Link>, "2.4"),
     ]),
     getItem("Quản lý kho", "3", <HomeOutlined />, [
       getItem(<Link to={"/nha-kho"}>Kho hàng</Link>, "3.1"),

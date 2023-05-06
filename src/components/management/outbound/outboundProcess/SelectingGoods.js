@@ -12,16 +12,16 @@ import {
 } from "antd";
 import { SendOutlined } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
-import InboundApi from "../../../../api/inboundApi";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import TableSalesDetail from "../sales/TableSalesDetail";
-// import SelectingWarehouse from "./SelectingWarehouse";
-import { setGoods } from "../../../../redux/inboundSlice";
+import QuantityInput from "./QuantityInput ";
+import { setGoods } from "../../../../redux/outboundSlice";
 const { Title, Text } = Typography;
 const SelectingBin = ({ next }) => {
+  
   const salesVoucer = useSelector(
-    (state) => state.inboundReducer.salesVoucher
+    (state) => state.outboundReducer.salesVoucher
   );
   const dispatch = useDispatch();
   const [visible, setVisible] = useState(false);
@@ -59,15 +59,20 @@ const SelectingBin = ({ next }) => {
       key: "unit",
       width: "13%",
     },
+    // {
+    //   title: "Số lượng đặt mua",
+    //   dataIndex: "quantityPurchased",
+    //   key: "quantityPurchased",
+    // },
+    // {
+    //   title: "Số lượng chưa nhập",
+    //   dataIndex: "quantityRemaining",
+    //   key: "quantityRemaining",
+    // },
     {
-      title: "Số lượng đặt mua",
-      dataIndex: "quantityPurchased",
-      key: "quantityPurchased",
-    },
-    {
-      title: "Số lượng chưa nhập",
-      dataIndex: "quantityRemaining",
-      key: "quantityRemaining",
+      title: "Số lượng xuất",
+      dataIndex: "quantity",
+      key: "quantity",
     },
     {
       title: "Trạng thái",
@@ -78,10 +83,10 @@ const SelectingBin = ({ next }) => {
         let name = "";
         if (status === "NOT_YET_CREATED") {
           color = "error";
-          name = "Chưa nhập hết";
+          name = "Chưa xuât hết";
         } else if (status === "DONE") {
           color = "cyan";
-          name = "Đã nhập hết";
+          name = "Đã xuất hết";
         } else if (status === "CREATED") {
           color = "blue";
           name = "Đã tạo";
@@ -125,27 +130,29 @@ const SelectingBin = ({ next }) => {
         <Col span={24} style={{ marginBottom: "1rem", marginLeft: "1rem" }}>
           <Button type="primary" onClick={next}>Tiếp tục</Button>
         </Col>
-        {/* <Col span={24}>
-          <TablePurchaseDetail record={purchaseVoucher} inboundCols={columns} />
-        </Col> */}
+        <Col span={24}>
+          {/* <TablePurchaseDetail record={purchaseVoucher} inboundCols={columns} />
+           */}
+           <TableSalesDetail record={salesVoucer} inboundCols={columns} />
+        </Col>
       </Row>
 
-      {/* {visible ? (
+      {visible ? (
         <Row gutter={16}>
           <Col span={24}>
             <Title level={4} style={{ marginTop: "1rem", marginLeft: "1rem" }}>
-              Chọn vị trí nhập cho sản phẩm: {goodsCode}
+              Chọn số lượng xuất: {goodsCode}
             </Title>
           </Col>
           <Col span={24}>
-            <SelectingWarehouse
+            <QuantityInput 
               show={visible}
               setShow={setVisible}
-              record={purchaseReceipt}
+              //record={purchaseReceipt}
             />
           </Col>
         </Row>
-      ) : null} */}
+      ) : null}
     </>
   );
 };

@@ -82,6 +82,7 @@ const PickingPurchasesReceipt = ({ next }) => {
               dispatch(setPurchased(record));
               next(record);
             }}
+            disabled={record.status === "DONE"}
             type="primary"
             icon={<LoginOutlined />}
           />

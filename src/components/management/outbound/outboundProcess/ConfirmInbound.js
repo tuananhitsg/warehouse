@@ -13,7 +13,7 @@ import {
   message,
   Form,
 } from "antd";
-import inboundApi from "../../../../api/inboundApi";
+import OutboundApi from "../../../../api/outboundApi";
 import { useDispatch, useSelector } from "react-redux";
 import { setReload } from "../../../../redux/reloadSlice";
 import {
@@ -24,8 +24,8 @@ import {
 import ResultPage from "../../../pages/ResultPage";
 
 const Confirmation = ({ setIsSucess }) => {
-  const receipt = useSelector((state) => state.inboundReducer.receipt);
-  const purchased = useSelector((state) => state.inboundReducer.purchased);
+  const receipt = useSelector((state) => state.outboundReducer.receipt);
+  const sales = useSelector((state) => state.outboundReducer.salesVoucher);
   const reload = useSelector((state) => state.reloadReducer.reload);
   const dispatch = useDispatch();
 
@@ -34,14 +34,14 @@ const Confirmation = ({ setIsSucess }) => {
   const handleSubmit = async () => {
     console.log("receipt:", receipt);
     const data = {
-      goodsToCreateVoucher: [...receipt],
+      goodsRequests: [...receipt],
     };
-    const purchaseCode = purchased.code;
+    const salesCode = sales.code;
     console.log("data:", data);
-    console.log("purchaseCode:", purchaseCode);
+    console.log("purchaseCode:", salesCode);
     setLoading(true);
-    const res = await inboundApi.createReceipt(purchaseCode, data);
-    console.log("res:", res);
+    const res = await OutboundApi.createDelivery(salesCode, data);
+    console.log("res outbound:", res);
     if (res) {
       dispatch(setReload(!reload));
       setIsSucess(true);
@@ -59,7 +59,7 @@ const Confirmation = ({ setIsSucess }) => {
               alt="confirm"
               onClick={handleSubmit}
             />
-            <h2 className="form-title">Xác nhận phiếu nhập</h2>
+            <h2 className="form-title">Xác nhận phiếu xuất</h2>
           </div>
         </Col>
         <Col span={24}>
@@ -75,16 +75,15 @@ const Confirmation = ({ setIsSucess }) => {
               }}
             >
               <Form.Item label="Mã phiếu mua" className="form-item-label">
-                <div className="form-text">{purchased.code}</div>
+                <div className="form-text">{sales.code}</div>
               </Form.Item>
 
               <Form.Item label="Sản phẩm" className="form-item-label">
                 <div className="form-text">
                   {receipt?.map((item) => {
                     return (
-                      <div key={item.codeGoods} className="item-text">
-                        Sản phẩm: {item.codeGoods}: Số lượng: {item.quantity} -
-                        Vị trí: {item.binLocationCode}
+                      <div key={item.goodCode} className="item-text">
+                        Sản phẩm: {item.goodCode}: Số lượng: {item.quantity}
                       </div>
                     );
                   })}

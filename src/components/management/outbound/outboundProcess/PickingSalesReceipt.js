@@ -22,12 +22,17 @@ import {
   LogoutOutlined,
 } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
-import { setSalesVoucher } from "../../../../redux/inboundSlice";
+import { setSalesVoucher, setReceipt } from "../../../../redux/outboundSlice";
 
 const PickingPurchasesReceipt = ({ next }) => {
   const [selectedPurchases, setSelectedPurchases] = useState([]);
   const dispatch = useDispatch();
-
+  // const handleReset = () => {
+  //   dispatch(setReceipt({}));
+  // };
+  // useEffect(() => {
+  //   handleReset();
+  // }, []);
   const columns = [
     {
       title: "Mã phiếu mua",
@@ -35,7 +40,7 @@ const PickingPurchasesReceipt = ({ next }) => {
       dataIndex: "code",
       key: "code",
     },
-   
+
     {
       title: "Người tạo",
       dataIndex: "createdBy",

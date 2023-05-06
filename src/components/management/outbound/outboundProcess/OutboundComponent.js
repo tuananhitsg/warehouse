@@ -9,20 +9,24 @@ import PickingSalesReceipt from "./PickingSalesReceipt";
 import SelectingGoods from "./SelectingGoods";
 //import SelectingWarehouse from "./SelectingWarehouse";
 import ResultPage from "../../../pages/ResultPage";
-
+import { setReceipt, reset } from "../../../../redux/outboundSlice";
 import { useDispatch, useSelector } from "react-redux";
 import "./style.scss";
 const OutboundComponent = () => {
   const { token } = theme.useToken();
   const [current, setCurrent] = useState(0);
   const [isSuccess, setIsSuccess] = useState(false);
-  const partner = useSelector((state) => state.inboundReducer.info);
-  const goods = useSelector((state) => state.inboundReducer.goods);
+  const partner = useSelector((state) => state.outboundReducer.info);
+  const goods = useSelector((state) => state.outboundReducer.goods);
+  const receipt = useSelector((state) => state.outboundReducer.receipt);
+
+  const dispatch = useDispatch();
   const next = () => {
     setCurrent(current + 1);
   };
   const prev = () => {
     setCurrent(current - 1);
+    //dispatch(setReceipt(null));
   };
   const steps = [
     {

@@ -23,7 +23,7 @@ import {
 } from "../../../../redux/inboundSlice";
 import ResultPage from "../../../pages/ResultPage";
 
-const Confirmation = ({ setIsSucess }) => {
+const Confirmation = ({ setIsSuccess }) => {
   const receipt = useSelector((state) => state.inboundReducer.receipt);
   const purchased = useSelector((state) => state.inboundReducer.purchased);
   const reload = useSelector((state) => state.reloadReducer.reload);
@@ -44,7 +44,7 @@ const Confirmation = ({ setIsSucess }) => {
     console.log("res:", res);
     if (res) {
       dispatch(setReload(!reload));
-      setIsSucess(true);
+      setIsSuccess(true);
     }
   };
 
@@ -82,8 +82,8 @@ const Confirmation = ({ setIsSucess }) => {
                 <div className="form-text">
                   {receipt?.map((item) => {
                     return (
-                      <div key={item.codeGoods} className="item-text">
-                        Sản phẩm: {item.codeGoods}: Số lượng: {item.quantity} -
+                      <div key={item.goodsCode} className="item-text">
+                        Sản phẩm: {item.goodsCode}: Số lượng: {item.quantity} -
                         Vị trí: {item.binLocationCode}
                       </div>
                     );

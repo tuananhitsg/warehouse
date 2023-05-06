@@ -18,11 +18,11 @@ const TableSalesDetail = ({ record, inboundCols }) => {
   }, []);
   const fetchDetailByVoucherCode = async () => {
     const res = await OutboundApi.getSalesReceiptByCode(record.code);
-    console.log(res.purchaseDetails);
+    console.log(res);
     if (res) {
       // const data = res.receiptVoucherDetails
       let i = 0;
-      const data = res.purchaseDetails.map((item) => {
+      const data = res.saleDetailResponses.map((item) => {
         return {
           key: ++i,
           code: item.goods.code,

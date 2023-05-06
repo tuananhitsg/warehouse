@@ -41,6 +41,7 @@ import IndexOutbound from "./components/management/outbound/outboundProcess/Inde
 import { TablePurchaseReceipt } from "./components/management/inbound/purchase/index";
 import { TableSalesReceipt } from "./components/management/outbound/sales";
 import { InboundTable } from "./components/management/inbound/voucher/index";
+import { OutboundTable } from "./components/management/outbound/voucher";
 import IndexSale from "./components/management/outbound/salingProcess/indexSale";
 import LoginPage from "./components/account/login";
 import ChangePassword from "./components/account/change_password";
@@ -111,7 +112,7 @@ const router = createBrowserRouter([
             // element: <IndexReceipt />,
             element: <InboundTable />,
           },
-        
+
           {
             path: "tao-phieu-ban",
             element: <IndexSale />,
@@ -124,10 +125,10 @@ const router = createBrowserRouter([
             path: "tao-phieu-xuat",
             element: <IndexOutbound />,
           },
-          // {
-          //   path: "danh-sach-phieu-xuat",
-           
-          // },
+          {
+            path: "danh-sach-phieu-xuat",
+            element: <OutboundTable />,
+          },
           {
             path: "nha-kho",
             element: <IndexWarehouse2 />,

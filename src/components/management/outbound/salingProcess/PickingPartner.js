@@ -3,7 +3,7 @@ import { Button } from "antd";
 import TablePartner from "../../partner/Table";
 import partnerApi from "../../../../api/partnerApi";
 import { useDispatch } from "react-redux";
-import { setPartner } from "../../../../redux/inboundSlice";
+import { setPartner } from "../../../../redux/outboundSlice";
 const PickingPartner = ({ next }) => {
   const [selectedPartner, setSelectedPartner] = useState({});
   const [selectedRowKeys, setSelectedRowKeys] = useState("");

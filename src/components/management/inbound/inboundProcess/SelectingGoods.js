@@ -78,7 +78,7 @@ const SelectingBin = ({ next }) => {
         let name = "";
         if (status === "NOT_YET_CREATED") {
           color = "error";
-          name = "Chưa nhập hết";
+          name = "Chưa tạo";
         } else if (status === "DONE") {
           color = "cyan";
           name = "Đã nhập hết";
