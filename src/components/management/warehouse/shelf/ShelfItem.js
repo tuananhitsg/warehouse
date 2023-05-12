@@ -18,11 +18,7 @@ const ShelfItem = ({ codeRow, status, shelf, onClick }) => {
   if (selectedShelf?.codeBin === shelf.codeBin) {
     className = `${className} selected-shelf`;
   } 
-  // Thêm class "selected-shelf" nếu shelf được chọn
-  // const onClickShelf = () => {
-  //   setSelected(true);
-  //   onClick(shelf.codeRow);
-  // };
+
   return (
     <div
       className={className}
@@ -30,7 +26,7 @@ const ShelfItem = ({ codeRow, status, shelf, onClick }) => {
         onClick(shelf.codeBin);
       }}
     >
-      {status}:{shelf.codeBin}
+      {shelf.codeBin}
     </div>
   );
 };

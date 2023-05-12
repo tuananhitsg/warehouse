@@ -10,7 +10,7 @@ import SelectingGoods from "./SelectingGoods";
 import SelectingWarehouse from "./SelectingWarehouse";
 import InboundReSultPage from "../../../pages/InboundReSultPage";
 
-import { setReceipt } from "../../../../redux/inboundSlice";
+import { setReceipt,resetReceipt } from "../../../../redux/inboundSlice";
 
 import { useDispatch, useSelector } from "react-redux";
 import "./style.scss";
@@ -22,13 +22,18 @@ const InboundComponent = () => {
   const goods = useSelector((state) => state.inboundReducer.goods);
   const receipt = useSelector((state) => state.inboundReducer.receipt)
   const dispatch = useDispatch();
+  console.log("current", current);
   const next = () => {
     setCurrent(current + 1);
   };
   const prev = () => {
     setCurrent(current - 1);
-    dispatch(setReceipt(null));
   };
+  useEffect(() => {
+    if (!current === 2) {
+      dispatch(resetReceipt());
+    }
+  }, [current]);
   const steps = [
     {
       title: "Chọn phiếu mua",
@@ -63,7 +68,7 @@ const InboundComponent = () => {
     borderRadius: token.borderRadiusLG,
     border: `1px dashed ${token.colorBorder}`,
     marginTop: 16,
-    minHeight: "80vh",
+    //minHeight: "80vh",
   };
   console.log("isSuccess:", isSuccess);
   return (

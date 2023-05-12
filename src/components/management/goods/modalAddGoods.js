@@ -52,6 +52,9 @@ const ModalAddGoods = ({ showModalAddGoods, setShowModalAddGoods }) => {
     initial: {
       categoryCode: "",
       name: "",
+      length: "",
+      width: "",
+      height: "",
       //image: "",
     },
     validationSchema: Yup.object().shape({
@@ -80,7 +83,9 @@ const ModalAddGoods = ({ showModalAddGoods, setShowModalAddGoods }) => {
   }, []);
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
-    const { categoryCode, categoryName, name, size } = values;
+    const { categoryCode, categoryName, name, size, length, width, height } =
+      values;
+    console.log("values", values);
     // console.log("image", image);
     const formData = new FormData();
     formData.append("file", image);
@@ -88,20 +93,20 @@ const ModalAddGoods = ({ showModalAddGoods, setShowModalAddGoods }) => {
     const uploadRes = await uploadApi.upload(formData);
     console.log("uploadRes", uploadRes);
 
-    let length, width, height;
-    if (size === "1") {
-      length = 0.3;
-      width = 0.2;
-      height = 0.3;
-    } else if (size === "2") {
-      length = 0.5;
-      width = 0.3;
-      height = 0.4;
-    } else if (size === "3") {
-      length = 0.6;
-      width = 0.4;
-      height = 0.4;
-    }
+    // let length, width, height;
+    // if (size === "1") {
+    //   length = 0.3;
+    //   width = 0.2;
+    //   height = 0.3;
+    // } else if (size === "2") {
+    //   length = 0.5;
+    //   width = 0.3;
+    //   height = 0.4;
+    // } else if (size === "3") {
+    //   length = 0.6;
+    //   width = 0.4;
+    //   height = 0.4;
+    // }
 
     const data = {
       categoryCode,
@@ -142,7 +147,12 @@ const ModalAddGoods = ({ showModalAddGoods, setShowModalAddGoods }) => {
       reader.onerror = (error) => reject(error);
     });
   };
-
+  const restrictInputToRealNumbers = (event) => {
+    const numericKeys = /^[0-9]*\.?[0-9]*$/;
+    if (!numericKeys.test(event.key)) {
+      event.preventDefault();
+    }
+  };
   return (
     <>
       <Modal
@@ -203,8 +213,42 @@ const ModalAddGoods = ({ showModalAddGoods, setShowModalAddGoods }) => {
                     className="error-message"
                   />
                 </FormAntd.Item>
-
-                <FormAntd.Item label="Kích thước" labelAlign="left">
+                <FormAntd.Item
+                  name="shelves"
+                  label="Kích cỡ sản phẩm"
+                  rules={[{ required: true }]}
+                >
+                  <Space.Compact block>
+                    <FormAntd.Item noStyle>
+                      <Field
+                        name="length"
+                        as={Input}
+                        style={{ width: "33%" }}
+                        placeholder="Chiều dài sản phẩm(m)"
+                        onKeyPress={restrictInputToRealNumbers}
+                      />
+                    </FormAntd.Item>
+                    <FormAntd.Item noStyle>
+                      <Field
+                        name="width"
+                        as={Input}
+                        style={{ width: "33%" }}
+                        placeholder="Chiều rộng sản phẩm(m)"
+                        onKeyPress={restrictInputToRealNumbers}
+                      />
+                    </FormAntd.Item>
+                    <FormAntd.Item noStyle>
+                      <Field
+                        name="height"
+                        as={Input}
+                        style={{ width: "33%" }}
+                        placeholder="Chiều cao sản phẩm(m)"
+                        onKeyPress={restrictInputToRealNumbers}
+                      />
+                    </FormAntd.Item>
+                  </Space.Compact>
+                </FormAntd.Item>
+                {/* <FormAntd.Item label="Kích thước" labelAlign="left">
                   <Field
                     onChange={(value) => setFieldValue("size", value)}
                     options={[
@@ -231,7 +275,7 @@ const ModalAddGoods = ({ showModalAddGoods, setShowModalAddGoods }) => {
                     component="div"
                     className="error-message"
                   />
-                </FormAntd.Item>
+                </FormAntd.Item> */}
                 <FormAntd.Item
                   name="image"
                   label="Hình ảnh"

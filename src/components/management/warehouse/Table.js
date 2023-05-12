@@ -17,6 +17,7 @@ import {
   EditOutlined,
   UserAddOutlined,
   ReloadOutlined,
+  RightCircleOutlined,
 } from "@ant-design/icons";
 
 import wareHouseApi from "../../../api/wareHouseApi";
@@ -25,7 +26,9 @@ import { setWareHouse } from "../../../redux/wareHouseSlice";
 import "./table.scss";
 import Warehouse from "./Warehouse";
 import ModalAddWareHouse from "./ModalAddWareHouse";
+import ModalWarehouseDetail from "./ModalWarehouseDetail";
 import { Link } from "react-router-dom";
+import AuthService from "../../../service/auth.service";
 
 const WarehouseTable = ({ setTab }) => {
   const [selectedId, setSelectedId] = useState([]);
@@ -34,9 +37,13 @@ const WarehouseTable = ({ setTab }) => {
   const [loading, setLoading] = useState(false);
   const [listCategory, setListCategory] = useState([]);
   const [refreshKey, setRefreshKey] = useState(0);
-  const dispatch = useDispatch();
 
+  const [visible, setVisible] = useState(false);
+
+  const dispatch = useDispatch();
   const reload = useSelector((state) => state.reloadReducer.reload);
+
+  const isAdmin = AuthService.getUser().roles.includes("ADMIN");
 
   const showWarehouse = (e) => {
     setSelectedId(e);
@@ -61,14 +68,24 @@ const WarehouseTable = ({ setTab }) => {
     dispatch(setWareHouse(id));
     setTab(1);
   };
+  const showModalDetail = (e) => {
+    setVisible(true);
+    setSelectedId(e);
+  };
   const columns = [
+    {
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+      width: "5%",
+    },
     {
       title: "Mã nhà kho",
       width: "15%",
       dataIndex: "code",
       key: "code",
       render: (text, record) => {
-        return <a onClick={() => handleClickCode(record.code)}>{text}</a>;
+        return <a onClick={() => showModalDetail(record.code)}>{text}</a>;
       },
     },
     {
@@ -83,11 +100,11 @@ const WarehouseTable = ({ setTab }) => {
       key: "acreage",
     },
     {
-      title:"Thể tích (m3)",
-      dataIndex:"volume",
-      key:"volume"
-    }
-    ,{
+      title: "Thể tích (m3)",
+      dataIndex: "volume",
+      key: "volume",
+    },
+    {
       title: "Địa chỉ",
       dataIndex: "location",
       key: "location",
@@ -97,7 +114,21 @@ const WarehouseTable = ({ setTab }) => {
         return <span>{locationStr}</span>;
       },
     },
-   
+    {
+      title: "",
+      dataIndex: "action",
+      key: "action",
+      width: "10%",
+      render: (text, record) => (
+        <Space size="middle">
+          <Button
+            type="primary"
+            icon={<RightCircleOutlined />}
+            onClick={() => handleClickCode(record.code)}
+          />
+        </Space>
+      ),
+    },
   ];
 
   useEffect(() => {
@@ -140,15 +171,17 @@ const WarehouseTable = ({ setTab }) => {
             />
           </Col> */}
           <Col span={12}>
-            <Button
-              type="primary"
-              onClick={showModalAdd}
-              loading={loading}
-              icon={<UserAddOutlined />}
-              style={{ marginLeft: "16px" }}
-            >
-              Tạo mới
-            </Button>
+            {isAdmin ? (
+              <Button
+                type="primary"
+                onClick={showModalAdd}
+                loading={loading}
+                icon={<UserAddOutlined />}
+                style={{ marginLeft: "16px" }}
+              >
+                Tạo mới
+              </Button>
+            ) : null}
             {/* <Button
               type="primary"
               onClick={handleRefresh}
@@ -171,6 +204,14 @@ const WarehouseTable = ({ setTab }) => {
         <ModalAddWareHouse
           showModalAddWareHouse={showModalAddWareHouse}
           setShowModalAddWareHouse={setShowModalAddWareHouse}
+        />
+      ) : null}
+      {visible ? (
+        <ModalWarehouseDetail
+          visible={visible}
+          setVisible={setVisible}
+          selectedId={selectedId}
+          
         />
       ) : null}
     </div>

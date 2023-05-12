@@ -19,9 +19,25 @@ const inboundSlice = createSlice({
     setBinCode: (state, action) => {
       state.binCode = action.payload;
     },
+    // setReceipt: (state, action) => {
+    //   if (state.receipt && Array.isArray(state.receipt)) {
+    //     state.receipt = [...state.receipt, action.payload];
+    //   } else {
+    //     state.receipt = [action.payload];
+    //   }
+    // },
     setReceipt: (state, action) => {
-      if (state.receipt && Array.isArray(state.receipt)) {
-        state.receipt = [...state.receipt, action.payload];
+      const {binLocationCode, goodsCode, quantity, } = action.payload;
+      if (state.receipt) {
+        const index = state.receipt.findIndex(
+          (receipt) => receipt.goodsCode === goodsCode
+        );
+        if (index !== -1) {
+          state.receipt[index].quantity = quantity;
+          state.receipt[index].binLocationCode = binLocationCode;
+        } else {
+          state.receipt.push(action.payload);
+        }
       } else {
         state.receipt = [action.payload];
       }

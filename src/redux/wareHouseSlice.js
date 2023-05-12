@@ -13,8 +13,11 @@ const warehouseSlice = createSlice({
         setUsableBin: (state, action) => {
             state.usableBin = action.payload;
         },
+        setMovingBin: (state, action) => {
+            state.movingBin = action.payload;
+        }
     },
 });
 
-export const { setWareHouse,setReceipt, setUsableBin } = warehouseSlice.actions;
+export const { setWareHouse,setReceipt, setUsableBin, setMovingBin} = warehouseSlice.actions;
 export default warehouseSlice.reducer;

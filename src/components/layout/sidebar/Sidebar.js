@@ -101,16 +101,10 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LoginOutlined,
   LogoutOutlined,
-  BarChartOutlined,
   UserOutlined,
   HomeOutlined,
   TagsOutlined,
-  ShoppingCartOutlined,
-  InboxOutlined,
   DashboardOutlined,
-  SettingOutlined,
-  ProfileOutlined,
-  ContainerOutlined,
   TeamOutlined,
 } from "@ant-design/icons";
 import AuthService from "../../../service/auth.service";
@@ -154,7 +148,8 @@ const Sidebar = () => {
     ]),
     getItem("Sản phẩm", "4", <TagsOutlined />, [
       getItem(<Link to={"/san-pham"}>Sản phẩm</Link>, "4.1"),
-      getItem(<Link to={"/loai-san-pham"}>Loại sản phẩm</Link>, "4.2"),
+      isAdmin &&
+        getItem(<Link to={"/loai-san-pham"}>Loại sản phẩm</Link>, "4.2"),
     ]),
     isAdmin &&
       getItem(<Link to={"/nhan-vien"}>Nhân viên</Link>, "5", <UserOutlined />),
@@ -208,6 +203,12 @@ const Sidebar = () => {
         collapsed={collapsed}
         onCollapse={(value) => setCollapsed(value)}
         width={234}
+        style={{
+          overflow: "auto",
+          height: "100vh",
+          //position: 'fixed',
+          //left: 0,
+        }}
       >
         <div
           style={{

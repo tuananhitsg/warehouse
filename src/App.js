@@ -1,18 +1,9 @@
 import "./App.css";
 import React, { useEffect, useState, Component } from "react";
-import { lazy, Suspense } from "react";
-import {
-  BrowserRouter,
-  Route,
-  Routes,
-  useNavigate,
-  Navigate,
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
-import { Provider } from "react-redux";
-import store from "./redux/store";
-import Loading from "./components/basic/loading";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
+import { ConfigProvider } from "antd";
+import viVN from "antd/lib/locale/vi_VN";
 
 import { useSelector } from "react-redux";
 import authService from "./service/auth.service";
@@ -139,8 +130,15 @@ const router = createBrowserRouter([
           },
           {
             path: "loai-san-pham",
-            element: <IndexCategory />,
+            element: <AdminProtectedRoute roleName={"ADMIN"} />,
+            children: [
+              {
+                path: "/loai-san-pham",
+                element: <IndexCategory />,
+              },
+            ],
           },
+
           {
             path: "nhan-vien",
             element: <AdminProtectedRoute roleName={"ADMIN"} />,
@@ -174,25 +172,13 @@ const router = createBrowserRouter([
   },
 ]);
 const App = () => {
-  // const dispatch = useDispatch();
-  // const navigate = useNavigate();
-  // const user = useSelector((state) => state.userReducer);
-  // useEffect(() => {
-  //   const userInLocalStorage = authService.getUser();
-  //   const token = authService.getLocalToken();
-  //   if (userInLocalStorage) {
-  //     dispatch(setUser(userInLocalStorage));
-  //     navigate("/trang-chu");
-  //   } else {
-  //     navigate("/dang-nhap");
-  //   }
-  // }, []);
-
   return (
     <div className="App">
       <React.Fragment>
         <ErrorBoundary>
-          <RouterProvider router={router} />
+          <ConfigProvider locale={viVN}>
+            <RouterProvider router={router} />
+          </ConfigProvider>
         </ErrorBoundary>
       </React.Fragment>
     </div>

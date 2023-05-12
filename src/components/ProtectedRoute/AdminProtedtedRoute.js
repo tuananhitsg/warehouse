@@ -1,6 +1,5 @@
 import React from "react";
 import { Outlet, Navigate } from "react-router-dom";
-import { useSelector } from "react-redux";
 import AuthService from "../../service/auth.service";
 const AdminProtectedRoute = ({ roleName }) => {
 

@@ -8,8 +8,8 @@ import Confirmation from "./ConfirmInbound";
 import PickingSalesReceipt from "./PickingSalesReceipt";
 import SelectingGoods from "./SelectingGoods";
 //import SelectingWarehouse from "./SelectingWarehouse";
-import ResultPage from "../../../pages/ResultPage";
-import { setReceipt, reset } from "../../../../redux/outboundSlice";
+import InboundReSultPage from "../../../pages/InboundReSultPage";
+import { setReceipt, resetReceipt } from "../../../../redux/outboundSlice";
 import { useDispatch, useSelector } from "react-redux";
 import "./style.scss";
 const OutboundComponent = () => {
@@ -26,6 +26,9 @@ const OutboundComponent = () => {
   };
   const prev = () => {
     setCurrent(current - 1);
+    if (current === 2) {
+      dispatch(resetReceipt());
+    }
     //dispatch(setReceipt(null));
   };
   const steps = [
@@ -44,7 +47,11 @@ const OutboundComponent = () => {
     {
       title: "Hoàn tất",
       content: isSuccess ? (
-        <ResultPage setIsSuccess={setIsSuccess} setCurrent={setCurrent} />
+        <InboundReSultPage
+          setIsSuccess={setIsSuccess}
+          setCurrent={setCurrent}
+          isDelivery={true}
+        />
       ) : (
         <Confirmation next={next} setIsSucess={setIsSuccess} isSale={true} />
       ),

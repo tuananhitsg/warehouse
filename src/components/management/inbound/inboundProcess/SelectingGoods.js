@@ -27,6 +27,7 @@ const SelectingBin = ({ next }) => {
   const [visible, setVisible] = useState(false);
   const [purchaseReceipt, setPurchaseReceipt] = useState(null);
   const [goodsCode, setGoodsCode] = useState("");
+  const [isPicked, setIsPicked] = useState(false);
   const showFormInbound = (record) => {
     setVisible(true);
     setPurchaseReceipt(record);
@@ -65,7 +66,7 @@ const SelectingBin = ({ next }) => {
       key: "quantityPurchased",
     },
     {
-      title: "Số lượng chưa nhập",
+      title: "Số lượng còn lại",
       dataIndex: "quantityRemaining",
       key: "quantityRemaining",
     },
@@ -101,6 +102,7 @@ const SelectingBin = ({ next }) => {
       render: (text, record) => (
         <Space>
           <Button
+            disabled={record.quantityRemaining === 0}
             type="primary"
             icon={<SendOutlined />}
             onClick={() => {
@@ -123,7 +125,9 @@ const SelectingBin = ({ next }) => {
           </Title>
         </Col>
         <Col span={24} style={{ marginBottom: "1rem", marginLeft: "1rem" }}>
-          <Button type="primary" onClick={next}>Tiếp tục</Button>
+          <Button type="primary" onClick={next} disabled={!isPicked}>
+            Tiếp tục
+          </Button>
         </Col>
         <Col span={24}>
           <TablePurchaseDetail record={purchaseVoucher} inboundCols={columns} />
@@ -142,6 +146,7 @@ const SelectingBin = ({ next }) => {
               show={visible}
               setShow={setVisible}
               record={purchaseReceipt}
+              setIsPicked={setIsPicked}
             />
           </Col>
         </Row>

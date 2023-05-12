@@ -13,6 +13,7 @@ import {
   Space,
 } from "antd";
 import partnerApi from "../../../api/partnerApi";
+import addressApi from "../../../api/addressApi";
 import {
   getProvinceList,
   getDistrictList,
@@ -22,7 +23,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { Formik, Field, ErrorMessage } from "formik";
 import { createPartnerValues } from "../../utils/initValues";
-import addressApi from "../../../api/addressApi";
+
 const ModalPartnerDetail = ({
   showModalPartnerDetail,
   setShowModalPartnerDetail,
@@ -141,7 +142,6 @@ const ModalPartnerDetail = ({
           setProvincePicked(res.address.province);
           setDistrictPicked(res.address.district);
           setWardPicked(res.address.ward);
-
         }
       } catch (error) {
         console.log("error", error);

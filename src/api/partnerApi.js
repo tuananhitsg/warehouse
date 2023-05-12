@@ -33,6 +33,10 @@ const partnerApi = {
     const url = `/partner/get-by/${phone}`;
     return axiosApi.get(url);
   },
+  search: (keyword) => {
+    const url = `/partner/search`;
+    return axiosApi.post(url);
+  }
 };
 
 export default partnerApi;

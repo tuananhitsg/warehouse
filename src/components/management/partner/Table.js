@@ -54,27 +54,7 @@ const PartnerTable = ({
   const onSelectChange = (selectedId) => {
     setSelectedRowKeys(selectedId);
   };
-  // const rowSelection = {
-  //   selectedRowKeys,
-  //   onChange: onSelectChange,
-  // };
-  // const [isModalOpen, setIsModalOpen] = useState(false);
-  // const showModal = () => {
-  //   setIsModalOpen(true);
-  // };
-  // useEffect(() => {
-  //   const fetchDataTable = async () => {
-  //     try {
-  //       const response = await partnerApi.getAll();
-  //       setListPartner(response);
-  //     } catch (error) {
-  //       console.log("Failed to fetch data table: ", error);
-  //       message.error("Lỗi tải dữ liệu");
-  //     }
-  //   };
-  //   fetchDataTable();
-  // }, [reload]);
-  //fetch
+
   const [tableParams, setTableParams] = useState({
     pagination: {
       current: 1,

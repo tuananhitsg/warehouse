@@ -38,21 +38,9 @@ const ModalGoodsDetail = ({
   const handleSubmit = async (values) => {
     console.log("submit", values);
     console.log("imagePicker", imagePicker);
-    const { categoryCode, categoryName, name, size } = values;
-    let length, width, height;
-    if (size === "1") {
-      length = 0.3;
-      width = 0.2;
-      height = 0.3;
-    } else if (size === "2") {
-      length = 0.5;
-      width = 0.3;
-      height = 0.4;
-    } else if (size === "3") {
-      length = 0.6;
-      width = 0.4;
-      height = 0.4;
-    }
+    const { categoryCode, categoryName, name, size, length, width, height } =
+      values;
+    console.log("values", values);
     // const formData = new FormData();
     // formData.append("file", image);
     // // const convertedImage = await convertImageToBase64(image);
@@ -62,9 +50,9 @@ const ModalGoodsDetail = ({
       categoryCode,
       categoryName,
       name,
-      length,
-      width,
-      height,
+      length: parseFloat(length).toFixed(2),
+      width: parseFloat(width).toFixed(2),
+      height: parseFloat(height).toFixed(2),
       //image: uploadRes,
     };
     const res = await goodsApi.updateGoods(selectedId, data);
@@ -121,23 +109,26 @@ const ModalGoodsDetail = ({
                 url: res.image,
               },
             ],
+            length: parseFloat(res.length).toFixed(2),
+            width: parseFloat(res.width).toFixed(2),
+            height: parseFloat(res.height).toFixed(2),
           });
           setCategories(resCate);
-          if (res.length === 0.3 && res.width === 0.2 && res.height === 0.3) {
-            form.setFieldsValue({ size: "1" });
-          } else if (
-            res.length === 0.5 &&
-            res.width === 0.3 &&
-            res.height === 0.4
-          ) {
-            form.setFieldsValue({ size: "2" });
-          } else if (
-            res.length === 0.6 &&
-            res.width === 0.4 &&
-            res.height === 0.4
-          ) {
-            form.setFieldsValue({ size: "3" });
-          }
+          // if (res.length === 0.3 && res.width === 0.2 && res.height === 0.3) {
+          //   form.setFieldsValue({ size: "1" });
+          // } else if (
+          //   res.length === 0.5 &&
+          //   res.width === 0.3 &&
+          //   res.height === 0.4
+          // ) {
+          //   form.setFieldsValue({ size: "2" });
+          // } else if (
+          //   res.length === 0.6 &&
+          //   res.width === 0.4 &&
+          //   res.height === 0.4
+          // ) {
+          //   form.setFieldsValue({ size: "3" });
+          // }
         }
       } catch (error) {
         console.log("error", error);
@@ -145,7 +136,12 @@ const ModalGoodsDetail = ({
     };
     fetchData(selectedId);
   }, []);
-
+  const restrictInputToRealNumbers = (event) => {
+    const numericKeys = /^[0-9]*\.?[0-9]*$/;
+    if (!numericKeys.test(event.key)) {
+      event.preventDefault();
+    }
+  };
   return (
     <div className="modal-container">
       <div className="modal-header">
@@ -199,24 +195,34 @@ const ModalGoodsDetail = ({
             </Row>
             <Row gutter={16}>
               <Col span={12}>
-                <Form.Item name="size" label="Kích thước">
-                  <Select
-                    onChange={onChangeSize}
-                    options={[
-                      {
-                        value: "1",
-                        label: "0.3 X 0.2 X 0.3 (m)",
-                      },
-                      {
-                        value: "2",
-                        label: "0.5 X 0.3 X 0.4 (m)",
-                      },
-                      {
-                        value: "3",
-                        label: "0.6 X 0.4 X 0.4 (m)",
-                      },
-                    ]}
-                  />
+                <Form.Item
+                  name="shelves"
+                  label="Kích cỡ sản phẩm"
+                  rules={[{ required: true }]}
+                >
+                  <Space.Compact block>
+                    <Form.Item name="length" noStyle>
+                      <Input
+                        style={{ width: "33%" }}
+                        placeholder="Chiều dài sản phẩm(m)"
+                        onKeyPress={restrictInputToRealNumbers}
+                      />
+                    </Form.Item>
+                    <Form.Item name="width" noStyle>
+                      <Input
+                        style={{ width: "33%" }}
+                        placeholder="Chiều rộng sản phẩm(m)"
+                        onKeyPress={restrictInputToRealNumbers}
+                      />
+                    </Form.Item>
+                    <Form.Item name="height" noStyle>
+                      <Input
+                        style={{ width: "33%" }}
+                        placeholder="Chiều cao sản phẩm(m)"
+                        onKeyPress={restrictInputToRealNumbers}
+                      />
+                    </Form.Item>
+                  </Space.Compact>
                 </Form.Item>
               </Col>
               <Col span={12}>

@@ -54,7 +54,12 @@ const wareHouserApi = {
   },
   getBinsByStatus: (codeWarehouse, status) => {
     const url = `/bin-location/filter-status-by/${codeWarehouse}`;
-    return axiosApi.get(url, { status });
+    return axiosApi.post(url, { status });
   },
+  moveGoodsToBin: (binId, params) => {
+    const url = `/bin-location/move/${binId}`;
+    return axiosApi.post(url, params);
+  }
+
 };
 export default wareHouserApi;

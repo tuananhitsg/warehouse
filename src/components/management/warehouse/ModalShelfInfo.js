@@ -12,34 +12,29 @@ import {
   Form,
   Drawer,
   Space,
+  message,
 } from "antd";
 import wareHouseApi from "../../../api/wareHouseApi";
 import "./ModalShelfInfo.scss";
-const ModalShelfInfo = ({ shelfCode, shelf, handleLogic }) => {
+import MovingInfoNotification from "../../../utils/movingInfoNotification";
+import ModalMovingGoods from "./ModalMovingGoods";
+import { useDispatch, useSelector } from "react-redux";
+import { setMovingBin } from "../../../redux/wareHouseSlice";
+const ModalShelfInfo = ({
+  shelfCode,
+  shelf,
+  handleLogic,
+  setIsMovingBin,
+  isMovingBin,
+}) => {
   const [form] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(true);
-  const [goods, setGoods] = useState([]);
-  const [status, setStatus] = useState([]);
+  const dispatch = useDispatch();
+  console.log("isMovingBin trong modal: ", isMovingBin);
 
-  // const handleOk = () => {
+  const [quantity, setQuantity] = useState("");
+  const [isSelect, setIsSelect] = useState(false);
 
-  //   const update = async (id, data) => {
-  //     try {
-  //       const response = await cinemaHallApi.updateShelf(
-  //         id, data
-  //       );
-  //       if (response) {
-  //         console.log("update success");
-  //         setStatusShelfState(null)
-  //         setStatusState(null)
-  //          handleLogic();
-  //       }
-  //     } catch (error) {
-  //       console.log("Featch erro: ", error);
-  //     }
-  //   };
-  //   update(shelf.id, {status: statusState, statusShelf: statusShelfState});
-  // };
   const handleCancel = () => {
     handleLogic();
   };
@@ -51,95 +46,153 @@ const ModalShelfInfo = ({ shelfCode, shelf, handleLogic }) => {
     });
   }, [shelf, form]);
 
-  console.log("shelf trong modal: ", shelf);
+  const handleMove = async () => {
+    if (!quantity || parseInt(quantity) === 0) {
+      return;
+    }
+    if (parseInt(quantity) > shelf.currentCapacity) {
+      message.error(`Số lượng không được vượt quá ${shelf.currentCapacity}`);
+      return;
+    }
+    console.log("binCode: ", shelfCode);
+    setIsMovingBin(true);
+    dispatch(
+      setMovingBin({ fromBinLocationCode: shelfCode, quantity: quantity, goodsName: shelf.goods.name, goodsCode:shelf.goods.code })
+    );
+    handleCancel();
+  };
+  const handleSelect = async () => {
+    console.log("binCode: ", shelfCode);
+    setIsSelect(true);
+  };
+  const handleQuantityChange = (e) => {
+    setQuantity(e.target.value);
+  };
+  const restrictInputToNumbers = (event) => {
+    const numericKeys = /[0-9]/;
+    if (!numericKeys.test(event.key)) {
+      event.preventDefault();
+    }
+  };
   return (
-    <Drawer
-      title="Thông tin vị trí "
-      open={isModalOpen}
-      width={720}
-      //onOk={handleOk}
-      onClose={handleCancel}
-      extra={
-        <Space>
-          <Button onClick={handleCancel}>Huỷ</Button>
-          <Button type="primary" form="myForm" htmlType="submit">
-            Xác nhận
-          </Button>
-        </Space>
-      }
-    >
-      <Form form={form} id="myForm" layout="vertical">
-        <Row>
-          <Col span={4}>Tên kho chứa:</Col>
-          <Col span={20}>
-            <Form.Item name="nameWarehouse">
-              <Input readOnly />
-            </Form.Item>
-          </Col>
-
-          <Col span={4}>Vị trí:</Col>
-          <Col span={20}>
-            <Form.Item name="position" rules={[{ required: true }]}>
-              <Space>
-                <Row gutter={16}>
-                  <Col span={12}>
-                    <Form.Item name="codeBin" label="Mã kệ">
-                      <Input readOnly />
-                    </Form.Item>
-                  </Col>
-                  <Col span={12}>
-                    <Form.Item name="nameShelf" label="Tên kệ">
-                      <Input readOnly />
-                    </Form.Item>
-                  </Col>
-
-                  <Col span={12}>
-                    <Form.Item name="nameColumn" label="Cột">
-                      <Input readOnly bordered />
-                    </Form.Item>
-                  </Col>
-                  <Col span={12}>
-                    <Form.Item name="nameBin" label="Tầng">
-                      <Input readOnly />
-                    </Form.Item>
-                  </Col>
-                </Row>
-              </Space>
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row>
-          <Col span={4}>Tình trạng:</Col>
-          <Col span={20}>
-            <Form.Item name="statusShelf">
-              <Space>
-                <Row gutter={16}>
-                  <Col span={12}>
-                    <Form.Item name="currentCapacity" label="Sức chứa hiện tại">
-                      <Input readOnly />
-                    </Form.Item>
-                  </Col>
-                  <Col span={12}>
-                    <Form.Item name="maxCapacity" label="Sức chứa tối đa">
-                      <Input readOnly />
-                    </Form.Item>
-                  </Col>
-                  <Col span={24}>
-                    <Form.Item name="status" label="Trạng thái">
-                      <Input readOnly />
-                    </Form.Item>
-                  </Col>
-                </Row>
-              </Space>
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row>
-          <Col span={4}>Sản phẩm:</Col>
-          <Col span={20}>
-            {shelf.goods ? (
-              <Form.Item name="goods">
+    <>
+      <Drawer
+        title="Thông tin vị trí "
+        open={isModalOpen}
+        width={720}
+        //onOk={handleOk}
+        onClose={handleCancel}
+        footer={
+          shelf.goods && !isMovingBin ? (
+            <Space>
+              <Form.Item>
+                <Button
+                  onClick={handleMove}
+                  type="primary"
+                  disabled={!quantity || parseInt(quantity) === 0}
+                >
+                  Di chuyển
+                </Button>
+              </Form.Item>
+              <Form.Item>
+                <Input
+                  value={quantity}
+                  onChange={handleQuantityChange}
+                  placeholder="Nhập số lượng chuyển"
+                  onKeyPress={restrictInputToNumbers}
+                  addonAfter={shelf.currentCapacity}
+                />
+              </Form.Item>
+            </Space>
+          ) : isMovingBin ? (
+            <Space>
+              <Button onClick={handleSelect} type="primary">
+                Chọn
+              </Button>
+            </Space>
+          ) : null
+        }
+      >
+        <Form
+          form={form}
+          id="myForm"
+          layout="horizontal"
+          labelAlign="left"
+          labelCol={{
+            span: 5,
+          }}
+          wrapperCol={{
+            span: 19,
+          }}
+        >
+          <Row>
+            <Col span={24}>
+              <Form.Item name="nameWarehouse" label="Tên kho">
+                <Input readOnly bordered={false} />
+              </Form.Item>
+            </Col>
+            <Col span={24}>
+              <Form.Item name="position" label="Vị trí">
                 <Space>
+                  <Row gutter={16}>
+                    <Col span={12}>
+                      <Form.Item name="codeBin" label="Mã kệ">
+                        <Input readOnly bordered={false} />
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item name="nameShelf" label="Tên kệ">
+                        <Input readOnly bordered={false} />
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={12}>
+                      <Form.Item name="nameColumn" label="Cột">
+                        <Input readOnly bordered={false} />
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item name="nameBin" label="Tầng">
+                        <Input readOnly bordered={false} />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                </Space>
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row>
+            <Col span={24}>
+              <Form.Item name="statusShelf" label="Tình trạng">
+                <Space>
+                  <Row gutter={16}>
+                    <Col span={12}>
+                      <Form.Item
+                        name="currentCapacity"
+                        label="Sức chứa hiện tại"
+                      >
+                        <Input readOnly bordered={false} />
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item name="maxCapacity" label="Sức chứa tối đa">
+                        <Input readOnly bordered={false} />
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item name="status" label="Trạng thái">
+                        <Input readOnly bordered={false} />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                </Space>
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row>
+            <Col span={24}>
+              <Form.Item name="goods" label="Sản phẩm">
+                {shelf.goods ? (
                   <Row gutter={16}>
                     <Col span={12}>
                       <Form.Item name="code" label="Mã sản phẩm">
@@ -151,8 +204,7 @@ const ModalShelfInfo = ({ shelfCode, shelf, handleLogic }) => {
                         <Input readOnly bordered={false} />
                       </Form.Item>
                     </Col>
-                  </Row>
-                  <Row gutter={16}>
+
                     <Col span={12}>
                       <Form.Item name="unit" label="Đơn vị">
                         <Input readOnly bordered={false} />
@@ -164,13 +216,29 @@ const ModalShelfInfo = ({ shelfCode, shelf, handleLogic }) => {
                       </Form.Item>
                     </Col>
                   </Row>
-                </Space>
+                ) : (
+                  "Trống"
+                )}
               </Form.Item>
-            ) : "Trống"}
-          </Col>
-        </Row>
-      </Form>
-    </Drawer>
+            </Col>
+          </Row>
+        </Form>
+      </Drawer>
+      {/* {isMovingBin ? (
+        <MovingInfoNotification
+          setIsMovingBin={setIsMovingBin}
+          isMovingBin={isMovingBin}
+        />
+      ) : null} */}
+      {isSelect ? (
+        <ModalMovingGoods
+          isSelect={isSelect}
+          setIsSelect={setIsSelect}
+          selectedShelfCode={shelfCode}
+          setIsMovingBin={setIsMovingBin}
+        />
+      ) : null}
+    </>
   );
 };
 export default ModalShelfInfo;

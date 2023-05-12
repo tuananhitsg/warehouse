@@ -34,7 +34,7 @@ import { setWareHouse, setUsableBin } from "../../../../redux/wareHouseSlice";
 import { Padding } from "@mui/icons-material";
 import { setBinCode, setReceipt } from "../../../../redux/inboundSlice";
 
-const SelectingWarehouse = ({ next, show, setShow }) => {
+const SelectingWarehouse = ({ next, show, setShow, setIsPicked }) => {
   const [wareHouseOption, setWareHouseOption] = useState([]);
   const [wareHouseCode, setWareHouseCode] = useState("");
   const [quantity, setQuantity] = useState(0);
@@ -48,7 +48,6 @@ const SelectingWarehouse = ({ next, show, setShow }) => {
   const selectedBin = useSelector((state) => state.inboundReducer.binCode);
   //test
   const [warehouseMap, setWarehouseMap] = useState(false);
- 
 
   console.log("record code", record.code);
   const selectBin = {
@@ -127,6 +126,7 @@ const SelectingWarehouse = ({ next, show, setShow }) => {
   const handleNext = () => {
     //next();
     setShow(false);
+    setIsPicked(true);
     dispatch(
       setReceipt({
         binLocationCode: selectedBin,
@@ -149,7 +149,26 @@ const SelectingWarehouse = ({ next, show, setShow }) => {
         >
           <Row gutter={16}>
             <Col span={10}>
-              <FormAntd.Item label="Số lượng" name="quantity">
+              <FormAntd.Item
+                label="Số lượng"
+                name="quantity"
+                rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng nhập số lượng",
+                  },
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      if (value && value <= record.quantityRemaining) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject(
+                        new Error("Số lượng nhập không hợp lệ")
+                      );
+                    },
+                  }),
+                ]}
+              >
                 <Input
                   placeholder="Nhập số lượng"
                   style={{
@@ -161,7 +180,16 @@ const SelectingWarehouse = ({ next, show, setShow }) => {
               </FormAntd.Item>
             </Col>
             <Col span={10}>
-              <FormAntd.Item label="Kho" name="warehouseCode">
+              <FormAntd.Item
+                label="Kho"
+                name="warehouseCode"
+                rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng chọn kho",
+                  },
+                ]}
+              >
                 <Select
                   placeholder="Chọn kho"
                   options={wareHouseOption.map((item) => ({

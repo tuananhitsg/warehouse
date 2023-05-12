@@ -33,10 +33,10 @@ const ResultPage = ({ setCurrent, setIsSuccess, isDelivery }) => {
       }
       extra={[
         <Button type="primary" key="console" onClick={handleReset}>
-          Tạo phiếu nhập mới
+          {isDelivery ? "Tạo phiếu xuất hàng mới" : "Tạo phiếu nhập mới"}
         </Button>,
         <Button key="import" onClick={handleImportClick}>
-          Nhập hàng vào kho
+          {isDelivery ? "Xuất hàng" : "Nhập hàng"}
         </Button>,
       ]}
     />

@@ -133,7 +133,7 @@ const PickingGoods = ({ next }) => {
       key: "unit",
     },
     {
-      title: "Số lượng",
+      title: "Số lượng bán",
       width: "15%",
       dataIndex: "quantity",
       key: "quantity",
