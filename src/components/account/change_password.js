@@ -8,7 +8,7 @@ import { validPhone, validPassword } from "../../resources/regexp";
 import userApi from "../../api/userApi";
 import zxcvbn from "zxcvbn";
 import "./style.scss";
-
+import AuthService from "../../service/auth.service";
 const { Title } = Typography;
 
 const ChangePassword = () => {
@@ -81,10 +81,6 @@ const ChangePassword = () => {
     });
   };
 
-  const error_msg = () => {
-    message.error("Sai mật khẩu");
-  };
-
   const onFinish = async (values) => {
     values.new_password = password;
 
@@ -116,17 +112,16 @@ const ChangePassword = () => {
       email: resetPasswordEmail,
       password: values.new_password,
     };
-  
 
     try {
       const response = await userApi.changePassword(params);
-     
-
       if (response) {
         message.success("Đổi mật khẩu thành công");
-        navigate("/dang-nhap");
-        localStorage.removeItem("resetPasswordEmail");
-        localStorage.removeItem("token");
+        if (!AuthService.getUser()) {
+          navigate("/dang-nhap");
+          localStorage.removeItem("resetPasswordEmail");
+          localStorage.removeItem("token");
+        }
       } else {
         message.error("Xảy ra lỗi");
       }
@@ -141,11 +136,6 @@ const ChangePassword = () => {
   useEffect(() => {
     document.title = "Đổi mật khẩu - Quản lý kho hàng thông minh";
   }, []);
-
-  const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
-    message.error("Có lỗi xảy ra");
-  };
 
   return (
     <>
@@ -215,7 +205,6 @@ const ChangePassword = () => {
               style={{
                 marginBottom: "0px",
               }}
-              
             >
               <Input.Password
                 size="large"

@@ -35,5 +35,9 @@ const OutboundApi = {
     const url = `/delivery-voucher/export-goods/${id}`;
     return axiosApi.post(url);
   },
+  cancelDeliveryVoucher: (id) => {
+    const url = `/delivery-voucher/cancel/${id}`;
+    return axiosApi.post(url);
+  }
 };
 export default OutboundApi;

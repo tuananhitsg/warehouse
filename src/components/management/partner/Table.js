@@ -103,7 +103,7 @@ const PartnerTable = ({
     setTableParams({
       pagination: {
         ...pagination,
-        page: pagination.current - 1,
+        page: pagination.current,
       },
     });
     navigate(

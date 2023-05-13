@@ -19,6 +19,7 @@ import {
   ReloadOutlined,
   LoginOutlined,
   LogoutOutlined,
+  CloseOutlined,
 } from "@ant-design/icons";
 
 import InboundApi from "../../../../api/inboundApi";
@@ -34,7 +35,7 @@ import TableReceipt from "./TableVoucherDetail";
 const OutboundTable = () => {
   const [selectedId, setSelectedId] = useState(null);
   const [showModalGoodsDetail, setShowModalGoodsDetail] = useState(false);
-  const [showModalAddReceipt, setShowModalAddReceipt] = useState(false);
+  const [showModalCancelReceipt, setShowModalCancelReceipt] = useState(false);
   const [showModalConfirmPut, setShowModalConfirmPut] = useState(false);
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -51,14 +52,15 @@ const OutboundTable = () => {
     setShowModalGoodsDetail(true);
     setSelectedId(e);
   };
-  const showModalAdd = () => {
-    setShowModalAddReceipt(true);
-  };
+
   const showModalConfirm = (code) => {
     setShowModalConfirmPut(true);
     setSelectedId(code);
   };
-
+  const showModalCancelVoucherReceipt = (code) => {
+    setShowModalCancelReceipt(true);
+    setSelectedId(code);
+  };
   //get good list
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -152,7 +154,21 @@ const OutboundTable = () => {
     setSelectedId(null);
     setShowModalConfirmPut(false);
   };
-
+  const handleCancelReceipt = async () => {
+    try {
+      const res = await OutboundApi.cancelDeliveryVoucher(selectedId);
+      console.log("res cancel:", res);
+      if (res) {
+        message.success("Hủy phiếu xuất thành công");
+        dispatch(setReload(!reload));
+      }
+    } catch (error) {
+      console.log("Failed to cancel receipt: ", error);
+      message.error("Hủy phiếu xuất thất bại");
+    }
+    setSelectedId(null);
+    setShowModalCancelReceipt(false);
+  };
   const columns = [
     {
       title: "Mã phiếu nhập",
@@ -223,6 +239,13 @@ const OutboundTable = () => {
             icon={<LogoutOutlined />}
             disabled={record.status !== "Chưa xuất"}
           />
+          <Button
+            onClick={() => showModalCancelVoucherReceipt(record.code)}
+            danger
+            type="primary"
+            icon={<CloseOutlined />}
+            disabled={record.status === "Đã xuất"}
+          />
         </Space>
       ),
     },
@@ -267,7 +290,7 @@ const OutboundTable = () => {
       />
       {showModalConfirmPut ? (
         <Modal
-          title="Xác nhận nhập kho"
+          title="Xác nhận xuất kho"
           onCancel={handleCancel}
           onOk={handleInbound}
           open={true}
@@ -278,12 +301,18 @@ const OutboundTable = () => {
         </Modal>
       ) : null}
 
-      {/* {showModalAddReceipt ? (
-        <ModalAddReceipt
-          showModalAddReceipt={showModalAddReceipt}
-          setShowModalAddReceipt={setShowModalAddReceipt}
-        />
-      ) : null} */}
+      {showModalCancelReceipt ? (
+        <Modal
+          title="Xác nhận huỷ phiếu nhập"
+          onCancel={handleCancel}
+          onOk={handleCancelReceipt}
+          open={true}
+          cancelText="Huỷ"
+          okText="Xác nhận"
+        >
+          <p>Bạn muốn huỷ phiếu nhập {selectedId}?</p>
+        </Modal>
+      ) : null}
     </div>
   );
 };

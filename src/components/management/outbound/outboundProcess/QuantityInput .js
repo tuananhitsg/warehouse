@@ -148,14 +148,33 @@ const SelectingWarehouse = ({ next, show, setShow }) => {
         >
           <Row gutter={16}>
             <Col span={10}>
-              <FormAntd.Item label="Số lượng" name="quantity">
+              <FormAntd.Item
+                label="Số lượng"
+                name="quantity"
+                rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng nhập số lượng",
+                  },
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      if (value && value <= record.quantityRemaining) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject(
+                        new Error("Số lượng nhập không hợp lệ")
+                      );
+                    },
+                  }),
+                ]}
+              >
                 <Input
                   placeholder="Nhập số lượng"
                   style={{
                     width: "100%",
                   }}
                   onKeyPress={restrictInputToNumbers}
-                  addonAfter={`/ ${record.quantity}`}
+                  addonAfter={`/ ${record.quantityRemaining}`}
                 />
               </FormAntd.Item>
             </Col>

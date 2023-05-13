@@ -106,6 +106,7 @@ import {
   TagsOutlined,
   DashboardOutlined,
   TeamOutlined,
+  PieChartOutlined
 } from "@ant-design/icons";
 import AuthService from "../../../service/auth.service";
 import { useSelector } from "react-redux";
@@ -154,6 +155,10 @@ const Sidebar = () => {
     isAdmin &&
       getItem(<Link to={"/nhan-vien"}>Nhân viên</Link>, "5", <UserOutlined />),
     getItem(<Link to={"/doi-tac"}>Đối tác</Link>, "6", <TeamOutlined />),
+    getItem("Thống kê", "7", <PieChartOutlined />, [
+      getItem(<Link to={"/thong-ke"}>Số</Link>, "7.1"),
+    ]),
+
   ];
   // const items = [
   //   getItem("Dashboard", "/", <DashboardOutlined />),

@@ -35,7 +35,7 @@ const PickingPurchasesReceipt = ({ next }) => {
   // }, []);
   const columns = [
     {
-      title: "Mã phiếu mua",
+      title: "Mã phiếu bán",
       width: "15%",
       dataIndex: "code",
       key: "code",

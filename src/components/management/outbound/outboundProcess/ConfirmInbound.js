@@ -42,9 +42,15 @@ const Confirmation = ({ setIsSucess }) => {
     setLoading(true);
     const res = await OutboundApi.createDelivery(salesCode, data);
     console.log("res outbound:", res);
-    if (res) {
-      dispatch(setReload(!reload));
-      setIsSucess(true);
+    try {
+      if (res) {
+        dispatch(setReload(!reload));
+        setIsSucess(true);
+        message.success("Tạo phiếu phiếu xuất thành công");
+      }
+    } catch (err) {
+      console.log(err);
+      message.error("Tạo phiếu xuất thất bại");
     }
   };
 
@@ -74,7 +80,7 @@ const Confirmation = ({ setIsSucess }) => {
                 span: 16,
               }}
             >
-              <Form.Item label="Mã phiếu mua" className="form-item-label">
+              <Form.Item label="Mã phiếu bán" className="form-item-label">
                 <div className="form-text">{sales.code}</div>
               </Form.Item>
 

@@ -29,8 +29,8 @@ const TableSalesDetail = ({ record, inboundCols }) => {
           name: item.goods.name,
           categoryName: item.goods.categoryName,
           unit: item.goods.unit,
-          quantity: item.quantity,
-         
+          quantityRemaining: item.quantityRemaining,
+          quantitySale: item.quantitySale,
           status: item.status,
         };
       });
@@ -65,9 +65,14 @@ const TableSalesDetail = ({ record, inboundCols }) => {
       width: "13%",
     },
     {
-      title: "Số lượng",
-      dataIndex: "quantity",
-      key: "quantity",
+      title: "Số lượng bán",
+      dataIndex: "quantitySale",
+      key: "quantitySale",
+    },
+    {
+      title: "Số lượng chưa xuất",
+      dataIndex: "quantityRemaining",
+      key: "quantityRemaining",
     },
     {
       title: "Trạng thái",

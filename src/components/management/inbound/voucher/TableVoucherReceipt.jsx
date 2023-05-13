@@ -11,14 +11,7 @@ import {
   Col,
   message,
 } from "antd";
-import {
-  DeleteOutlined,
-  SearchOutlined,
-  EditOutlined,
-  UserAddOutlined,
-  ReloadOutlined,
-  LoginOutlined,
-} from "@ant-design/icons";
+import { CloseOutlined, LoginOutlined } from "@ant-design/icons";
 
 import InboundApi from "../../../../api/inboundApi";
 import { useDispatch, useSelector } from "react-redux";
@@ -32,7 +25,7 @@ import TableReceipt from "./TableVoucherDetail";
 const InboundTable = () => {
   const [selectedId, setSelectedId] = useState(null);
   const [showModalGoodsDetail, setShowModalGoodsDetail] = useState(false);
-  const [showModalAddReceipt, setShowModalAddReceipt] = useState(false);
+  const [showModalCancelReceipt, setShowModalCancelReceipt] = useState(false);
   const [showModalConfirmPut, setShowModalConfirmPut] = useState(false);
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -49,14 +42,17 @@ const InboundTable = () => {
     setShowModalGoodsDetail(true);
     setSelectedId(e);
   };
-  const showModalAdd = () => {
-    setShowModalAddReceipt(true);
-  };
+  // const showModalAdd = () => {
+  //   setShowModalAddReceipt(true);
+  // };
   const showModalConfirm = (code) => {
     setShowModalConfirmPut(true);
     setSelectedId(code);
   };
-
+  const showModalCancelVoucherReceipt = (code) => {
+    setShowModalCancelReceipt(true);
+    setSelectedId(code);
+  };
   //get good list
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -97,7 +93,7 @@ const InboundTable = () => {
     try {
       const res = await InboundApi.getPageOfReceipt(page, pageSize);
       // navigate(`/danh-sach-phieu-nhap?page=${page + 1}&size=${pageSize}`);
-      navigate(`${location.pathname}?page=${page+1}&size=${pageSize}`);
+      navigate(`${location.pathname}?page=${page + 1}&size=${pageSize}`);
       if (res) {
         const { content, totalElements } = res;
         setListReceipt(content);
@@ -150,7 +146,21 @@ const InboundTable = () => {
     setSelectedId(null);
     setShowModalConfirmPut(false);
   };
-
+  const handleCancelReceipt = async () => {
+    try{
+      const res = await InboundApi.cancelReceiptVoucher(selectedId);
+      console.log("res cancel:", res);
+      if (res) {
+        message.success("Hủy phiếu nhập thành công");
+        dispatch(setReload(!reload));
+      }
+    } catch (error) {
+      console.log("Failed to cancel receipt: ", error);
+      message.error("Hủy phiếu nhập thất bại");
+    }
+    setSelectedId(null);
+    setShowModalCancelReceipt(false);
+  }
   const columns = [
     {
       title: "Mã phiếu nhập",
@@ -200,7 +210,7 @@ const InboundTable = () => {
         return formattedDate;
       },
     },
-   
+
     {
       title: "Hành động",
       key: "action",
@@ -214,6 +224,13 @@ const InboundTable = () => {
             icon={<LoginOutlined />}
             disabled={record.status !== "Chưa nhập lên kệ"}
           />
+          <Button
+            onClick={() => showModalCancelVoucherReceipt(record.code)}
+            danger
+            type="primary"
+            icon={<CloseOutlined />}
+            disabled={record.status !== "Đã nhập lên kệ"}
+          />
         </Space>
       ),
     },
@@ -221,6 +238,7 @@ const InboundTable = () => {
 
   const handleCancel = () => {
     setShowModalConfirmPut(false);
+    setShowModalCancelReceipt(false);
     setSelectedId(null);
   };
   const handleExpand = (expanded, record) => {
@@ -269,14 +287,20 @@ const InboundTable = () => {
         </Modal>
       ) : null}
 
-      {/* {showModalAddReceipt ? (
-        <ModalAddReceipt
-          showModalAddReceipt={showModalAddReceipt}
-          setShowModalAddReceipt={setShowModalAddReceipt}
-        />
-      ) : null} */}
+      {showModalCancelReceipt ? (
+        <Modal
+          title="Xác nhận huỷ phiếu nhập"
+          onCancel={handleCancel}
+          onOk={handleCancelReceipt}
+          open={true}
+          cancelText="Huỷ"
+          okText="Xác nhận"
+        >
+          <p>Bạn muốn huỷ phiếu nhập {selectedId}?</p>
+        </Modal>
+      ) : null}
     </div>
   );
 };
 
-export { InboundTable};
+export { InboundTable };

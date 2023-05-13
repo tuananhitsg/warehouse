@@ -59,21 +59,21 @@ const SelectingBin = ({ next }) => {
       key: "unit",
       width: "13%",
     },
-    // {
-    //   title: "Số lượng đặt mua",
-    //   dataIndex: "quantityPurchased",
-    //   key: "quantityPurchased",
-    // },
-    // {
-    //   title: "Số lượng chưa nhập",
-    //   dataIndex: "quantityRemaining",
-    //   key: "quantityRemaining",
-    // },
     {
-      title: "Số lượng xuất",
-      dataIndex: "quantity",
-      key: "quantity",
+      title: "Số lượng bán",
+      dataIndex: "quantitySale",
+      key: "quantitySale",
     },
+    {
+      title: "Số lượng chưa xuất",
+      dataIndex: "quantityRemaining",
+      key: "quantityRemaining",
+    },
+    // {
+    //   title: "Số lượng xuất",
+    //   dataIndex: "quantity",
+    //   key: "quantity",
+    // },
     {
       title: "Trạng thái",
       dataIndex: "status",
