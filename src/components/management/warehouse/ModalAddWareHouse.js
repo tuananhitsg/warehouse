@@ -192,6 +192,7 @@ const ModalAddWareHouse = ({
       event.preventDefault();
     }
   };
+
   return (
     <>
       <Modal

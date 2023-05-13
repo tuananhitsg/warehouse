@@ -20,6 +20,7 @@ import MovingInfoNotification from "../../../utils/movingInfoNotification";
 import ModalMovingGoods from "./ModalMovingGoods";
 import { useDispatch, useSelector } from "react-redux";
 import { setMovingBin } from "../../../redux/wareHouseSlice";
+import { setReload } from "../../../redux/reloadSlice";
 const ModalShelfInfo = ({
   shelfCode,
   shelf,
@@ -35,6 +36,8 @@ const ModalShelfInfo = ({
   const [quantity, setQuantity] = useState("");
   const [isSelect, setIsSelect] = useState(false);
 
+  const reload = useSelector((state) => state.reloadReducer.reload);
+
   const handleCancel = () => {
     handleLogic();
   };
@@ -44,7 +47,7 @@ const ModalShelfInfo = ({
       ...shelf,
       ...shelf.goods,
     });
-  }, [shelf, form]);
+  }, [shelf, form, reload]);
 
   const handleMove = async () => {
     if (!quantity || parseInt(quantity) === 0) {

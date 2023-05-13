@@ -147,7 +147,7 @@ const InboundTable = () => {
     setShowModalConfirmPut(false);
   };
   const handleCancelReceipt = async () => {
-    try{
+    try {
       const res = await InboundApi.cancelReceiptVoucher(selectedId);
       console.log("res cancel:", res);
       if (res) {
@@ -160,7 +160,7 @@ const InboundTable = () => {
     }
     setSelectedId(null);
     setShowModalCancelReceipt(false);
-  }
+  };
   const columns = [
     {
       title: "Mã phiếu nhập",
@@ -229,7 +229,7 @@ const InboundTable = () => {
             danger
             type="primary"
             icon={<CloseOutlined />}
-            disabled={record.status !== "Đã nhập lên kệ"}
+            disabled={record.status !== "Chưa nhập lên kệ"}
           />
         </Space>
       ),

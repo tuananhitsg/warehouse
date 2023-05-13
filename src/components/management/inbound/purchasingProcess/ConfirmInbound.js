@@ -98,6 +98,11 @@ const Confirmation = ({ setIsSucess }) => {
                   {goods?.map((item) => {
                     return (
                       <div key={item.code} className="item-text">
+                        <img
+                          src={item.image}
+                          alt="Product Image"
+                          style={{ width: "400px", height: "200px" }}
+                        />
                         {item.name} - {item.quantity} {item.unit}
                       </div>
                     );

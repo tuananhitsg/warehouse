@@ -40,7 +40,7 @@ const Warehouse = ({
   // const params = useSelector(
   //   (state) => state.wareHouseReducer?.usableBin?.params
   // );
-
+  const reload = useSelector((state) => state.reloadReducer.reload);
   const [shelves, setShelves] = useState([]);
   const [open, setOpen] = useState(false);
   const [selectedShelf, setSelectedShelf] = useState(null);
@@ -114,22 +114,25 @@ const Warehouse = ({
       message.error("Lấy dữ liệu status kệ thất bại");
     }
   };
-
-  const handleOpenModal = async (shelfCode) => {
-    const getShelfById = async (id) => {
-      try {
-        const res = await wareHouserApi.getBinById(shelfCode);
-        if (res) {
-          setSelectedShelf(res);
-          setOpen(true);
-          setSelectedShelfCode(shelfCode);
-        }
-      } catch (error) {
-        console.log("Fetch error: ", error);
+  const getShelfById = async (code) => {
+    try {
+      const res = await wareHouserApi.getBinById(code);
+      if (res) {
+        setSelectedShelf(res);
+        setOpen(true);
+        setSelectedShelfCode(code);
       }
-    };
+    } catch (error) {
+      console.log("Fetch error: ", error);
+    }
+  };
+  useEffect(() => {
+    getShelfById(selectedShelfCode);
+  }, [reload]);
+  const handleOpenModal = async (shelfCode) => {
     getShelfById(shelfCode);
   };
+
   const handleSelectBin = async (shelfCode) => {
     setOpen(true);
     setSelectedShelfCode(shelfCode);
@@ -235,7 +238,7 @@ const Warehouse = ({
           isMovingBin={isMovingBin}
         />
       ) : null}
-     
+
       {isSelectingBin
         ? open && (
             <Modal

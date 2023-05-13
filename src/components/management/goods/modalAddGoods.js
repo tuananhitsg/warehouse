@@ -153,6 +153,9 @@ const ModalAddGoods = ({ showModalAddGoods, setShowModalAddGoods }) => {
       event.preventDefault();
     }
   };
+  const onSearch = (value) => {
+    console.log("search:", value);
+  };
   return (
     <>
       <Modal
@@ -181,6 +184,13 @@ const ModalAddGoods = ({ showModalAddGoods, setShowModalAddGoods }) => {
                   <Field
                     name="categoryCode"
                     as={Select}
+                    showSearch
+                    onSearch={onSearch}
+                    filterOption={(input, option) =>
+                      (option?.label ?? "")
+                        .toLowerCase()
+                        .includes(input.toLowerCase())
+                    }
                     placeholder="Chọn loại sản phẩm"
                     onChange={(value, option) => {
                       console.log("name", option.label);

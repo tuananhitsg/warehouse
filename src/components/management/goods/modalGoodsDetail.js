@@ -29,6 +29,7 @@ const ModalGoodsDetail = ({
   const [categories, setCategories] = useState([]);
   const [imagePicker, setImagePicker] = useState([]);
   const [image, setImage] = useState("");
+  const [uploadedImg, setUploadedImg] = useState("");
   const dispatch = useDispatch();
   const reload = useSelector((state) => state.reloadReducer.reload);
   const onClose = () => {
@@ -41,24 +42,59 @@ const ModalGoodsDetail = ({
     const { categoryCode, categoryName, name, size, length, width, height } =
       values;
     console.log("values", values);
-    // const formData = new FormData();
-    // formData.append("file", image);
-    // // const convertedImage = await convertImageToBase64(image);
-    // const uploadRes = await uploadApi.upload(formData);
-    // console.log("uploadRes", uploadRes);
-    const data = {
-      categoryCode,
-      categoryName,
-      name,
-      length: parseFloat(length).toFixed(2),
-      width: parseFloat(width).toFixed(2),
-      height: parseFloat(height).toFixed(2),
-      //image: uploadRes,
-    };
-    const res = await goodsApi.updateGoods(selectedId, data);
-    if (res) {
-      message.success("Cập nhật thành công");
-      dispatch(setReload(!reload));
+    const formData = new FormData();
+    formData.append("file", image);
+    // const convertedImage = await convertImageToBase64(image);
+    // try {
+    //   const uploadRes = await uploadApi.upload(formData);
+    //   console.log("uploadRes", uploadRes);
+    //   setUploadedImg(uploadRes);
+    //   console.log("uploadedImg", uploadedImg);
+    // } catch (err) {
+    //   console.log(err);
+    // }
+
+    // const data = {
+    //   categoryCode,
+    //   categoryName,
+    //   name,
+    //   length: parseFloat(length).toFixed(2),
+    //   width: parseFloat(width).toFixed(2),
+    //   height: parseFloat(height).toFixed(2),
+    //   image: uploadedImg,
+    // };
+    // console.log("data", data);
+    // const res = await goodsApi.updateGoods(selectedId, data);
+    // if (res) {
+    //   message.success("Cập nhật thành công");
+    //   dispatch(setReload(!reload));
+    // }
+    try {
+      const uploadPromise = uploadApi.upload(formData);
+      const uploadRes = await uploadPromise;
+      console.log("uploadRes", uploadRes);
+      setUploadedImg(uploadRes);
+      console.log("uploadedImg", uploadedImg);
+
+      const data = {
+        categoryCode,
+        categoryName,
+        name,
+        length: parseFloat(length).toFixed(2),
+        width: parseFloat(width).toFixed(2),
+        height: parseFloat(height).toFixed(2),
+        image: uploadRes,
+      };
+      console.log("data", data);
+
+      const updatePromise = goodsApi.updateGoods(selectedId, data);
+      const res = await updatePromise;
+      if (res) {
+        message.success("Cập nhật thành công");
+        dispatch(setReload(!reload));
+      }
+    } catch (err) {
+      console.log(err);
     }
   };
 
