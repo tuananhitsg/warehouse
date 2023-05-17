@@ -39,7 +39,7 @@ const ForgotPassword = () => {
   };
 
   useEffect(() => {
-    document.title = "Quên mật khẩu - Quản lý kho hàng thông minh";
+    document.title = "Quên mật khẩu - HỆ THỐNG QUẢN LÝ KHO TIỆN LỢI";
   }, []);
 
   const onFinish = async (values) => {
@@ -108,7 +108,7 @@ const ForgotPassword = () => {
               src={require("../../assets/logo.png")}
             ></img>
             <Title className="logo-text" level={2}>
-              Kho hàng thông minh
+              Kho hàng tiện lợi
             </Title>
           </div>
         </Col>

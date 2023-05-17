@@ -19,10 +19,10 @@ import QuantityInput from "./QuantityInput ";
 import { setGoods } from "../../../../redux/outboundSlice";
 const { Title, Text } = Typography;
 const SelectingBin = ({ next }) => {
-  
   const salesVoucer = useSelector(
     (state) => state.outboundReducer.salesVoucher
   );
+  const receipt = useSelector((state) => state.outboundReducer.receipt);
   const dispatch = useDispatch();
   const [visible, setVisible] = useState(false);
   const [purchaseReceipt, setPurchaseReceipt] = useState(null);
@@ -128,12 +128,14 @@ const SelectingBin = ({ next }) => {
           </Title>
         </Col>
         <Col span={24} style={{ marginBottom: "1rem", marginLeft: "1rem" }}>
-          <Button type="primary" onClick={next}>Tiếp tục</Button>
+          <Button type="primary" onClick={next} disabled={receipt === null}>
+            Tiếp tục
+          </Button>
         </Col>
         <Col span={24}>
           {/* <TablePurchaseDetail record={purchaseVoucher} inboundCols={columns} />
            */}
-           <TableSalesDetail record={salesVoucer} inboundCols={columns} />
+          <TableSalesDetail record={salesVoucer} inboundCols={columns} />
         </Col>
       </Row>
 
@@ -145,7 +147,7 @@ const SelectingBin = ({ next }) => {
             </Title>
           </Col>
           <Col span={24}>
-            <QuantityInput 
+            <QuantityInput
               show={visible}
               setShow={setVisible}
               //record={purchaseReceipt}

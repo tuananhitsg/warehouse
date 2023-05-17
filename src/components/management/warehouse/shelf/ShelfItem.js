@@ -1,6 +1,7 @@
+import { Button } from "antd";
 import React, { useState, useEffect } from "react";
 
-const ShelfItem = ({ codeRow, status, shelf, onClick }) => {
+const ShelfItem = ({ codeRow, status, shelf, onClick, disabled }) => {
   const [selectedShelf, setSelectedShelf] = useState(null);
   let className = "";
   switch (status) {
@@ -17,17 +18,18 @@ const ShelfItem = ({ codeRow, status, shelf, onClick }) => {
   }
   if (selectedShelf?.codeBin === shelf.codeBin) {
     className = `${className} selected-shelf`;
-  } 
+  }
 
   return (
-    <div
+    <Button
       className={className}
       onClick={() => {
         onClick(shelf.codeBin);
       }}
+      disabled={disabled}
     >
       {shelf.codeBin}
-    </div>
+    </Button>
   );
 };
 

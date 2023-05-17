@@ -11,15 +11,9 @@ import {
   Row,
   Col,
   message,
+  Tooltip,
 } from "antd";
-import {
-  DeleteOutlined,
-  SearchOutlined,
-  EditOutlined,
-  UserAddOutlined,
-  ReloadOutlined,
-  LoginOutlined,
-} from "@ant-design/icons";
+import { LoginOutlined, RightSquareOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { setPurchased } from "../../../../redux/inboundSlice";
 
@@ -77,15 +71,17 @@ const PickingPurchasesReceipt = ({ next }) => {
       align: "center",
       render: (text, record) => (
         <Space>
-          <Button
-            onClick={() => {
-              dispatch(setPurchased(record));
-              next(record);
-            }}
-            disabled={record.status === "DONE"}
-            type="primary"
-            icon={<LoginOutlined />}
-          />
+          <Tooltip title="Chọn phiếu">
+            <Button
+              onClick={() => {
+                dispatch(setPurchased(record));
+                next(record);
+              }}
+              disabled={record.status === "DONE"}
+              type="primary"
+              icon={<RightSquareOutlined />}
+            />
+          </Tooltip>
         </Space>
       ),
     },

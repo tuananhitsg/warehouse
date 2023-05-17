@@ -9,7 +9,7 @@ import PickingSalesReceipt from "./PickingSalesReceipt";
 import SelectingGoods from "./SelectingGoods";
 //import SelectingWarehouse from "./SelectingWarehouse";
 import InboundReSultPage from "../../../pages/InboundReSultPage";
-import { setReceipt, resetReceipt } from "../../../../redux/outboundSlice";
+import { setReceipt, resetVoucher } from "../../../../redux/outboundSlice";
 import { useDispatch, useSelector } from "react-redux";
 import "./style.scss";
 const OutboundComponent = () => {
@@ -26,11 +26,13 @@ const OutboundComponent = () => {
   };
   const prev = () => {
     setCurrent(current - 1);
-    if (current === 2) {
-      dispatch(resetReceipt());
-    }
     //dispatch(setReceipt(null));
   };
+  useEffect(() => {
+    if (current === 0) {
+      dispatch(resetVoucher());
+    }
+  }, [current]);
   const steps = [
     {
       title: "Chọn phiếu bán",

@@ -10,6 +10,7 @@ import {
   Row,
   Col,
   message,
+  Tooltip,
 } from "antd";
 import { CloseOutlined, LoginOutlined } from "@ant-design/icons";
 
@@ -21,7 +22,7 @@ import "../table.scss";
 //import component
 // import ModalAddReceipt from "./modalAddReceipt";
 import TableReceipt from "./TableVoucherDetail";
-
+const { Search } = Input;
 const InboundTable = () => {
   const [selectedId, setSelectedId] = useState(null);
   const [showModalGoodsDetail, setShowModalGoodsDetail] = useState(false);
@@ -172,13 +173,14 @@ const InboundTable = () => {
       title: "Trạng thái",
       dataIndex: "status",
       key: "status",
-      render: (status) => {
-        let color = "green";
-
+      render: (status, record) => {
+        let color = "";
         if (status === "Chưa nhập lên kệ") {
           color = "error";
-        } else {
+        } else if (status === "Đã nhập lên kệ") {
           color = "cyan";
+        } else if (status === "Đã hủy") {
+          color = "default";
         }
         return (
           <Tag color={color} key={status}>
@@ -218,19 +220,23 @@ const InboundTable = () => {
       align: "center",
       render: (text, record) => (
         <Space>
-          <Button
-            onClick={() => showModalConfirm(record.code)}
-            type="primary"
-            icon={<LoginOutlined />}
-            disabled={record.status !== "Chưa nhập lên kệ"}
-          />
-          <Button
-            onClick={() => showModalCancelVoucherReceipt(record.code)}
-            danger
-            type="primary"
-            icon={<CloseOutlined />}
-            disabled={record.status !== "Chưa nhập lên kệ"}
-          />
+          <Tooltip title="Nhập kho">
+            <Button
+              onClick={() => showModalConfirm(record.code)}
+              type="primary"
+              icon={<LoginOutlined />}
+              disabled={record.status !== "Chưa nhập lên kệ"}
+            />
+          </Tooltip>
+          <Tooltip title="Hủy phiếu nhập">
+            <Button
+              onClick={() => showModalCancelVoucherReceipt(record.code)}
+              danger
+              type="primary"
+              icon={<CloseOutlined />}
+              disabled={record.status !== "Chưa nhập lên kệ"}
+            />
+          </Tooltip>
         </Space>
       ),
     },
@@ -245,20 +251,59 @@ const InboundTable = () => {
     setExpandedRowKeys(expanded ? [record.code] : []);
     setSelectedId(record.code);
   };
+
+  const handleRefresh = () => {
+    setLoading(true);
+
+    // ajax request after empty completing
+    setTimeout(() => {
+      setLoading(false);
+      setRefreshKey((oldKey) => oldKey + 1);
+      dispatch(setReload(!reload));
+      message.success("Tải lại thành công");
+    }, 1000);
+  };
+  const [loading, setLoading] = useState(false);
+  const [nameSearched, setNameSearched] = useState("");
+  const onSearchName = async () => {
+    const name = nameSearched;
+    const { page, pageSize } = tableParams.pagination;
+
+    const params = {
+      page: page,
+      size: pageSize,
+      code: name,
+    };
+    const res = await InboundApi.searchReceiptVoucher(params);
+    if (res) {
+      const { content, totalElements } = res;
+      //setListGoods(content);
+      setListReceipt(content.map((item) => ({ ...item, quantity: 0 })));
+      console.log("content", listReceipt);
+      setTableParams({
+        ...tableParams,
+        pagination: {
+          ...tableParams.pagination,
+          total: totalElements,
+        },
+      });
+    }
+  };
+
   return (
     <div className="table-container">
       <div className="table-header">
         <Row gutter={{ xs: 8, sm: 16, md: 16, lg: 16 }}>
           <Col span={12}>
-            {/* <Button
-              type="primary"
-              loading={isLoading}
-              icon={<UserAddOutlined />}
-              style={{ marginLeft: "16px" }}
-              onClick={showModalAdd}
-            >
-              Tạo mới
-            </Button> */}
+            <Search
+              placeholder="Tìm kiếm sản phẩm"
+              onChange={(e) => {
+                setNameSearched(e.target.value);
+              }}
+              enterButton
+              allowClear
+              onSearch={onSearchName}
+            />
           </Col>
         </Row>
       </div>

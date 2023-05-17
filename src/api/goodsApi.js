@@ -33,8 +33,8 @@ const goodsApi = {
     const url = `/goods/get-all-by/${category}`;
     return axiosApi.get(url);
   },
-  searchGoods: (keyword) => {
-    const url = `/goods/search/${keyword}`;
+  searchGoods: (keyword, page, size) => {
+    const url = `/goods/search/${keyword}?page=${page}&size=${size}`;
     return axiosApi.get(url);
   },
   updateGoods: (id, data) => {

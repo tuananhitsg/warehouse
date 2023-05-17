@@ -144,6 +144,14 @@ const Warehouse = ({
   const handleModalLogic = () => {
     setOpen(false);
   };
+
+  const handleRouter = (value) => {
+    setTab(0);
+  };
+  useEffect(() => {
+    console.log("isMovingBin usingEffect: ", isMovingBin);
+  }, [isMovingBin]);
+  console.log("isMovingBin: ", isMovingBin);
   const onModalOk = () => {
     handleModalLogic();
     setVisible(false);
@@ -153,13 +161,6 @@ const Warehouse = ({
     );
     dispatch(setBinCode(selectedShelfCode));
   };
-  const handleRouter = (value) => {
-    setTab(0);
-  };
-  useEffect(() => {
-    console.log("isMovingBin usingEffect: ", isMovingBin);
-  }, [isMovingBin]);
-  console.log("isMovingBin: ", isMovingBin);
   return (
     <>
       <div className="warehouse-header">
@@ -229,6 +230,7 @@ const Warehouse = ({
               isSelectingBin ? handleSelectBin : handleOpenModal
             }
             isSelectingBin={isSelectingBin ? true : false}
+            //disabled={isSelectingBin}
           />
         </div>
       </div>
@@ -257,6 +259,7 @@ const Warehouse = ({
               handleLogic={handleModalLogic}
               setIsMovingBin={setIsMovingBin}
               isMovingBin={isMovingBin}
+
             />
           )}
     </>

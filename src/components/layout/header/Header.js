@@ -141,7 +141,7 @@ const HeaderCustom = () => {
                     }}
                   >
                     {user?.roles.includes("ADMIN")
-                      ? "Quản trị viên"
+                      ? "Quản lý"
                       : "Nhân viên"}
                   </Text>
                 </div>

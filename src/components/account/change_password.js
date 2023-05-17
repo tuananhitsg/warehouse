@@ -134,7 +134,7 @@ const ChangePassword = () => {
   };
 
   useEffect(() => {
-    document.title = "Đổi mật khẩu - Quản lý kho hàng thông minh";
+    document.title = "Đổi mật khẩu - HỆ THỐNG QUẢN LÝ KHO TIỆN LỢI";
   }, []);
 
   return (
@@ -169,7 +169,7 @@ const ChangePassword = () => {
               src={require("../../assets/logo.png")}
             ></img>
             <Title className="logo-text" level={2}>
-              Kho hàng thông minh
+              HỆ THỐNG QUẢN LÝ KHO TIỆN LỢI
             </Title>
           </div>
         </Col>

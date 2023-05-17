@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 import {
   Space,
@@ -26,7 +26,7 @@ import { setReload } from "../../../redux/reloadSlice";
 import "./table.scss";
 import ModalEmployeeDetail from "./modalEmployeeDetail";
 import ModalAddEmployee from "./modalAddEmployee";
-
+const { Search } = Input;
 const EmployeeTable = () => {
   const [selectedId, setSelectedId] = useState([]);
   const [showModalEmployeeDetail, setShowModalEmployeeDetail] = useState(false);
@@ -164,6 +164,19 @@ const EmployeeTable = () => {
       return roleName;
     }
   };
+  const handleRefresh = () => {
+    setLoading(true);
+
+    // ajax request after empty completing
+    setTimeout(() => {
+      setSelectedRowKeys([]);
+      setLoading(false);
+      setRefreshKey((oldKey) => oldKey + 1);
+      dispatch(setReload(!reload));
+      message.success("Tải lại thành công");
+    }, 1000);
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -185,15 +198,22 @@ const EmployeeTable = () => {
     };
     fetchData();
   }, [reload]);
-  const handleRefresh = () => {
-    setLoading(true);
-    // ajax request after empty completing
-    setTimeout(() => {
-      setSelectedRowKeys([]);
-      setLoading(false);
-      setRefreshKey((oldKey) => oldKey + 1);
-      message.success("Tải lại thành công");
-    }, 1000);
+
+  const [nameSearched, setNameSearched] = useState("");
+  const onSearchName = async () => {
+    const res = await employeeApi.searchEmployee(nameSearched);
+    console.log("gia tri tim kiem:", res);
+    if (res) {
+      const data = res.map((item) => {
+        return {
+          key: item.code,
+          ...item,
+          roles: convertRoleName(item.roles[0].name),
+        };
+      });
+
+      setListCategory(data.reverse());
+    }
   };
   return (
     <div className="table-container">
@@ -203,6 +223,34 @@ const EmployeeTable = () => {
           marginBottom: 16,
         }}
       >
+        <Row gutter={16} style={{ marginBottom: "10px", marginLeft: "10px" }}>
+          <Col span={12}>
+            <Search
+              placeholder="Tìm kiếm nhân viên"
+              onChange={(e) => {
+                setNameSearched(e.target.value);
+              }}
+              // onClear={() => {
+              //   setNameSearched("");
+              //   onSearchName();
+              // }}
+              enterButton
+              allowClear
+              onSearch={onSearchName}
+            />
+          </Col>
+          <Col span={12}>
+            <Button
+              type="primary"
+              onClick={handleRefresh}
+              loading={loading}
+              icon={<ReloadOutlined />}
+              style={{ marginLeft: "8px" }}
+            >
+              Làm mới
+            </Button>
+          </Col>
+        </Row>
         <Row gutter={{ xs: 8, sm: 16, md: 16, lg: 16 }}>
           {/* <Col span={12}>
             <Input

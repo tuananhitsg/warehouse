@@ -63,6 +63,10 @@ const InboundApi = {
   cancelReceiptVoucher: (id) => {
     const url = `/receipt-voucher/cancel/${id}`;
     return axiosApi.post(url);
+  },
+  searchReceiptVoucher: (params) => {
+    const url = `/receipt-voucher/search-by`;
+    return axiosApi.get(url, params);
   }
 };
 export default InboundApi;

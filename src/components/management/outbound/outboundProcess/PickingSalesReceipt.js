@@ -10,17 +10,10 @@ import {
   Tag,
   Row,
   Col,
+  Tooltip,
   message,
 } from "antd";
-import {
-  DeleteOutlined,
-  SearchOutlined,
-  EditOutlined,
-  UserAddOutlined,
-  ReloadOutlined,
-  LoginOutlined,
-  LogoutOutlined,
-} from "@ant-design/icons";
+import { RightSquareOutlined, LogoutOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { setSalesVoucher, setReceipt } from "../../../../redux/outboundSlice";
 
@@ -47,6 +40,22 @@ const PickingPurchasesReceipt = ({ next }) => {
       key: "createdBy",
     },
     {
+      title: "Ngày tạo",
+      dataIndex: "createdDate",
+      key: "createdDate",
+      render: (createDate) => {
+        const date = new Date(createDate);
+        const formattedDate = date.toLocaleDateString("vi-VN", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        return formattedDate;
+      },
+    },
+    {
       title: "Đối tác",
       dataIndex: "partner",
       key: "partner",
@@ -71,14 +80,16 @@ const PickingPurchasesReceipt = ({ next }) => {
       align: "center",
       render: (text, record) => (
         <Space>
-          <Button
-            onClick={() => {
-              dispatch(setSalesVoucher(record));
-              next(record);
-            }}
-            type="primary"
-            icon={<LogoutOutlined />}
-          />
+          <Tooltip title="Chọn phiếu">
+            <Button
+              onClick={() => {
+                dispatch(setSalesVoucher(record));
+                next(record);
+              }}
+              type="primary"
+              icon={<RightSquareOutlined />}
+            />
+          </Tooltip>
         </Space>
       ),
     },

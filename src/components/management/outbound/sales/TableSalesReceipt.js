@@ -107,6 +107,22 @@ const TableSalesReceipt = ({ inboundCols, handleClick }) => {
       key: "createdBy",
     },
     {
+      title: "Ngày tạo",
+      dataIndex: "createdDate",
+      key: "createdDate",
+      render: (createDate) => {
+        const date = new Date(createDate);
+        const formattedDate = date.toLocaleDateString("vi-VN", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        return formattedDate;
+      },
+    },
+    {
       title: "Đối tác",
       dataIndex: "partner",
       key: "partner",

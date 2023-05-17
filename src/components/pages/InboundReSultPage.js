@@ -4,7 +4,7 @@ import { useState } from "react";
 import IndexInbound from "../management/inbound/index";
 import { useDispatch, useSelector } from "react-redux";
 import { setReceipt, setGoods, resetReceipt } from "../../redux/inboundSlice";
-
+import { resetVoucher } from "../../redux/outboundSlice";
 const ResultPage = ({ setCurrent, setIsSuccess, isDelivery }) => {
   // const partner = useSelector((state) => state.inboundReducer.info);
   // const goods = useSelector((state) => state.inboundReducer.goods);
@@ -16,6 +16,7 @@ const ResultPage = ({ setCurrent, setIsSuccess, isDelivery }) => {
   const handleReset = () => {
     // dispatch(setReceipt(null));
     dispatch(resetReceipt());
+    dispatch(resetVoucher());
     setCurrent(0);
     setIsSuccess(false);
   };

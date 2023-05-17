@@ -10,6 +10,8 @@ import {
   Row,
   Col,
   message,
+  Tooltip,
+  DatePicker,
 } from "antd";
 import {
   DeleteOutlined,
@@ -31,7 +33,7 @@ import "../table.scss";
 //import component
 // import ModalAddReceipt from "./modalAddReceipt";
 import TableReceipt from "./TableVoucherDetail";
-
+const { Search } = Input;
 const OutboundTable = () => {
   const [selectedId, setSelectedId] = useState(null);
   const [showModalGoodsDetail, setShowModalGoodsDetail] = useState(false);
@@ -171,7 +173,7 @@ const OutboundTable = () => {
   };
   const columns = [
     {
-      title: "Mã phiếu nhập",
+      title: "Mã phiếu xuất",
       width: "15%",
       dataIndex: "code",
       key: "code",
@@ -181,12 +183,13 @@ const OutboundTable = () => {
       dataIndex: "status",
       key: "status",
       render: (status) => {
-        let color = "green";
-
-        if (status === "Chưa nhập lên kệ") {
+        let color = "";
+        if (status === "Chưa xuất") {
           color = "error";
-        } else {
+        } else if (status === "Đã xuất") {
           color = "cyan";
+        } else if (status === "Đã hủy") {
+          color = "default";
         }
         return (
           <Tag color={color} key={status}>
@@ -209,6 +212,7 @@ const OutboundTable = () => {
       key: "createdBy",
       width: "20%",
     },
+    
     {
       title: "Ngày tạo",
       dataIndex: "createDate",
@@ -233,19 +237,23 @@ const OutboundTable = () => {
       align: "center",
       render: (text, record) => (
         <Space>
-          <Button
-            onClick={() => showModalConfirm(record.code)}
-            type="primary"
-            icon={<LogoutOutlined />}
-            disabled={record.status !== "Chưa xuất"}
-          />
-          <Button
-            onClick={() => showModalCancelVoucherReceipt(record.code)}
-            danger
-            type="primary"
-            icon={<CloseOutlined />}
-            disabled={record.status === "Đã xuất"}
-          />
+          <Tooltip title="Xuất kho">
+            <Button
+              onClick={() => showModalConfirm(record.code)}
+              type="primary"
+              icon={<LogoutOutlined />}
+              disabled={record.status !== "Chưa xuất"}
+            />
+          </Tooltip>
+          <Tooltip title="Hủy phiếu xuất">
+            <Button
+              onClick={() => showModalCancelVoucherReceipt(record.code)}
+              danger
+              type="primary"
+              icon={<CloseOutlined />}
+              disabled={record.status !== "Chưa xuất"}
+            />
+          </Tooltip>
         </Space>
       ),
     },
@@ -259,20 +267,92 @@ const OutboundTable = () => {
     setExpandedRowKeys(expanded ? [record.code] : []);
     setSelectedId(record.code);
   };
+
+  const handleRefresh = () => {
+    setLoading(true);
+
+    // ajax request after empty completing
+    setTimeout(() => {
+      setLoading(false);
+      setRefreshKey((oldKey) => oldKey + 1);
+      dispatch(setReload(!reload));
+      message.success("Tải lại thành công");
+    }, 1000);
+  };
+  const [loading, setLoading] = useState(false);
+  const [nameSearched, setNameSearched] = useState("");
+  const onSearchName = async () => {
+    const { page, pageSize } = tableParams.pagination;
+
+    const res = await OutboundApi.searchDeliveryVoucher(
+      page,
+      pageSize,
+      nameSearched,
+      "",
+      ""
+    );
+    if (res) {
+      const { content, totalElements } = res;
+      //setListGoods(content);
+      // setListReceipt(content.map((item) => ({ ...item, quantity: 0 })));
+      setListReceipt(content);
+      console.log("content", listReceipt);
+      setTableParams({
+        ...tableParams,
+        pagination: {
+          ...tableParams.pagination,
+          total: totalElements,
+        },
+      });
+    }
+  };
+  const [dateSearched, setDateSearched] = useState("");
+  const onDateChange = async (date, dateString) => {
+    console.log("dateString", dateString);
+    const { page, pageSize } = tableParams.pagination;
+
+    const res = await OutboundApi.searchDeliveryVoucher(
+      page,
+      pageSize,
+      "",
+      dateString,
+      ""
+    );
+    if (res) {
+      const { content, totalElements } = res;
+      //setListGoods(content);
+      // setListReceipt(content.map((item) => ({ ...item, quantity: 0 })));
+      setListReceipt(content);
+      console.log("content", listReceipt);
+      setTableParams({
+        ...tableParams,
+        pagination: {
+          ...tableParams.pagination,
+          total: totalElements,
+        },
+      });
+    }
+  }
   return (
     <div className="table-container">
       <div className="table-header">
         <Row gutter={{ xs: 8, sm: 16, md: 16, lg: 16 }}>
           <Col span={12}>
-            {/* <Button
-              type="primary"
-              loading={isLoading}
-              icon={<UserAddOutlined />}
-              style={{ marginLeft: "16px" }}
-              onClick={showModalAdd}
-            >
-              Tạo mới
-            </Button> */}
+            <Search
+              placeholder="Tìm kiếm phiếu nhập theo mã"
+              onChange={(e) => {
+                setNameSearched(e.target.value);
+              }}
+              onClear={() => {
+                onSearchName();
+              }}
+              enterButton
+              allowClear
+              onSearch={onSearchName}
+            />
+          </Col>
+          <Col span={12}>
+          <DatePicker onChange={onDateChange}/>
           </Col>
         </Row>
       </div>
