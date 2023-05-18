@@ -160,6 +160,8 @@ const EmployeeTable = () => {
       return "Nhân viên";
     } else if (roleName === "ADMIN") {
       return "Quản lý";
+    } else if (roleName === "SYSTEM_MANAGER") {
+      return "Quản trị viên";
     } else {
       return roleName;
     }

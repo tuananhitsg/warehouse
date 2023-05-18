@@ -106,7 +106,7 @@ import {
   TagsOutlined,
   DashboardOutlined,
   TeamOutlined,
-  PieChartOutlined
+  PieChartOutlined,
 } from "@ant-design/icons";
 import AuthService from "../../../service/auth.service";
 import { useSelector } from "react-redux";
@@ -127,7 +127,9 @@ const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const user = useSelector((state) => state.userReducer.info);
-  const isAdmin = AuthService.getUser().roles.includes("ADMIN");
+  const userRoles = AuthService.getUser().roles;
+  const isAdmin =
+    userRoles.includes("ADMIN") || userRoles.includes("SYSTEM_MANAGER");
   console.log("location", location.pathname);
   const items = [
     getItem(<Link to={"/"}>Dashboard</Link>, "0", <DashboardOutlined />),
@@ -158,7 +160,6 @@ const Sidebar = () => {
     getItem("Thống kê", "7", <PieChartOutlined />, [
       getItem(<Link to={"/thong-ke"}>Số</Link>, "7.1"),
     ]),
-
   ];
   // const items = [
   //   getItem("Dashboard", "/", <DashboardOutlined />),

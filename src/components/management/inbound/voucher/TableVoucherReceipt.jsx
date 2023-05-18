@@ -11,6 +11,7 @@ import {
   Col,
   message,
   Tooltip,
+  DatePicker,
 } from "antd";
 import { CloseOutlined, LoginOutlined } from "@ant-design/icons";
 
@@ -111,9 +112,6 @@ const InboundTable = () => {
       console.log("Failed to fetch page: ", error);
     }
   };
-  useEffect(() => {
-    fetchPageOfData();
-  }, [tableParams.pagination.current, reload]);
 
   const handleTableChange = (pagination, filters, sorter) => {
     setTableParams({
@@ -121,13 +119,15 @@ const InboundTable = () => {
         ...pagination,
         page: pagination.current - 1,
       },
+      filters,
+      ...sorter,
     });
     // navigate(
     //   `/danh-sach-phieu-nhap?page=${pagination.current}&size=${pagination.pageSize}`
     // );
-    navigate(
-      `${location.pathname}?page=${pagination.current}&size=${pagination.pageSize}`
-    );
+    // navigate(
+    //   `${location.pathname}?page=${pagination.current}&size=${pagination.pageSize}`
+    // );
     if (pagination.pageSize !== tableParams.pagination.pageSize) {
       setListReceipt([]);
     }
@@ -266,19 +266,20 @@ const InboundTable = () => {
   const [loading, setLoading] = useState(false);
   const [nameSearched, setNameSearched] = useState("");
   const onSearchName = async () => {
-    const name = nameSearched;
     const { page, pageSize } = tableParams.pagination;
 
-    const params = {
-      page: page,
-      size: pageSize,
-      code: name,
-    };
-    const res = await InboundApi.searchReceiptVoucher(params);
+    const res = await InboundApi.searchReceiptVoucher(
+      page,
+      pageSize,
+      nameSearched,
+      "",
+      ""
+    );
     if (res) {
       const { content, totalElements } = res;
       //setListGoods(content);
-      setListReceipt(content.map((item) => ({ ...item, quantity: 0 })));
+      //setListReceipt(content.map((item) => ({ ...item, quantity: 0 })));
+      setListReceipt(content);
       console.log("content", listReceipt);
       setTableParams({
         ...tableParams,
@@ -289,7 +290,36 @@ const InboundTable = () => {
       });
     }
   };
+  const onDateChange = async (date, dateString) => {
+    console.log("dateString", dateString);
+    const { page, pageSize } = tableParams.pagination;
 
+    const res = await InboundApi.searchByDate(page, pageSize, dateString);
+    if (res) {
+      const { content, totalElements } = res;
+      //setListGoods(content);
+      // setListReceipt(content.map((item) => ({ ...item, quantity: 0 })));
+      setListReceipt(content);
+      console.log("content", listReceipt);
+      setTableParams({
+        ...tableParams,
+        pagination: {
+          ...tableParams.pagination,
+          total: totalElements,
+        },
+      });
+    }
+  };
+  useEffect(() => {
+    fetchPageOfData();
+  }, []);
+  useEffect(() => {
+    nameSearched
+      ? onSearchName()
+      : onDateChange()
+      ? onDateChange()
+      : fetchPageOfData();
+  }, [tableParams.pagination.current, reload]);
   return (
     <div className="table-container">
       <div className="table-header">
@@ -304,6 +334,9 @@ const InboundTable = () => {
               allowClear
               onSearch={onSearchName}
             />
+          </Col>
+          <Col span={12}>
+            <DatePicker onChange={onDateChange} />
           </Col>
         </Row>
       </div>

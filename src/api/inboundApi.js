@@ -24,6 +24,14 @@ const InboundApi = {
     const url = `/purchase-receipt/get-by/${code}`;
     return axiosApi.get(url);
   },
+  // searchPurchaseReceipt: (page, size, code, date, createdBy) => {
+  //   const url = `/purchase-receipt/search-by/?page=${page}&size=${size}&date=${date}&createdBy=${createdBy}&code=${code}`;
+  //   return axiosApi.get(url);
+  // },
+  searchPurchaseByDate: (date) =>{
+    const url = `/purchase-receipt/search-by/${date}`;
+    return axiosApi.get(url);
+  },
   //tao phieu nhap
   createReceipt: (code, param) => {
     const url = `/receipt-voucher/create/${code}`;
@@ -64,9 +72,13 @@ const InboundApi = {
     const url = `/receipt-voucher/cancel/${id}`;
     return axiosApi.post(url);
   },
-  searchReceiptVoucher: (params) => {
-    const url = `/receipt-voucher/search-by`;
-    return axiosApi.get(url, params);
+  searchReceiptVoucher: (page, size, code, date, createdBy) => {
+    const url = `/receipt-voucher/search-by/?page=${page}&size=${size}&date=${date}&createdBy=${createdBy}&code=${code}`;
+    return axiosApi.get(url);
+  },
+  searchByDate: (page, size,date, ) =>{
+    const url = `/receipt-voucher/search-by/?page=${page}&size=${size}&date=${date}`;
+    return axiosApi.get(url);
   }
 };
 export default InboundApi;

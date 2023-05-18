@@ -14,6 +14,10 @@ const OutboundApi = {
     const url = `/sale-receipt/get-by/${code}`;
     return axiosApi.get(url);
   },
+  searchSalesByDate: (date) => {
+    const url = `/sale-receipt/search-by/${date}`;
+    return axiosApi.get(url);
+  },
   //delivery voucher
   getAllDelivery: () => {
     const url = "/delivery-voucher/get-all";
@@ -43,5 +47,9 @@ const OutboundApi = {
     const url = `/delivery-voucher/search-by/?page=${page}&size=${size}&date=${date}&createdBy=${createdBy}&code=${code}`;
     return axiosApi.get(url);
   },
+  searchByDate: (page, size, date) => {
+    const url = `/delivery-voucher/search-by/?page=${page}&size=${size}&date=${date}`;
+    return axiosApi.get(url);
+  }
 };
 export default OutboundApi;

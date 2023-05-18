@@ -120,9 +120,6 @@ const OutboundTable = () => {
       console.log("Failed to fetch page: ", error);
     }
   };
-  useEffect(() => {
-    fetchPageOfData();
-  }, [tableParams.pagination.current, reload]);
 
   const handleTableChange = (pagination, filters, sorter) => {
     setTableParams({
@@ -212,7 +209,7 @@ const OutboundTable = () => {
       key: "createdBy",
       width: "20%",
     },
-    
+
     {
       title: "Ngày tạo",
       dataIndex: "createDate",
@@ -311,13 +308,7 @@ const OutboundTable = () => {
     console.log("dateString", dateString);
     const { page, pageSize } = tableParams.pagination;
 
-    const res = await OutboundApi.searchDeliveryVoucher(
-      page,
-      pageSize,
-      "",
-      dateString,
-      ""
-    );
+    const res = await OutboundApi.searchByDate(page, pageSize, dateString);
     if (res) {
       const { content, totalElements } = res;
       //setListGoods(content);
@@ -332,7 +323,17 @@ const OutboundTable = () => {
         },
       });
     }
-  }
+  };
+  useEffect(() => {
+    fetchPageOfData();
+  }, []);
+  useEffect(() => {
+    nameSearched
+      ? onSearchName()
+      : onDateChange()
+      ? onDateChange()
+      : fetchPageOfData();
+  }, [tableParams.pagination.current, reload]);
   return (
     <div className="table-container">
       <div className="table-header">
@@ -352,7 +353,7 @@ const OutboundTable = () => {
             />
           </Col>
           <Col span={12}>
-          <DatePicker onChange={onDateChange}/>
+            <DatePicker onChange={onDateChange} />
           </Col>
         </Row>
       </div>

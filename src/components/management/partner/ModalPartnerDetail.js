@@ -14,11 +14,8 @@ import {
 } from "antd";
 import partnerApi from "../../../api/partnerApi";
 import addressApi from "../../../api/addressApi";
-import {
-  getProvinceList,
-  getDistrictList,
-  getWardList,
-} from "../../../service/province.service";
+
+import { setReload } from "../../../redux/reloadSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 import { Formik, Field, ErrorMessage } from "formik";
@@ -129,8 +126,33 @@ const ModalPartnerDetail = ({
     setWardPicked(value);
     setWardGot(options.label);
   };
-  console.log("initialValues", initialValues);
-  const handleSubmit = async (values) => {};
+
+  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+    const { street, province, district, ward, phone, name } = values;
+    console.log("values:", values);
+    const data = {
+      address: {
+        street: street,
+        province: province,
+        district: district,
+        ward: ward,
+      },
+      phone: phone,
+      name: name,
+    };
+    console.log("formdata:", data);
+
+    const res = await partnerApi.update(data);
+    console.log(res);
+    if (res.code) {
+      resetForm();
+      dispatch(setReload(!reload));
+      setSubmitting(false);
+      setProvincePicked(null);
+      setDistrictPicked(null);
+      setWardPicked(null);
+    }
+  };
   useEffect(() => {
     console.log("selectedId", selectedId);
     const fetchData = async (id) => {
@@ -327,7 +349,7 @@ const ModalPartnerDetail = ({
                             htmlType="submit"
                             loading={isSubmitting}
                             // disabled={!dirty || !isValid}
-                            onClick={handleSubmit}
+                            onClick={() => handleSubmit()}
                           >
                             Xác nhận
                           </Button>

@@ -286,9 +286,6 @@ const GoodsTable = ({
       console.log("Failed to fetch page: ", error);
     }
   };
-  useEffect(() => {
-    fetchPageOfData();
-  }, [tableParams.pagination.current, reload]);
 
   const handleTableChange = (pagination, filters, sorter) => {
     setTableParams({
@@ -338,6 +335,12 @@ const GoodsTable = ({
       });
     }
   };
+  useEffect(() => {
+    fetchPageOfData();
+  }, []);
+  useEffect(() => {
+    nameSearched ? onSearchName() : fetchPageOfData();
+  }, [tableParams.pagination.current, reload]);
   return (
     <div className="table-container">
       <div className="table-header">
@@ -348,10 +351,6 @@ const GoodsTable = ({
               onChange={(e) => {
                 setNameSearched(e.target.value);
               }}
-              // onClear={() => {
-              //   setNameSearched("");
-              //   onSearchName();
-              // }}
               enterButton
               allowClear
               onSearch={onSearchName}

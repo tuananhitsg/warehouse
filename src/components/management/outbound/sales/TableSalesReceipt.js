@@ -10,6 +10,7 @@ import {
   Row,
   Col,
   message,
+  DatePicker,
 } from "antd";
 import {
   DeleteOutlined,
@@ -150,8 +151,22 @@ const TableSalesReceipt = ({ inboundCols, handleClick }) => {
     setExpandedRowKeys(expanded ? [record.code] : []);
     setSelectedId(record.code);
   };
+  const onDateChange = async (date, dateString) => {
+    const res = await OutboundApi.searchSalesByDate(dateString);
+    console.log("res", res);
+    if (res) {
+      setListReceipt(res);
+    }
+  };
   return (
     <div className="table-container">
+     <div className="table-header">
+        <Row gutter={{ xs: 8, sm: 16, md: 16, lg: 16 }}>
+          <Col span={12}>
+            <DatePicker onChange={onDateChange} />
+          </Col>
+        </Row>
+      </div>
       <Table
         columns={inboundCols ? inboundCols : columns}
         dataSource={listReceipt}
@@ -162,6 +177,9 @@ const TableSalesReceipt = ({ inboundCols, handleClick }) => {
           expandedRowRender: (record) => <TableSalesDetail record={record} />,
           expandRowByClick: true,
           onExpand: handleExpand,
+        }}
+        pagination={{
+          defaultPageSize: 5,
         }}
       />
       {/* {showModalConfirmPut ? (
