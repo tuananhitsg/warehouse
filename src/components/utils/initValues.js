@@ -15,7 +15,7 @@ export const loginValues = {
       .required("Mật khẩu không được bỏ trống.")
       .matches(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/,
-        "Mật khẩu phải chứa ít nhất 1 chữ viết hoa, 1 chữ viết thường, 1 số và 1 ký tự đặc biệt."
+        "Ít nhất 1 chữ viết hoa, 1 chữ viết thường, 1 số và 1 ký tự đặc biệt."
       ),
   }),
 };
@@ -45,7 +45,7 @@ export const createEmployeeValues = {
   validationSchema: Yup.object().shape({
     fullName: Yup.string().required("Tên không được bỏ trống."),
     email: Yup.string()
-      .email("Email không hợp lệ.")
+      .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, "Email không hợp lệ.")
       .required("Email không được bỏ trống."),
     password: Yup.string()
       .min(8, "Mật khẩu tối thiểu 8 kí tự")

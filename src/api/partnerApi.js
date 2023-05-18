@@ -33,7 +33,7 @@ const partnerApi = {
     const url = `/partner/get-by/${phone}`;
     return axiosApi.get(url);
   },
-  searchPartner: (keyword,page,size) => {
+  searchPartner: (keyword, page, size) => {
     const url = `/partner/search/${keyword}?page=${page}&size=${size}`;
     return axiosApi.get(url);
   },
@@ -52,7 +52,7 @@ const partnerApi = {
           throw err;
         }
       });
-  }
+  },
 };
 
 export default partnerApi;

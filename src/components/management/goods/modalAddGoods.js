@@ -183,6 +183,7 @@ const ModalAddGoods = ({ showModalAddGoods, setShowModalAddGoods }) => {
                 <FormAntd.Item label="Loại sản phẩm" labelAlign="left">
                   <Field
                     name="categoryCode"
+                    virtual={false}
                     as={Select}
                     showSearch
                     onSearch={onSearch}

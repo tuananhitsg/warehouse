@@ -322,15 +322,16 @@ const GoodsTable = ({
 
     const res = await goodsApi.searchGoods(name, page, pageSize);
     if (res) {
-      const { content, totalElements } = res;
+      const { content, totalElements, numberOfElements } = res;
       //setListGoods(content);
       setListGoods(content.map((item) => ({ ...item, quantity: 0 })));
       console.log("content", listGoods);
+      console.log("totalElements", res.numberOfElements);
       setTableParams({
         ...tableParams,
         pagination: {
           ...tableParams.pagination,
-          total: totalElements,
+          total: numberOfElements,
         },
       });
     }
@@ -340,7 +341,7 @@ const GoodsTable = ({
   }, []);
   useEffect(() => {
     nameSearched ? onSearchName() : fetchPageOfData();
-  }, [tableParams.pagination.current, reload]);
+  }, [tableParams.pagination.current, reload, onSearchName, fetchPageOfData]);
   return (
     <div className="table-container">
       <div className="table-header">

@@ -276,7 +276,7 @@ const InboundTable = () => {
       ""
     );
     if (res) {
-      const { content, totalElements } = res;
+      const { content, totalElements,numberOfElements } = res;
       //setListGoods(content);
       //setListReceipt(content.map((item) => ({ ...item, quantity: 0 })));
       setListReceipt(content);
@@ -285,7 +285,7 @@ const InboundTable = () => {
         ...tableParams,
         pagination: {
           ...tableParams.pagination,
-          total: totalElements,
+          total: numberOfElements,
         },
       });
     }
@@ -326,7 +326,7 @@ const InboundTable = () => {
         <Row gutter={{ xs: 8, sm: 16, md: 16, lg: 16 }}>
           <Col span={12}>
             <Search
-              placeholder="Tìm kiếm sản phẩm"
+              placeholder="Tìm kiếm phiếu nhập theo mã"
               onChange={(e) => {
                 setNameSearched(e.target.value);
               }}

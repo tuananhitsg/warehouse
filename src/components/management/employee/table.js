@@ -180,30 +180,35 @@ const EmployeeTable = () => {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await employeeApi.getEmployee();
-        if (res) {
-          const data = res.map((item) => {
-            return {
-              key: item.code,
-              ...item,
-              roles: convertRoleName(item.roles[0].name),
-            };
-          });
-          console.log(data);
-          setListCategory(data.reverse());
-        }
-      } catch (error) {
-        console.log("Failed to fetch employee list: ", error);
-      }
-    };
     fetchData();
   }, [reload]);
-
+  const fetchData = async () => {
+    try {
+      const res = await employeeApi.getEmployee();
+      if (res) {
+        const data = res.map((item) => {
+          return {
+            key: item.code,
+            ...item,
+            roles: convertRoleName(item.roles[0].name),
+          };
+        });
+        console.log(data);
+        setListCategory(
+          data.sort((a, b) => {
+            const codeA = parseInt(a.code, 10);
+            const codeB = parseInt(b.code, 10);
+            return codeA - codeB;
+          })
+        );
+      }
+    } catch (error) {
+      console.log("Failed to fetch employee list: ", error);
+    }
+  };
   const [nameSearched, setNameSearched] = useState("");
-  const onSearchName = async () => {
-    const res = await employeeApi.searchEmployee(nameSearched);
+  const onSearchName = async (e) => {
+    const res = await employeeApi.searchEmployee(e);
     console.log("gia tri tim kiem:", res);
     if (res) {
       const data = res.map((item) => {
@@ -229,12 +234,11 @@ const EmployeeTable = () => {
           <Col span={12}>
             <Search
               placeholder="Tìm kiếm nhân viên"
-              onChange={(e) => {
-                setNameSearched(e.target.value);
-              }}
+              // onChange={(e) => {
+              //   setNameSearched(e.target.value);
+              // }}
               // onClear={() => {
-              //   setNameSearched("");
-              //   onSearchName();
+              //   dispatch(setReload(!reload));
               // }}
               enterButton
               allowClear

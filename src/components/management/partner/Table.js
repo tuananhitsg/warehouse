@@ -160,11 +160,11 @@ const PartnerTable = ({
     }, 1000);
   };
   const [nameSearched, setNameSearched] = useState("");
-  const onSearchName = async () => {
-    const name = nameSearched;
+  const onSearchName = async (e) => {
+    // const name = nameSearched;
     const { page, pageSize } = tableParams.pagination;
 
-    const res = await partnerApi.searchPartner(name, page, pageSize);
+    const res = await partnerApi.searchPartner(e, page, pageSize);
     if (res) {
       const { content, totalElements } = res;
       //setListGoods(content);
@@ -191,9 +191,9 @@ const PartnerTable = ({
           <Col span={12}>
             <Search
               placeholder="Tìm kiếm đối tác"
-              onChange={(e) => {
-                setNameSearched(e.target.value);
-              }}
+              // onChange={(e) => {
+              //   setNameSearched(e.target.value);
+              // }}
               enterButton
               allowClear
               onSearch={onSearchName}
