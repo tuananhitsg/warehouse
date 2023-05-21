@@ -80,9 +80,9 @@ const SelectingBin = ({ next }) => {
         if (status === "NOT_YET_CREATED") {
           color = "error";
           name = "Chưa tạo";
-        } else if (status === "DONE") {
+        } else if (status === "NOT_DONE_CREATED") {
           color = "cyan";
-          name = "Đã nhập hết";
+          name = "Chưa tạo xong";
         } else if (status === "CREATED") {
           color = "blue";
           name = "Đã tạo";

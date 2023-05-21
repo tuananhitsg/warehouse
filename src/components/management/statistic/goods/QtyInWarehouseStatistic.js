@@ -15,37 +15,38 @@ import {
 import TableData from "./Table";
 import statisticApi from "../../../../api/statisticApi";
 import wareHouserApi from "../../../../api/wareHouseApi";
+
 const { Title, Text } = Typography;
 
 const QtyInWarehouseStatistic = () => {
   const [wareHouseOption, setWareHouseOption] = useState([]);
   const [data, setData] = useState([]);
-
+  const [wareHouseId, setWareHouseId] = useState("");
+  const [wareHouseName, setWareHouseName] = useState("");
   const fetchWarehouse = async () => {
     try {
       const response = await wareHouserApi.getAllWareHouse();
       setWareHouseOption(response);
-      console.log("warehouse trong modal", response);
     } catch (error) {
       console.log(error);
-      message.error("Lấy dữ liệu kho thất bại");
     }
   };
-  const fetchData = async () => {
-    try {
-      const response = await statisticApi.getGoodsQtyInWarehouse();
-      setData(response);
-      console.log("data", response);
-    } catch (error) {
-      console.log(error);
-      message.error("Lấy dữ liệu thất bại");
-    }
-  };
+
   useEffect(() => {
     fetchWarehouse();
-    fetchData();
-    //handleSearchUsableBin();
   }, []);
+  const handleWarehouseSelect = (value) => {
+    setWareHouseId(value.value);
+    setWareHouseName(value.label);
+  };
+  useEffect(() => {
+    if (wareHouseOption.length > 0) {
+      // Nếu đã có dữ liệu warehouse, set giá trị mặc định cho Select và wareHouseId
+      setWareHouseOption(wareHouseOption);
+      setWareHouseId(wareHouseOption[0].code);
+      setWareHouseName(wareHouseOption[0].name);
+    }
+  }, [wareHouseOption]);
   return (
     <div>
       <Title level={3}>Thống kê số lượng hàng trong kho</Title>
@@ -60,21 +61,14 @@ const QtyInWarehouseStatistic = () => {
       >
         <Col span={12}>
           <Select
-            style={{
-              width: "200px",
-              margin: "0 1rem",
-            }}
             placeholder="Chọn kho hàng"
             options={wareHouseOption.map((item) => ({
-              value: item.id,
+              value: item.code,
               label: item.name,
             }))}
+            value={wareHouseId}
+            onChange={handleWarehouseSelect}
           />
-        </Col>
-        <Col span={4} style={{ position: "absolute", right: "2.5%" }}>
-          <Button type="primary" title="Xuất file">
-            Xuất báo cáo
-          </Button>
         </Col>
       </Row>
       <Row
@@ -87,7 +81,10 @@ const QtyInWarehouseStatistic = () => {
         }}
       >
         <Col span={24}>
-          <TableData data={data} />
+          <TableData
+            selectedWarehouseId={wareHouseId}
+            selectedWarehouse={wareHouseName}
+          />
         </Col>
       </Row>
     </div>

@@ -46,17 +46,18 @@ const IndexDashboard = () => {
           lg: 16,
         }}
       >
-        <Col span={12}>
-          <TableTopImport
-            title={"Top 5 sản phẩm được nhập nhiều nhất trong tháng"}
-            data={top5Imported}
-          />
+        <Col span={14}>
+          <PieChart />
         </Col>
-        <Col span={12}>
-          <TableTopExport
-            title={"Top 5 sản phẩm được xuất nhiều nhất trong tháng"}
-            data={top5Exported}
-          />
+        <Col span={9}>
+          <Row gutter={16}>
+            <Col span={24} style={{marginBottom:"1rem"}}>
+              <CardDashboard_topGoodsEx data={top1Exported} />
+            </Col>
+            <Col span={24}>
+              <CardDashboard_topGoodsIm data={top1Imported} />
+            </Col>
+          </Row>
         </Col>
       </Row>
       <Row
@@ -68,14 +69,17 @@ const IndexDashboard = () => {
           lg: 16,
         }}
       >
-        <Col span={6}>
-          <CardDashboard_topGoodsEx data={top1Exported} />
+        <Col span={12}>
+          <TableTopImport
+            title={"Top 5 sản phẩm được nhập nhiều nhất trong tháng"}
+            data={top5Imported}
+          />
         </Col>
-        <Col span={6}>
-          <CardDashboard_topGoodsIm data={top1Imported} />
-        </Col>
-        <Col span={14}>
-          <PieChart />
+        <Col span={12}>
+          <TableTopExport
+            title={"Top 5 sản phẩm được xuất nhiều nhất trong tháng"}
+            data={top5Exported}
+          />
         </Col>
       </Row>
     </div>

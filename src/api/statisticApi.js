@@ -1,8 +1,8 @@
 import axiosApi from "./axiosApi";
 
 const statisticApi = {
-    getGoodsQtyInWarehouse: () => {
-        const url = "/goods/count-quantity";
+    getGoodsQtyInWarehouse: (warehouseId) => {
+        const url = `/goods/count-quantity-by/${warehouseId}`;
         return axiosApi.get(url);
     },
     getQtyExportedByDate: (date) => {

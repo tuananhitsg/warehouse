@@ -22,8 +22,11 @@ const ResultPage = ({ setCurrent, setIsSuccess, isDelivery }) => {
   };
   const handleImportClick = () => {
     dispatch(resetReceipt());
+    dispatch(resetVoucher());
     setShowImport(true);
-    navigate("/danh-sach-phieu-nhap");
+    isDelivery
+      ? navigate("/danh-sach-phieu-xuat")
+      : navigate("/danh-sach-phieu-nhap");
   };
   return (
     <Result

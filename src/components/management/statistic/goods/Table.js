@@ -1,46 +1,61 @@
-import { Table } from "antd";
+import { Table, message, Col, Button, Row } from "antd";
 import { useEffect, useState } from "react";
 import goodsApi from "../../../../api/goodsApi";
-const TableData = ({ data }) => {
-  console.log("data", data);
+import statisticApi from "../../../../api/statisticApi";
+import {exportExcel} from "../../../excel-export/RPQtyInWarehouse";
+import authService from "../../../../service/auth.service";
+const TableData = ({ selectedWarehouseId, selectedWarehouse }) => {
+  const user = authService.getUser();
+  console.log("selectedWarehouse", selectedWarehouse);
   const [listGoods, setListGoods] = useState([]);
-  const fetchGoods = async () => {
-    try {
-      const response = await goodsApi.getGoods();
-      setListGoods(response);
-      console.log("listGoods", response);
-    } catch (error) {
-      console.log(error);
-    }
+  const fetchData = async () => {
+    const response = await statisticApi.getGoodsQtyInWarehouse(
+      selectedWarehouseId
+    );
+    const dataArray = Object.keys(response).map((key) => ({
+      name: key,
+      quantity: response[key],
+    }));
+    setListGoods(dataArray);
+    console.log("data", response);
   };
   useEffect(() => {
-    fetchGoods();
-  }, []);
+    fetchData();
+  }, [selectedWarehouseId]);
+  const handleExport = () => {
+    exportExcel(listGoods, user, selectedWarehouse);
+  };
 
   const columns = [
-    {
-      title: "Mã sản phẩm",
-      dataIndex: "code",
-    },
     {
       title: "Tên sản phẩm",
       dataIndex: "name",
     },
     {
-      title: "Loại sản phẩm",
-      dataIndex: "categoryName",
-    },
-    {
       title: "Số lượng",
-      dataIndex: "total",
+      dataIndex: "quantity",
     },
   ];
   return (
-    <Table
-      columns={columns}
-      dataSource={listGoods}
-      pagination={{ pageSize: 5 }}
-    />
+    <>
+      <Row gutter={16} style={{ marginBottom: "1rem" }}>
+        <Col span={21}></Col>
+        <Col span={2}>
+          <Button type="primary" title="Xuất file" onClick={handleExport}>
+            Xuất báo cáo
+          </Button>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={24}>
+          <Table
+            columns={columns}
+            dataSource={listGoods}
+            pagination={{ pageSize: 5 }}
+          />
+        </Col>
+      </Row>
+    </>
   );
 };
 export default TableData;

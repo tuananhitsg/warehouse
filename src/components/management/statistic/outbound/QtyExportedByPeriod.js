@@ -15,9 +15,12 @@ import moment from "moment";
 import dayjs from "dayjs";
 import TableData from "./Table";
 import statisticApi from "../../../../api/statisticApi";
+import { exportExcel } from "../../../excel-export/RPQTyExported";
+import authService from "../../../../service/auth.service";
 const { Title } = Typography;
 const { RangePicker } = DatePicker;
 const QtyExportedByPeriod = () => {
+  const user = authService.getUser();
   const [data, setData] = useState([]);
   const [fromDate, setFromDate] = useState(
     moment().startOf("month").format("YYYY-MM-DD")
@@ -46,6 +49,9 @@ const QtyExportedByPeriod = () => {
   const disabledDate = (current) => {
     return current && current > moment().endOf("day");
   };
+  const handleExport = () => {
+    exportExcel(data, user, fromDate, toDate);
+  };
   return (
     <div>
       <Title level={3}>Thống kê số lượng hàng xuất theo thời gian</Title>
@@ -69,7 +75,7 @@ const QtyExportedByPeriod = () => {
           <Button
             type="primary"
             title="Xuất file"
-            //onClick={handleExportExcel}
+            onClick={handleExport}
           >
             Xuất báo cáo
           </Button>

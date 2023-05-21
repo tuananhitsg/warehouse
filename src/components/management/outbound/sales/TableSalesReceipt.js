@@ -62,7 +62,7 @@ const TableSalesReceipt = ({ inboundCols, handleClick }) => {
       try {
         const res = await OutboundApi.getAllSalesReceipts();
         if (res) {
-          setListReceipt(res);
+          setListReceipt(res.reverse());
         }
       } catch (error) {
         console.log("Failed to fetch recepit list: ", error);
