@@ -65,7 +65,7 @@ const Warehouse = ({
     getShelfReporter();
     params ? getUsableBin() : getShevles();
     //getShevles();
-  }, [params]);
+  }, [params, reload]);
 
   const getUsableBin = async () => {
     try {
@@ -101,6 +101,7 @@ const Warehouse = ({
     (reportPos?.["AVAILABLE"] || 0) +
     (reportPos?.["EMPTY"] || 0) +
     (reportPos?.["FULL"] || 0);
+
   const getBinByStatus = async (status) => {
     try {
       const res = await wareHouserApi.getBinsByStatus(WareHouseId, status);
@@ -148,10 +149,7 @@ const Warehouse = ({
   const handleRouter = (value) => {
     setTab(0);
   };
-  useEffect(() => {
-    console.log("isMovingBin usingEffect: ", isMovingBin);
-  }, [isMovingBin]);
-  console.log("isMovingBin: ", isMovingBin);
+
   const onModalOk = () => {
     handleModalLogic();
     setVisible(false);
@@ -163,20 +161,22 @@ const Warehouse = ({
   };
   return (
     <>
-      <div className="warehouse-header">
-        <Breadcrumb
-          items={[
-            {
-              title: <a onClick={handleRouter}>Quản lý kho</a>,
-              key: "IndexWareHouse",
-            },
-            {
-              title: "Sơ đồ nhà kho",
-              key: "WareHouseDiagram",
-            },
-          ]}
-        />
-      </div>
+      {!isSelectingBin ? (
+        <div className="warehouse-header">
+          <Breadcrumb
+            items={[
+              {
+                title: <a onClick={handleRouter}>Quản lý kho</a>,
+                key: "IndexWareHouse",
+              },
+              {
+                title: "Sơ đồ nhà kho",
+                key: "WareHouseDiagram",
+              },
+            ]}
+          />
+        </div>
+      ) : null}
       <div className="warehouse-site-wrapper">
         <div className="statistics-container">
           <div className="statistics">
@@ -259,7 +259,6 @@ const Warehouse = ({
               handleLogic={handleModalLogic}
               setIsMovingBin={setIsMovingBin}
               isMovingBin={isMovingBin}
-
             />
           )}
     </>

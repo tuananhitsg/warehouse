@@ -21,6 +21,7 @@ const ResultPage = ({ setCurrent, setIsSuccess, isDelivery }) => {
     setIsSuccess(false);
   };
   const handleImportClick = () => {
+    dispatch(resetReceipt());
     setShowImport(true);
     navigate("/danh-sach-phieu-nhap");
   };

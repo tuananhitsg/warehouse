@@ -16,7 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import TableSalesDetail from "../sales/TableSalesDetail";
 import QuantityInput from "./QuantityInput ";
-import { setGoods } from "../../../../redux/outboundSlice";
+import { setGoods, resetVoucher } from "../../../../redux/outboundSlice";
 const { Title, Text } = Typography;
 const SelectingBin = ({ next }) => {
   const salesVoucer = useSelector(
@@ -32,7 +32,9 @@ const SelectingBin = ({ next }) => {
     setPurchaseReceipt(record);
     setGoodsCode(record.name);
   };
-
+  useEffect(() => {
+    dispatch(resetVoucher());
+  }, []);
   const columns = [
     {
       title: "STT",

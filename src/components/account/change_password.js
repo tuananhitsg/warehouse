@@ -85,11 +85,19 @@ const ChangePassword = () => {
     values.new_password = password;
 
     if (!validPassword.test(values.old_password)) {
-      message.error("Mật khẩu ít nhất 6 ký tự");
+      message.error(
+        "Mật khẩu tối thiểu 8 ký tự, phải chứa ít nhất 1 chữ viết hoa, 1 chữ viết thường, 1 số và 1 ký tự đặc biệt."
+      );
       stopLoading(0);
       return;
     }
-
+    if (!validPassword.test(values.new_password)) {
+      message.error(
+        "Mật khẩu mới tối thiểu 8 ký tự, phải chứa ít nhất 1 chữ viết hoa, 1 chữ viết thường, 1 số và 1 ký tự đặc biệt."
+      );
+      stopLoading(0);
+      return;
+    }
     if (values.new_password === "") {
       message.error("Vui lòng nhập mật khẩu mới!");
       stopLoading(0);
@@ -97,7 +105,7 @@ const ChangePassword = () => {
     }
 
     if (values.new_password !== values.repeat_password) {
-      message.error("Mật khẩu mới không khớp");
+      message.error("Nhập lại mật khẩu không khớp");
       stopLoading(0);
       return;
     }

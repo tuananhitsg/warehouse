@@ -113,6 +113,7 @@ const SelectingWarehouse = ({ next, show, setShow }) => {
     const params = {
       goodCode: record.code,
       quantity: parseInt(values.quantity, 10),
+      name: record.name,
     };
     console.log("params", params);
     dispatch(setReceipt(params));

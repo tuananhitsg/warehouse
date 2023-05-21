@@ -289,30 +289,28 @@ const OutboundTable = () => {
       ""
     );
     if (res) {
-      const { content, totalElements,numberOfElements } = res;
+      const { content, totalElements, numberOfElements } = res;
       //setListGoods(content);
       // setListReceipt(content.map((item) => ({ ...item, quantity: 0 })));
+      console.log("totalElements", totalElements);
       setListReceipt(content);
       console.log("content", listReceipt);
       setTableParams({
         ...tableParams,
         pagination: {
           ...tableParams.pagination,
-          total: numberOfElements,
+          total: totalElements,
         },
       });
     }
   };
-  const [dateSearched, setDateSearched] = useState("");
+  const [dateString, setDateString] = useState("");
   const onDateChange = async (date, dateString) => {
-    console.log("dateString", dateString);
     const { page, pageSize } = tableParams.pagination;
-
+    console.log("dateSearched", dateString);
     const res = await OutboundApi.searchByDate(page, pageSize, dateString);
     if (res) {
       const { content, totalElements } = res;
-      //setListGoods(content);
-      // setListReceipt(content.map((item) => ({ ...item, quantity: 0 })));
       setListReceipt(content);
       console.log("content", listReceipt);
       setTableParams({
@@ -330,7 +328,7 @@ const OutboundTable = () => {
   useEffect(() => {
     nameSearched
       ? onSearchName()
-      : onDateChange()
+      : dateString
       ? onDateChange()
       : fetchPageOfData();
   }, [tableParams.pagination.current, reload]);
@@ -353,7 +351,12 @@ const OutboundTable = () => {
             />
           </Col>
           <Col span={12}>
-            <DatePicker onChange={onDateChange} />
+            <DatePicker
+              onChange={(date, dateString) => {
+                setDateString(dateString);
+                onDateChange(date, dateString);
+              }}
+            />
           </Col>
         </Row>
       </div>

@@ -46,9 +46,11 @@ const Confirmation = ({ setIsSucess }) => {
       if (res) {
         dispatch(setReload(!reload));
         setIsSucess(true);
+        setLoading(false);
         message.success("Tạo phiếu phiếu xuất thành công");
       }
     } catch (err) {
+      setLoading(false);
       console.log(err);
       message.error("Tạo phiếu xuất thất bại");
     }
@@ -89,7 +91,9 @@ const Confirmation = ({ setIsSucess }) => {
                   {receipt?.map((item) => {
                     return (
                       <div key={item.goodCode} className="item-text">
-                        Sản phẩm: {item.goodCode}: Số lượng: {item.quantity}
+                        Sản phẩm: {item.goodCode} -{item.name}
+                        <br></br>
+                        Số lượng: {item.quantity}
                       </div>
                     );
                   })}

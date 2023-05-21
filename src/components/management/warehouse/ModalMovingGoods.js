@@ -34,7 +34,7 @@ const dispatch = useDispatch();
       }
     } catch (err) {
       console.log(err);
-      message.error("Chuyển sản phẩm thất bại");
+      message.error("Vui lòng chọn kệ cùng sản phẩm để chuyển");
     }
   };
   return (

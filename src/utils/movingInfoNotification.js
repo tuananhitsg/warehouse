@@ -65,6 +65,7 @@ const MovingInfoNotification = ({ setIsMovingBin, isMovingBin }) => {
         key,
         duration: 0,
         placement: "topLeft",
+        closeIcon: null,
       });
     } else {
       api.close(`open`);

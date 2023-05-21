@@ -6,10 +6,11 @@ import PickingPartner from "./PickingPartner";
 import PickingGoods from "./PickingGoods";
 import Confirmation from "./ConfirmInbound";
 import ResultPage from "../../../pages/ResultPage";
-
+import { setGoods } from "../../../../redux/outboundSlice";
 import { useDispatch, useSelector } from "react-redux";
 import "./style.scss";
 const SaleComponent = () => {
+  const dispatch = useDispatch();
   const { token } = theme.useToken();
   const [current, setCurrent] = useState(0);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -21,6 +22,11 @@ const SaleComponent = () => {
   const prev = () => {
     setCurrent(current - 1);
   };
+  useEffect(() => {
+    if (current === 1) {
+      dispatch(setGoods(null));
+    }
+  }, [current]);
   const steps = [
     {
       title: "Đối tác",

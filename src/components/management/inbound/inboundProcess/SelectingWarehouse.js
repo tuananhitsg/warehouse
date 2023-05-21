@@ -45,6 +45,7 @@ const SelectingWarehouse = ({ next, show, setShow, setIsPicked }) => {
 
   const dispatch = useDispatch();
   const record = useSelector((state) => state.inboundReducer.goods);
+  console.log("record", record);
   const selectedBin = useSelector((state) => state.inboundReducer.binCode);
   //test
   const [warehouseMap, setWarehouseMap] = useState(false);
@@ -59,6 +60,7 @@ const SelectingWarehouse = ({ next, show, setShow, setIsPicked }) => {
     validationSchema: Yup.object().shape({
       quantity: Yup.number()
         .required("Chưa nhập số lượng.")
+        .min(1, "Số lượng phải lớn hơn 0.")
         .max(
           Yup.ref("quantityRemaining"),
           "Số lượng vượt quá số lượng còn lại."
@@ -133,6 +135,7 @@ const SelectingWarehouse = ({ next, show, setShow, setIsPicked }) => {
         quantity: quantity,
         goodsCode: record.code,
         codeWarehouse: wareHouseCode,
+        name: record.name,
       })
     );
   };
@@ -159,7 +162,7 @@ const SelectingWarehouse = ({ next, show, setShow, setIsPicked }) => {
                   },
                   ({ getFieldValue }) => ({
                     validator(_, value) {
-                      if (value && value <= record.quantityRemaining) {
+                      if (value && value > 0 && value <= record.quantityRemaining) {
                         return Promise.resolve();
                       }
                       return Promise.reject(

@@ -10,7 +10,11 @@ import SelectingGoods from "./SelectingGoods";
 import SelectingWarehouse from "./SelectingWarehouse";
 import InboundReSultPage from "../../../pages/InboundReSultPage";
 
-import { setReceipt,resetReceipt } from "../../../../redux/inboundSlice";
+import {
+  setReceipt,
+  resetReceipt,
+  setGoods,
+} from "../../../../redux/inboundSlice";
 
 import { useDispatch, useSelector } from "react-redux";
 import "./style.scss";
@@ -20,7 +24,7 @@ const InboundComponent = () => {
   const [isSuccess, setIsSuccess] = useState(false);
   const partner = useSelector((state) => state.inboundReducer.info);
   const goods = useSelector((state) => state.inboundReducer.goods);
-  const receipt = useSelector((state) => state.inboundReducer.receipt)
+  const receipt = useSelector((state) => state.inboundReducer.receipt);
   const dispatch = useDispatch();
   console.log("current", current);
   const next = () => {
@@ -34,6 +38,7 @@ const InboundComponent = () => {
       dispatch(resetReceipt());
     }
   }, [current]);
+
   const steps = [
     {
       title: "Chọn phiếu mua",
@@ -50,7 +55,10 @@ const InboundComponent = () => {
     {
       title: "Hoàn tất",
       content: isSuccess ? (
-        <InboundReSultPage setIsSuccess={setIsSuccess} setCurrent={setCurrent} />
+        <InboundReSultPage
+          setIsSuccess={setIsSuccess}
+          setCurrent={setCurrent}
+        />
       ) : (
         <Confirmation next={next} setIsSuccess={setIsSuccess} isSale={true} />
       ),

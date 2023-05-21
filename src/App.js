@@ -37,13 +37,10 @@ import IndexSale from "./components/management/outbound/salingProcess/indexSale"
 import LoginPage from "./components/account/login";
 import ChangePassword from "./components/account/change_password";
 import ForgotPassword from "./components/account/forgot";
-// link cũ
-// const HomePage = lazy(() => import("./pages/homePage"));
 
-// const Warehouse = lazy(() =>
-//   import("./components/management/warehouse/Warehouse")
-// );
-
+import QtyInWarehouseStatistic from "./components/management/statistic/goods/QtyInWarehouseStatistic";
+import QtyImportedByPeriod from "./components/management/statistic/inbound/QtyImportedByPeriod";
+import QtyExportedByPeriod from "./components/management/statistic/outbound/QtyExportedByPeriod";
 class ErrorBoundary extends Component {
   constructor(props) {
     super(props);
@@ -138,7 +135,6 @@ const router = createBrowserRouter([
               },
             ],
           },
-
           {
             path: "nhan-vien",
             element: <AdminProtectedRoute roleName={"ADMIN"} />,
@@ -153,6 +149,24 @@ const router = createBrowserRouter([
             path: "doi-tac",
             element: <IndexPartner />,
           },
+          {
+            path: "thong-ke",
+            children: [
+              {
+                path: "so-luong-trong-kho",
+                element: <QtyInWarehouseStatistic />,
+              },
+              {
+                path: "so-luong-nhap-kho",
+                element: <QtyImportedByPeriod />,
+              },
+              {
+                path: "so-luong-xuat-kho",
+                element: <QtyExportedByPeriod />,
+              },
+            ]
+
+          }
         ],
       },
     ],

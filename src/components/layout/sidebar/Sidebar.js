@@ -158,7 +158,9 @@ const Sidebar = () => {
       getItem(<Link to={"/nhan-vien"}>Nhân viên</Link>, "5", <UserOutlined />),
     getItem(<Link to={"/doi-tac"}>Đối tác</Link>, "6", <TeamOutlined />),
     getItem("Thống kê", "7", <PieChartOutlined />, [
-      getItem(<Link to={"/thong-ke"}>Số</Link>, "7.1"),
+      getItem(<Link to={"thong-ke/so-luong-trong-kho"}>Hàng trong kho</Link>, "7.1"),
+      getItem(<Link to={"thong-ke/so-luong-nhap-kho"}>Hàng nhập kho</Link>, "7.2"),
+      getItem(<Link to={"thong-ke/so-luong-xuat-kho"}>Hàng xuất kho</Link>, "7.3"),
     ]),
   ];
   // const items = [

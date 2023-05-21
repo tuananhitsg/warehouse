@@ -16,6 +16,7 @@ import {
 import inboundApi from "../../../../api/inboundApi";
 import { useDispatch, useSelector } from "react-redux";
 import { setReload } from "../../../../redux/reloadSlice";
+import { resetReceipt } from "../../../../redux/inboundSlice";
 import {
   setPartner,
   setGoods,
@@ -43,6 +44,7 @@ const Confirmation = ({ setIsSuccess }) => {
     const res = await inboundApi.createReceipt(purchaseCode, data);
     console.log("res:", res);
     if (res) {
+      dispatch(resetReceipt());
       dispatch(setReload(!reload));
       setIsSuccess(true);
     }
@@ -83,7 +85,8 @@ const Confirmation = ({ setIsSuccess }) => {
                   {receipt?.map((item) => {
                     return (
                       <div key={item.goodsCode} className="item-text">
-                        Sản phẩm: {item.goodsCode}: Số lượng: {item.quantity} -
+                        Sản phẩm: {item.goodsCode} - {item.name}<br></br>
+                        Số lượng: {item.quantity}<br></br>
                         Vị trí: {item.binLocationCode}
                       </div>
                     );

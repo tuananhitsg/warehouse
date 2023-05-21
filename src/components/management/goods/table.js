@@ -326,12 +326,12 @@ const GoodsTable = ({
       //setListGoods(content);
       setListGoods(content.map((item) => ({ ...item, quantity: 0 })));
       console.log("content", listGoods);
-      console.log("totalElements", res.numberOfElements);
+      console.log("totalElements", res.totalElements);
       setTableParams({
         ...tableParams,
         pagination: {
           ...tableParams.pagination,
-          total: numberOfElements,
+          total: totalElements,
         },
       });
     }
@@ -341,7 +341,7 @@ const GoodsTable = ({
   }, []);
   useEffect(() => {
     nameSearched ? onSearchName() : fetchPageOfData();
-  }, [tableParams.pagination.current, reload, onSearchName, fetchPageOfData]);
+  }, [tableParams.pagination.current, reload]);
   return (
     <div className="table-container">
       <div className="table-header">

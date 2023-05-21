@@ -142,7 +142,7 @@ const InboundTable = () => {
       }
     } catch (error) {
       console.log("Failed to put goods: ", error);
-      message.error("Nhập kho thất bại");
+      message.error("Nhập kho thất bại, kệ đã đầy hoặc chứa sản phẩm khác");
     }
     setSelectedId(null);
     setShowModalConfirmPut(false);
@@ -276,7 +276,7 @@ const InboundTable = () => {
       ""
     );
     if (res) {
-      const { content, totalElements,numberOfElements } = res;
+      const { content, totalElements, numberOfElements } = res;
       //setListGoods(content);
       //setListReceipt(content.map((item) => ({ ...item, quantity: 0 })));
       setListReceipt(content);
@@ -285,15 +285,15 @@ const InboundTable = () => {
         ...tableParams,
         pagination: {
           ...tableParams.pagination,
-          total: numberOfElements,
+          total: totalElements,
         },
       });
     }
   };
+  const [dateString, setDateString] = useState("");
   const onDateChange = async (date, dateString) => {
     console.log("dateString", dateString);
     const { page, pageSize } = tableParams.pagination;
-
     const res = await InboundApi.searchByDate(page, pageSize, dateString);
     if (res) {
       const { content, totalElements } = res;
@@ -314,11 +314,14 @@ const InboundTable = () => {
     fetchPageOfData();
   }, []);
   useEffect(() => {
-    nameSearched
-      ? onSearchName()
-      : onDateChange()
-      ? onDateChange()
-      : fetchPageOfData();
+    if (nameSearched) {
+      onSearchName();
+    } else if (dateString) {
+      onDateChange();
+    } else {
+      fetchPageOfData();
+    }
+    // : fetchPageOfData();
   }, [tableParams.pagination.current, reload]);
   return (
     <div className="table-container">
@@ -336,7 +339,12 @@ const InboundTable = () => {
             />
           </Col>
           <Col span={12}>
-            <DatePicker onChange={onDateChange} />
+            <DatePicker
+              onChange={(date, dateString) => {
+                setDateString(dateString);
+                onDateChange(date, dateString);
+              }}
+            />
           </Col>
         </Row>
       </div>

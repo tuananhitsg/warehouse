@@ -1,19 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Input,
-  Col,
-  Row,
-  Typography,
-  Button,
-  Modal,
-  Breadcrumb,
-  DatePicker,
-  Select,
-  Form,
-  Drawer,
-  Space,
-  message,
-} from "antd";
+import { Input, Col, Row, Button, Form, Drawer, Space, message } from "antd";
 import wareHouseApi from "../../../api/wareHouseApi";
 import "./ModalShelfInfo.scss";
 import MovingInfoNotification from "../../../utils/movingInfoNotification";
@@ -41,11 +27,14 @@ const ModalShelfInfo = ({
   const handleCancel = () => {
     handleLogic();
   };
-
+  const goodsSize = `${shelf.goods?.length} X ${shelf.goods?.width} X ${shelf.goods?.height}`;
+  const binSize = `${shelf.length} X ${shelf.width} X ${shelf.height}`;
   useEffect(() => {
     form.setFieldsValue({
       ...shelf,
       ...shelf.goods,
+      size: goodsSize,
+      binSize: binSize,
     });
   }, [shelf, form, reload]);
 
@@ -60,7 +49,12 @@ const ModalShelfInfo = ({
     console.log("binCode: ", shelfCode);
     setIsMovingBin(true);
     dispatch(
-      setMovingBin({ fromBinLocationCode: shelfCode, quantity: quantity, goodsName: shelf.goods.name, goodsCode:shelf.goods.code })
+      setMovingBin({
+        fromBinLocationCode: shelfCode,
+        quantity: quantity,
+        goodsName: shelf.goods.name,
+        goodsCode: shelf.goods.code,
+      })
     );
     handleCancel();
   };
@@ -148,7 +142,6 @@ const ModalShelfInfo = ({
                         <Input readOnly bordered={false} />
                       </Form.Item>
                     </Col>
-
                     <Col span={12}>
                       <Form.Item name="nameColumn" label="Cột">
                         <Input readOnly bordered={false} />
@@ -160,6 +153,30 @@ const ModalShelfInfo = ({
                       </Form.Item>
                     </Col>
                   </Row>
+                </Space>
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row>
+            <Col span={24}>
+              <Form.Item name="size" label="Kích thước(m)">
+                <Space>
+                  <Col span={12}>
+                    <Form.Item name="length" label="Dài">
+                      <Input readOnly bordered={false} />
+                    </Form.Item>
+                  </Col>
+                  <Col span={12}>
+                    <Form.Item name="width" label="Rộng">
+                      <Input readOnly bordered={false} />
+                    </Form.Item>
+                  </Col>
+                  <Col span={12}>
+                    <Form.Item name="height" label="Cao">
+                      <Input readOnly bordered={false} />
+                    </Form.Item>
+                  </Col>
+          
                 </Space>
               </Form.Item>
             </Col>
@@ -215,6 +232,11 @@ const ModalShelfInfo = ({
                     </Col>
                     <Col span={12}>
                       <Form.Item name="categoryName" label="Loại sản phẩm">
+                        <Input readOnly bordered={false} />
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item name="size" label="Kích thước(m)">
                         <Input readOnly bordered={false} />
                       </Form.Item>
                     </Col>

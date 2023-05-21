@@ -92,7 +92,7 @@ const UserInfo = () => {
     const fetchData = async (id) => {
       try {
         const res = await employeeApi.getEmployeeById(id);
-
+        console.log("res", res);
         if (res) {
           setFullName(res.fullName);
           setEmail(res.email);
@@ -117,6 +117,13 @@ const UserInfo = () => {
     if (!validPassword.test(password)) {
       message.error(
         "Mật khẩu tối thiểu 8 ký tự, phải chứa ít nhất 1 chữ viết hoa, 1 chữ viết thường, 1 số và 1 ký tự đặc biệt."
+      );
+      stopLoading(0);
+      return;
+    }
+    if (!validPassword.test(repeatPassword)) {
+      message.error(
+        "Mật khẩu lặp lại tối thiểu 8 ký tự, phải chứa ít nhất 1 chữ viết hoa, 1 chữ viết thường, 1 số và 1 ký tự đặc biệt."
       );
       stopLoading(0);
       return;
@@ -242,7 +249,14 @@ const UserInfo = () => {
               <Row>
                 <Col span={12}>
                   <Form.Item name="email" label="Email">
-                    <Input value={email} />
+                    <Input value={email} disabled/>
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={12}>
+                  <Form.Item name="role" label="Vai trò">
+                    <Input value={role} disabled/>
                   </Form.Item>
                 </Col>
               </Row>
