@@ -83,13 +83,13 @@ const TablePurchaseDetail = ({ record, inboundCols }) => {
         let name = "";
         if (status === "NOT_YET_CREATED") {
           color = "error";
-          name = "Chưa tạo";
+          name = "Chưa nhập";
         } else if (status === "NOT_DONE_CREATED") {
           color = "cyan";
-          name = "Chưa tạo xong";
+          name = "Chưa nhập hết";
         } else if (status === "CREATED") {
           color = "blue";
-          name = "Đã tạo";
+          name = "Đã nhập hết";
         }
         return (
           <Tag color={color} key={name}>

@@ -109,7 +109,7 @@ const PickingGoods = ({ next }) => {
 
       render: (_, record) => (
         <InputNumber
-          disabled={!selectedRowKeys.includes(record.key)}
+          disabled={!selectedRowKeys.includes(record.code)}
           defaultValue={1}
           min={1}
           onKeyPress={restrictInputToNumbers}
