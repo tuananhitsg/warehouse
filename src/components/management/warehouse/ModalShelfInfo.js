@@ -1,5 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { Input, Col, Row, Button, Form, Drawer, Space, message } from "antd";
+import {
+  Input,
+  Col,
+  Row,
+  Button,
+  Form,
+  Drawer,
+  Space,
+  message,
+  Upload,
+  Image,
+} from "antd";
 import wareHouseApi from "../../../api/wareHouseApi";
 import "./ModalShelfInfo.scss";
 import MovingInfoNotification from "../../../utils/movingInfoNotification";
@@ -17,8 +28,7 @@ const ModalShelfInfo = ({
   const [form] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(true);
   const dispatch = useDispatch();
-  console.log("isMovingBin trong modal: ", isMovingBin);
-
+  console.log("shelf trong modal: ", shelf);
   const [quantity, setQuantity] = useState("");
   const [isSelect, setIsSelect] = useState(false);
 
@@ -32,9 +42,11 @@ const ModalShelfInfo = ({
   useEffect(() => {
     form.setFieldsValue({
       ...shelf,
-      ...shelf.goods,
+      goodsName: shelf.goods?.name,
+      goodsCode: shelf.goods?.code,
+      goodsUnit: shelf.goods?.unit,
+      goodsCategory: shelf.goods?.categoryName,
       size: goodsSize,
-      binSize: binSize,
     });
   }, [shelf, form, reload]);
 
@@ -159,7 +171,7 @@ const ModalShelfInfo = ({
           </Row>
           <Row>
             <Col span={24}>
-              <Form.Item name="size" label="Kích thước(m)">
+              <Form.Item name="binSize" label="Kích thước(m)">
                 <Space>
                   <Col span={12}>
                     <Form.Item name="length" label="Dài">
@@ -176,7 +188,6 @@ const ModalShelfInfo = ({
                       <Input readOnly bordered={false} />
                     </Form.Item>
                   </Col>
-          
                 </Space>
               </Form.Item>
             </Col>
@@ -215,29 +226,34 @@ const ModalShelfInfo = ({
                 {shelf.goods ? (
                   <Row gutter={16}>
                     <Col span={12}>
-                      <Form.Item name="code" label="Mã sản phẩm">
+                      <Form.Item name="goodsCode" label="Mã sản phẩm">
                         <Input readOnly bordered={false} />
                       </Form.Item>
                     </Col>
                     <Col span={12}>
-                      <Form.Item name="name" label="Tên sản phẩm">
+                      <Form.Item name="goodsName" label="Tên sản phẩm">
                         <Input readOnly bordered={false} />
                       </Form.Item>
                     </Col>
 
                     <Col span={12}>
-                      <Form.Item name="unit" label="Đơn vị">
+                      <Form.Item name="goodsUnit" label="Đơn vị">
                         <Input readOnly bordered={false} />
                       </Form.Item>
                     </Col>
                     <Col span={12}>
-                      <Form.Item name="categoryName" label="Loại sản phẩm">
+                      <Form.Item name="goodsCategoryName" label="Loại sản phẩm">
                         <Input readOnly bordered={false} />
                       </Form.Item>
                     </Col>
                     <Col span={12}>
                       <Form.Item name="size" label="Kích thước(m)">
                         <Input readOnly bordered={false} />
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item label="Hình ảnh">
+                        <Image preview={false} src={shelf.goods.image} />
                       </Form.Item>
                     </Col>
                   </Row>
