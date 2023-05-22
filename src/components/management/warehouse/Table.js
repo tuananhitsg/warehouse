@@ -10,6 +10,7 @@ import {
   Col,
   Row,
   Badge,
+  Tooltip,
 } from "antd";
 import {
   DeleteOutlined,
@@ -121,11 +122,13 @@ const WarehouseTable = ({ setTab }) => {
       width: "10%",
       render: (text, record) => (
         <Space size="middle">
+        <Tooltip title="Xem sơ đồ nhà kho">
           <Button
             type="primary"
             icon={<RightCircleOutlined />}
             onClick={() => handleClickCode(record.code)}
           />
+        </Tooltip>
         </Space>
       ),
     },
