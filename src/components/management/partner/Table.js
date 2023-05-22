@@ -168,8 +168,15 @@ const PartnerTable = ({
     if (res) {
       const { content, totalElements } = res;
       //setListGoods(content);
-      setListPartner(content);
-      console.log("content", listPartner);
+      const data = content.map((item) => {
+        return {
+          ...item,
+          address: `${item.address.street}, ${item.address.ward}, ${item.address.district}, ${item.address.province}`,
+        };
+      });
+
+      console.log("data", data);
+      setListPartner(data);
       setTableParams({
         ...tableParams,
         pagination: {
