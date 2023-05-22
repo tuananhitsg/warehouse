@@ -19,6 +19,9 @@ import userApi from "../../../api/userApi";
 import zxcvbn from "zxcvbn";
 import { validPassword } from "../../../resources/regexp";
 import "./style.scss";
+import { useDispatch, useSelector } from "react-redux";
+import { setReload } from "../../../redux/reloadSlice";
+import { setUser } from "../../../redux/userSlice";
 const { Title, Text } = Typography;
 
 const UserInfo = () => {
@@ -27,11 +30,11 @@ const UserInfo = () => {
   const [code, setCode] = useState("");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
-  const [sex, setSex] = useState("");
-  const [role, setRole] = useState("");
+
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
-  const [oldPassword, setOldPassword] = useState("");
+  const reload = useSelector((state) => state.reloadReducer.reload);
+  const dispatch = useDispatch();
 
   const testResult = zxcvbn(password);
   const num = (testResult.score * 100) / 4;
@@ -80,32 +83,25 @@ const UserInfo = () => {
   };
 
   useEffect(() => {
-    //const user = authService.getUser();
     const userCode = authService.getUser().code;
-
-    // setFullName(user.fullName);
-    // setEmail(user.email);
-    // setCode(user.code);
-    // setRole(user.roles[0]);
-    // setSex(user.sex);
-    // setUser(user);
     const fetchData = async (id) => {
       try {
         const res = await employeeApi.getEmployeeById(id);
         console.log("res", res);
         if (res) {
-          setFullName(res.fullName);
-          setEmail(res.email);
-          setCode(res.code);
-          setRole(res.roles[0].name);
-          setSex(res.sex);
+          form.setFieldsValue({
+            fullName: res.fullName,
+            email: res.email,
+            code: res.code,
+            role: res.roles[0].name,
+          });
         }
       } catch (error) {
         console.log(error);
       }
     };
     fetchData(userCode);
-  }, []);
+  }, [reload]);
   const stopLoading = (index) => {
     setLoadings((prevLoadings) => {
       const newLoadings = [...prevLoadings];
@@ -164,21 +160,23 @@ const UserInfo = () => {
       stopLoading(0);
     }
   };
-  console.log("fullName:", fullName);
-  const handleUpdate = async () => {
+  const handleUpdate = async (value) => {
+    const { fullName, code } = value;
+    console.log("value", value);
     const params = {
       fullName: fullName,
-      sex: sex,
-      role: role,
     };
 
     try {
       const res = await employeeApi.updateEmployee(code, params);
 
       if (res) {
+        dispatch(setUser(res));
+        //authService.setUser(res);
+        dispatch(setReload(!reload));
         setTimeout(() => {
           message.success("Cập nhật thành công");
-        }, 3000);
+        }, 1000);
       }
     } catch (error) {
       console.log(error);
@@ -221,7 +219,7 @@ const UserInfo = () => {
         >
           <Col span={24}>
             <Form
-              // onFinish={handleUpdate}
+              onFinish={handleUpdate}
               form={form}
               layout="horizontal"
               labelAlign="left"
@@ -235,28 +233,28 @@ const UserInfo = () => {
               <Row>
                 <Col span={12}>
                   <Form.Item name="code" label="Mã nhân viên">
-                    <Input disabled value={code} />
+                    <Input disabled />
                   </Form.Item>
                 </Col>
               </Row>
               <Row>
                 <Col span={12}>
                   <Form.Item name="fullName" label="Họ và tên">
-                    <Input value={fullName} />
+                    <Input />
                   </Form.Item>
                 </Col>
               </Row>
               <Row>
                 <Col span={12}>
                   <Form.Item name="email" label="Email">
-                    <Input value={email} disabled/>
+                    <Input disabled />
                   </Form.Item>
                 </Col>
               </Row>
               <Row>
                 <Col span={12}>
                   <Form.Item name="role" label="Vai trò">
-                    <Input value={role} disabled/>
+                    <Input disabled />
                   </Form.Item>
                 </Col>
               </Row>

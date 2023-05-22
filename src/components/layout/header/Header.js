@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Header.scss";
 import {
   Breadcrumb,
@@ -17,26 +17,30 @@ import {
   UserOutlined,
   ProfileOutlined,
   LogoutOutlined,
-  ExclamationCircleOutlined,
 } from "@ant-design/icons";
 
 import { useSelector, useDispatch } from "react-redux";
 import authService from "../../../service/auth.service";
 import { setUser } from "../../../redux/userSlice";
 import { useNavigate, Link } from "react-router-dom";
+import employeeApi from "../../../api/employeeApi";
+import AuthService from "../../../service/auth.service";
+
 const { Text, Title } = Typography;
 const { Header } = Layout;
 
 const HeaderCustom = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  //const [user, setUser] = useState(null);
   const {
     token: { colorBgContainer },
   } = theme.useToken();
   const user = JSON.parse(localStorage.getItem("user"));
+  const reload = useSelector((state) => state.reloadReducer.reload);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  //const [user, setUser] = useState(null);
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -82,12 +86,7 @@ const HeaderCustom = () => {
     items,
     onClick: handleMenuClick,
   };
-  // const warning = () => {
-  //   Modal.warning({
-  //     title: 'Đăng xuát',
-  //     content: 'some messages...some messages...',
-  //   });
-  // };
+
   return (
     <Header
       className="header"
