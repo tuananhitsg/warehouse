@@ -21,14 +21,13 @@ const ShelfItem = ({ codeRow, status, shelf, onClick, disabled }) => {
     className = `${className} selected-shelf`;
   }
 
-  
   return (
     <Button
       className={className}
       onClick={() => {
         onClick(shelf.codeBin);
       }}
-      disabled={disabled}
+      disabled={disabled.includes(shelf?.codeBin)}
     >
       {shelf.codeBin}
     </Button>

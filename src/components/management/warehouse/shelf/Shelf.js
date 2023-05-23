@@ -2,12 +2,12 @@ import React, { useState, useEffect, useMemo } from "react";
 import ShelfItem from "../shelf/ShelfItem";
 import "./Shelf.scss";
 
-const Shelf = ({ items, onShelfItemClick, isSelectingBin }) => {
+const Shelf = ({ items, onShelfItemClick, isSelectingBin, disabled }) => {
   console.log("items", items);
   const handleShelfItemClick = (codeBin) => {
     onShelfItemClick(codeBin);
   };
-  
+
   return (
     <div className="shelf">
       {items?.map((item, index) => (
@@ -17,12 +17,11 @@ const Shelf = ({ items, onShelfItemClick, isSelectingBin }) => {
           status={item.status} //hiênnj tạm xem vi tri
           shelf={item}
           onClick={() => handleShelfItemClick(item.codeBin)}
-         
+          disabled={disabled}
         />
       ))}
     </div>
   );
-
 };
 
 export default Shelf;

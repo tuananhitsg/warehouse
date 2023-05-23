@@ -10,21 +10,27 @@ import {
   message,
   Typography,
 } from "antd";
-import { SendOutlined } from "@ant-design/icons";
+import { SendOutlined, CheckCircleOutlined } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
 import InboundApi from "../../../../api/inboundApi";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import TablePurchaseDetail from "../purchase/TablePurChaseDetail";
 import SelectingWarehouse from "./SelectingWarehouse";
-import { setGoods,resetReceipt } from "../../../../redux/inboundSlice";
+import { setGoods, resetReceipt } from "../../../../redux/inboundSlice";
 
 const { Title, Text } = Typography;
 const SelectingBin = ({ next }) => {
+  const dispatch = useDispatch();
+
   const purchaseVoucher = useSelector(
     (state) => state.inboundReducer.purchased
   );
-  const dispatch = useDispatch();
+  const receipt = useSelector((state) => state.inboundReducer.receipt);
+  const goodsCodes = [];
+  for (let i = 0; i < receipt?.length; i++) {
+    goodsCodes.push(receipt[i].goodsCode);
+  }
   const [visible, setVisible] = useState(false);
   const [purchaseReceipt, setPurchaseReceipt] = useState(null);
   const [goodsCode, setGoodsCode] = useState("");
@@ -107,7 +113,13 @@ const SelectingBin = ({ next }) => {
           <Button
             disabled={record.quantityRemaining === 0}
             type="primary"
-            icon={<SendOutlined />}
+            icon={
+              goodsCodes.includes(record.code) ? (
+                <CheckCircleOutlined />
+              ) : (
+                <SendOutlined />
+              )
+            }
             onClick={() => {
               showFormInbound(record);
               //record(record);
