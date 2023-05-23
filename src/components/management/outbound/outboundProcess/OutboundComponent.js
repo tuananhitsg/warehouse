@@ -42,10 +42,6 @@ const OutboundComponent = () => {
       title: "Chọn sản phẩm",
       content: <SelectingGoods next={next} />,
     },
-    // {
-    //   title: "Chọn vị trí",
-    //   content: <SelectingWarehouse next={next} />,
-    // },
     {
       title: "Hoàn tất",
       content: isSuccess ? (
@@ -78,11 +74,12 @@ const OutboundComponent = () => {
     <>
       <div className="steps-bar-container">
         <Button
+          
           style={{
             marginRight: "50px",
           }}
           onClick={() => prev()}
-          disabled={current === 0}
+          disabled={current === 0 || isSuccess}
           type="primary"
         >
           {<LeftOutlined />}

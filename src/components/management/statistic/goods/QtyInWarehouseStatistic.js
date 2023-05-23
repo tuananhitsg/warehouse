@@ -61,6 +61,7 @@ const QtyInWarehouseStatistic = () => {
       >
         <Col span={12}>
           <Select
+            style={{ width: "100%" }}
             placeholder="Chọn kho hàng"
             options={wareHouseOption.map((item) => ({
               value: item.code,

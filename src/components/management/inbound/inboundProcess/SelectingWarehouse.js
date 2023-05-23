@@ -47,6 +47,7 @@ const SelectingWarehouse = ({ next, show, setShow, setIsPicked }) => {
   const record = useSelector((state) => state.inboundReducer.goods);
   console.log("record", record);
   const selectedBin = useSelector((state) => state.inboundReducer.binCode);
+  
   //test
   const [warehouseMap, setWarehouseMap] = useState(false);
 
@@ -139,6 +140,7 @@ const SelectingWarehouse = ({ next, show, setShow, setIsPicked }) => {
       })
     );
   };
+  console.log("warehouse code", wareHouseCode);
   return (
     <>
       <div className="modal-inbound" style={{ backgroundColor: "white" }}>

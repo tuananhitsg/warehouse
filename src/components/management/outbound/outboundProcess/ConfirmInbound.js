@@ -39,10 +39,11 @@ const Confirmation = ({ setIsSucess }) => {
     const salesCode = sales.code;
     console.log("data:", data);
     console.log("purchaseCode:", salesCode);
-    setLoading(true);
-    const res = await OutboundApi.createDelivery(salesCode, data);
-    console.log("res outbound:", res);
+
     try {
+      const res = await OutboundApi.createDelivery(salesCode, data);
+      console.log("res outbound:", res);
+      setLoading(true);
       if (res) {
         dispatch(setReload(!reload));
         setIsSucess(true);
@@ -50,9 +51,11 @@ const Confirmation = ({ setIsSucess }) => {
         message.success("Tạo phiếu phiếu xuất thành công");
       }
     } catch (err) {
-      setLoading(false);
-      console.log(err);
-      message.error("Tạo phiếu xuất thất bại");
+      console.log("err", err.response.data.statusCode);
+      if (err.response.data.statusCode === 400) {
+        message.error("Không đủ hàng trong kho để xuất");
+        setLoading(false);
+      }
     }
   };
 

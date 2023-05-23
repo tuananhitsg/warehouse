@@ -17,7 +17,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import TablePurchaseDetail from "../purchase/TablePurChaseDetail";
 import SelectingWarehouse from "./SelectingWarehouse";
-import { setGoods } from "../../../../redux/inboundSlice";
+import { setGoods,resetReceipt } from "../../../../redux/inboundSlice";
+
 const { Title, Text } = Typography;
 const SelectingBin = ({ next }) => {
   const purchaseVoucher = useSelector(
@@ -33,7 +34,9 @@ const SelectingBin = ({ next }) => {
     setPurchaseReceipt(record);
     setGoodsCode(record.name);
   };
-
+  useEffect(() => {
+    dispatch(resetReceipt());
+  }, []);
   const columns = [
     {
       title: "STT",
@@ -79,13 +82,13 @@ const SelectingBin = ({ next }) => {
         let name = "";
         if (status === "NOT_YET_CREATED") {
           color = "error";
-          name = "Chưa tạo";
+          name = "Chưa nhập";
         } else if (status === "NOT_DONE_CREATED") {
           color = "cyan";
-          name = "Chưa tạo xong";
+          name = "Chưa nhập hết";
         } else if (status === "CREATED") {
           color = "blue";
-          name = "Đã tạo";
+          name = "Đã nhập hết";
         }
         return (
           <Tag color={color} key={name}>

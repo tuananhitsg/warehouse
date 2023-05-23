@@ -134,8 +134,8 @@ const ModalAddWareHouse = ({
     console.log("search:", value);
   };
   const handleSubmit = async (values) => {
+    console.log("leghth:", form.getFieldValue("length"));
     console.log("submit", values);
-    console.log("reload", reload);
     const {
       name,
       length,
@@ -151,17 +151,16 @@ const ModalAddWareHouse = ({
       numberOfFloor,
       lengthOfColumn,
     } = values;
-    console.log("bieens values:", values);
     const data = {
       name: name,
-      length: length,
-      width: width,
-      height: height,
-      lengthShelf: lengthShelf,
-      widthShelf: widthShelf,
-      heightShelf: heightShelf,
-      numberOfFloor: numberOfFloor,
-      lengthOfColumn: lengthOfColumn,
+      length: parseInt(length, 10),
+      width: parseInt(width, 10),
+      height: parseInt(height, 10),
+      lengthShelf: parseInt(lengthShelf, 10),
+      widthShelf: parseInt(widthShelf, 10),
+      heightShelf: parseInt(heightShelf, 10),
+      numberOfFloor: parseInt(numberOfFloor, 10),
+      lengthOfColumn: parseInt(lengthOfColumn, 10),
 
       location: {
         province: provinceGot,
@@ -178,11 +177,10 @@ const ModalAddWareHouse = ({
         onClose();
         dispatch(setReload(!reload));
         form.resetFields();
-        setTimeout(() => {
-          message.success("Tạo nhà kho thành công!");
-        }, 3000);
+        message.success("Tạo nhà kho thành công!");
       }
     } catch (error) {
+      message.error("Tạo nhà kho thất bại!");
       console.log("Loi roi:", error);
     }
   };
@@ -209,10 +207,23 @@ const ModalAddWareHouse = ({
           </Space>
         }
       >
-        <Form form={form} onFinish={handleSubmit} id="myForm" layout="vertical">
+        <Form
+          form={form}
+          onFinish={handleSubmit}
+          onFinishFailed={(errorInfo) => {
+            console.error(errorInfo);
+            message.error("Vui lòng điền đầy đủ thông tin và kiểm tra lại");
+          }}
+          id="myForm"
+          layout="vertical"
+        >
           <Row gutter={16}>
             <Col span={24}>
-              <Form.Item name="name" label="Tên nhà kho">
+              <Form.Item
+                name="name"
+                label="Tên nhà kho"
+                rules={[{ required: true }]}
+              >
                 <Input />
               </Form.Item>
             </Col>
@@ -220,7 +231,7 @@ const ModalAddWareHouse = ({
           <Row gutter={16}>
             <Col span={24}>
               <Form.Item
-                name="warehouse"
+                //name="warehouse"
                 label="Kích cỡ kho"
                 rules={[{ required: true }]}
               >
@@ -255,24 +266,85 @@ const ModalAddWareHouse = ({
               <Form.Item
                 name="shelves"
                 label="Kích cỡ kệ"
-                rules={[{ required: true }]}
+                rules={[
+                  {
+                    required: true,
+                  },
+                ]}
               >
                 <Space.Compact block>
-                  <Form.Item name="lengthShelf" noStyle>
+                  <Form.Item
+                    name="lengthShelf"
+                    noStyle
+                    rules={[
+                      ({ getFieldValue }) => ({
+                        validator(_, values) {
+                          const lengthShelf = parseInt(values, 10);
+                          const length = parseInt(getFieldValue("length"), 10);
+                          if (lengthShelf +10 > length ) {
+                            return Promise.reject(
+                              new Error(
+                                "Chiều dài kệ nhỏ hơn chiều dài kho ít nhất 10m"
+                              )
+                            );
+                          }
+                          return Promise.resolve();
+                        },
+                      }),
+                    ]}
+                  >
                     <Input
                       style={{ width: "33%" }}
                       placeholder="Chiều dài kệ(m)"
                       onKeyPress={restrictInputToNumbers}
                     />
                   </Form.Item>
-                  <Form.Item name="widthShelf" noStyle>
+                  <Form.Item
+                    name="widthShelf"
+                    noStyle
+                    rules={[
+                      ({ getFieldValue }) => ({
+                        validator(_, values) {
+                          const widthShelf = parseInt(values, 10);
+                          const width = parseInt(getFieldValue("width"), 10);
+                          if (widthShelf +2 > width) {
+                            return Promise.reject(
+                              new Error(
+                                "Chiều rộng kệ nhỏ hơn chiều rộng kho ít nhất 2m"
+                              )
+                            );
+                          }
+                          return Promise.resolve();
+                        },
+                      }),
+                    ]}
+                  >
                     <Input
                       style={{ width: "33%" }}
                       placeholder="Chiều rộng kệ(m)"
                       onKeyPress={restrictInputToNumbers}
                     />
                   </Form.Item>
-                  <Form.Item name="heightShelf" noStyle>
+                  <Form.Item
+                    name="heightShelf"
+                    noStyle
+                    rules={[
+                      ({ getFieldValue }) => ({
+                        validator(_, values) {
+                          const heightShelf = parseInt(values, 10);
+                          const height = parseInt(getFieldValue("height"), 10);
+                          if (heightShelf + 5 > height ) {
+                            return Promise.reject(
+                              new Error(
+                                "Chiều cao kệ nhỏ hơn chiều cao kho ít nhất 5m"
+                              )
+                            );
+                          }
+                          return Promise.resolve();
+                        },
+                      }),
+                    ]}
+                  >
                     <Input
                       style={{ width: "33%" }}
                       placeholder="Chiều cao kệ(m)"
@@ -285,12 +357,20 @@ const ModalAddWareHouse = ({
           </Row>
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item name="numberOfFloor" label="Số tầng của kệ">
+              <Form.Item
+                name="numberOfFloor"
+                label="Số tầng của kệ"
+                rules={[{ required: true }]}
+              >
                 <Input onKeyPress={restrictInputToNumbers} />
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item name="lengthOfColumn" label="Chiều dài mỗi cột">
+              <Form.Item
+                name="lengthOfColumn"
+                label="Chiều dài mỗi cột"
+                rules={[{ required: true }]}
+              >
                 <Input onKeyPress={restrictInputToNumbers} />
               </Form.Item>
             </Col>

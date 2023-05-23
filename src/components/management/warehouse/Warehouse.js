@@ -13,16 +13,19 @@ import {
   Statistic,
   message,
   Popconfirm,
+  Form,
 } from "antd";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import Shelf from "./shelf/Shelf";
 import ModalShelfInfo from "./ModalShelfInfo";
 import ModalMovingGoods from "./ModalMovingGoods";
 import wareHouserApi from "../../../api/wareHouseApi";
+import goodsApi from "../../../api/goodsApi";
 import "./Warehouse.scss";
 import { useSelector, useDispatch } from "react-redux";
 import { setBinCode } from "../../../redux/inboundSlice";
 import MovingInfoNotification from "../../../utils/movingInfoNotification";
+const { Title } = Typography;
 const Warehouse = ({
   setTab,
   isSelectingBin,
@@ -47,8 +50,25 @@ const Warehouse = ({
   const [selectedShelfCode, setSelectedShelfCode] = useState(null);
   const [reportPos, setReportPos] = useState(null);
   const [isMovingBin, setIsMovingBin] = useState(false);
+  const [goods, setGoods] = useState([]);
+  const [goodsCode, setGoodsCode] = useState(null);
   const dispatch = useDispatch();
 
+  const getGoods = async () => {
+    try {
+      const res = await goodsApi.getGoodsByWarehouseCode(WareHouseId);
+      console.log("Goods: ", res);
+
+      if (res) {
+        setGoods(res);
+      }
+    } catch (error) {
+      console.log("Fetch error: ", error);
+    }
+  };
+  useEffect(() => {
+    getGoods();
+  }, []);
   const getShevles = async () => {
     try {
       const res = await wareHouserApi.getShelvesByWarehouseId(WareHouseId);
@@ -63,9 +83,9 @@ const Warehouse = ({
   };
   useEffect(() => {
     getShelfReporter();
-    params ? getUsableBin() : getShevles();
+    params ? getUsableBin() : goodsCode ? getBinsByGoodsCode() : getShevles();
     //getShevles();
-  }, [params, reload]);
+  }, [params, reload, goodsCode]);
 
   const getUsableBin = async () => {
     try {
@@ -115,6 +135,20 @@ const Warehouse = ({
       message.error("Lấy dữ liệu status kệ thất bại");
     }
   };
+  const getBinsByGoodsCode = async () => {
+    try {
+      const res = await wareHouserApi.getBinByGoodsCode(goodsCode);
+      console.log("Report: ", res);
+      if (res) {
+        res.sort((a, b) => a.id - b.id);
+        setShelves(res);
+      }
+    } catch (error) {
+      console.log("Fetch error: ", error);
+      message.error("Lấy dữ liệu kệ thất bại");
+    }
+  };
+
   const getShelfById = async (code) => {
     try {
       const res = await wareHouserApi.getBinById(code);
@@ -159,6 +193,9 @@ const Warehouse = ({
     );
     dispatch(setBinCode(selectedShelfCode));
   };
+  const onSearch = (value) => {
+    console.log("search:", value);
+  };
   return (
     <>
       {!isSelectingBin ? (
@@ -178,6 +215,29 @@ const Warehouse = ({
         </div>
       ) : null}
       <div className="warehouse-site-wrapper">
+        <div className="warehouse-site">
+          <Form.Item label="Lọc kệ theo sản phẩm">
+            <Select
+              virtual={false}
+              showSearch
+              onSearch={onSearch}
+              filterOption={(input, option) =>
+                (option?.label ?? "")
+                  .toLowerCase()
+                  .includes(input.toLowerCase())
+              }
+              options={goods?.map((goods) => ({
+                value: goods.code,
+                label: goods.name,
+              }))}
+              onChange={(value) => {
+                setGoodsCode(value);
+              }}
+              allowClear
+              style={{ width: 200 }}
+            />
+          </Form.Item>
+        </div>
         <div className="statistics-container">
           <div className="statistics">
             <Row gutter={16}>

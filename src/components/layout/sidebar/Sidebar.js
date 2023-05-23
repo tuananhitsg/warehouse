@@ -31,8 +31,8 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const user = useSelector((state) => state.userReducer.info);
   const userRoles = AuthService.getUser().roles;
-  const isAdmin =
-    userRoles.includes("ADMIN") || userRoles.includes("SYSTEM_MANAGER");
+  const isAdmin = userRoles.includes("ADMIN");
+  const isSystemManage = userRoles.includes("SYSTEM_MANAGER");
   console.log("location", location.pathname);
   const items = [
     getItem(<Link to={"/"}>Dashboard</Link>, "0", <DashboardOutlined />),
@@ -61,33 +61,24 @@ const Sidebar = () => {
       getItem(<Link to={"/nhan-vien"}>Nhân viên</Link>, "5", <UserOutlined />),
     getItem(<Link to={"/doi-tac"}>Đối tác</Link>, "6", <TeamOutlined />),
     getItem("Thống kê", "7", <PieChartOutlined />, [
-      getItem(<Link to={"thong-ke/so-luong-trong-kho"}>Hàng trong kho</Link>, "7.1"),
-      getItem(<Link to={"thong-ke/so-luong-nhap-kho"}>Hàng nhập kho</Link>, "7.2"),
-      getItem(<Link to={"thong-ke/so-luong-xuat-kho"}>Hàng xuất kho</Link>, "7.3"),
+      getItem(
+        <Link to={"thong-ke/so-luong-trong-kho"}>Hàng trong kho</Link>,
+        "7.1"
+      ),
+      getItem(
+        <Link to={"thong-ke/so-luong-nhap-kho"}>Hàng nhập kho</Link>,
+        "7.2"
+      ),
+      getItem(
+        <Link to={"thong-ke/so-luong-xuat-kho"}>Hàng xuất kho</Link>,
+        "7.3"
+      ),
     ]),
   ];
-  // const items = [
-  //   getItem("Dashboard", "/", <DashboardOutlined />),
-  //   getItem("Nhập kho", "1", <LoginOutlined />, [
-  //     getItem("Tạo phiếu mua", "/tao-phieu-mua"),
-  //     getItem("Phiếu mua", "1.2"),
-  //     getItem("Tạo phiếu nhập", "1.3"),
-  //     getItem("Phiếu nhập", "1.4"),
-  //   ]),
-
-  //   getItem("Xuất kho", "2", <LogoutOutlined />, [
-  //     getItem("Tạo phiếu bán", "2.1"),
-  //     getItem("Phiếu bán", "2.2"),
-  //     getItem("Tạo phiếu xuất", "2.3"),
-  //   ]),
-  //   getItem("Quản lý kho", "3", <HomeOutlined />, [getItem("Kho hàng", "3.1")]),
-  //   getItem("Sản phẩm", "4", <TagsOutlined />, [
-  //     getItem("Sản phẩm", "4.1"),
-  //     getItem("Loại sản phẩm", "4.2"),
-  //   ]),
-  //   isAdmin && getItem("Nhân viên", "5", <UserOutlined />),
-  //   getItem("Đối tác", "6", <TeamOutlined />),
-  // ];
+  const items2 = [
+    getItem(<Link to={"/"}>Dashboard</Link>, "0", <DashboardOutlined />),
+    getItem(<Link to={"/nhan-vien"}>Nhân viên</Link>, "5", <UserOutlined />),
+  ];
 
   const onChangeItem = (value) => {
     localStorage.setItem("selectedItemKey", value.key);
@@ -132,7 +123,7 @@ const Sidebar = () => {
           theme="dark"
           onSelect={onChangeItem}
           mode="inline"
-          items={items}
+          items={isSystemManage ? items2 : items}
           selectedKeys={
             selectedItemKey || localStorage.getItem("selectedItemKey")
               ? [selectedItemKey || localStorage.getItem("selectedItemKey")]

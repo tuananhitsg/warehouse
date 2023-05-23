@@ -48,6 +48,10 @@ const goodsApi = {
   getCurrentQuantityAllGoods: () => {
     const url = `/goods/count-quantity`;
     return axiosApi.get(url);
+  },
+  getGoodsByWarehouseCode: (warehouseCode) => { 
+    const url =`/goods/get-all-in-warehouse-by/${warehouseCode}`;
+    return axiosApi.get(url);
   }
 };
 

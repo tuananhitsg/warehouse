@@ -91,7 +91,7 @@ const SelectingBin = ({ next }) => {
           name = "Đã xuất hết";
         } else if (status === "CREATED") {
           color = "blue";
-          name = "Đã tạo";
+          name = "Đã xuất hết";
         }
         return (
           <Tag color={color} key={name}>

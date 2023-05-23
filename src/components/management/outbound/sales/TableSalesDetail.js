@@ -83,13 +83,13 @@ const TableSalesDetail = ({ record, inboundCols }) => {
         let name = "";
         if (status === "NOT_YET_CREATED") {
           color = "error";
-          name = "Chưa tạo";
+          name = "Chưa xuât hết";
         } else if (status === "DONE") {
           color = "cyan";
-          name = "Đã nhập hết";
+          name = "Đã xuất hết";
         } else if (status === "CREATED") {
           color = "blue";
-          name = "Đã tạo";
+          name = "Đã xuất hết";
         }
         return (
           <Tag color={color} key={name}>

@@ -24,7 +24,6 @@ const { Title, Text } = Typography;
 const LoginPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       const { email, password } = values;

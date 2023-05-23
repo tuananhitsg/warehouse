@@ -28,6 +28,9 @@ const Confirmation = ({ setIsSuccess }) => {
   const receipt = useSelector((state) => state.inboundReducer.receipt);
   const purchased = useSelector((state) => state.inboundReducer.purchased);
   const reload = useSelector((state) => state.reloadReducer.reload);
+  const selectedWarehouseCode = useSelector(
+    (state) => state.wareHouseReducer.info
+  );
   const dispatch = useDispatch();
 
   const [loading, setLoading] = useState(false);
@@ -85,9 +88,11 @@ const Confirmation = ({ setIsSuccess }) => {
                   {receipt?.map((item) => {
                     return (
                       <div key={item.goodsCode} className="item-text">
-                        Sản phẩm: {item.goodsCode} - {item.name}<br></br>
-                        Số lượng: {item.quantity}<br></br>
-                        Vị trí: {item.binLocationCode}
+                        Sản phẩm: {item.goodsCode} - {item.name}
+                        <br></br>
+                        Số lượng: {item.quantity}
+                        <br></br>
+                        Vị trí: {item.binLocationCode} - {selectedWarehouseCode}
                       </div>
                     );
                   })}
