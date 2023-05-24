@@ -296,6 +296,7 @@ const Warehouse = ({
             }
             isSelectingBin={isSelectingBin ? true : false}
             disabled={binLocationCodes}
+          
           />
         </div>
       </div>

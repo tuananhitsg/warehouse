@@ -18,6 +18,7 @@ const Shelf = ({ items, onShelfItemClick, isSelectingBin, disabled }) => {
           shelf={item}
           onClick={() => handleShelfItemClick(item.codeBin)}
           disabled={disabled}
+          isSelectingBin={isSelectingBin}
         />
       ))}
     </div>

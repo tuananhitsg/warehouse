@@ -2,7 +2,14 @@ import { Button } from "antd";
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-const ShelfItem = ({ codeRow, status, shelf, onClick, disabled }) => {
+const ShelfItem = ({
+  codeRow,
+  status,
+  shelf,
+  onClick,
+  disabled,
+  isSelectingBin,
+}) => {
   const [selectedShelf, setSelectedShelf] = useState(null);
   let className = "";
   switch (status) {
@@ -27,7 +34,10 @@ const ShelfItem = ({ codeRow, status, shelf, onClick, disabled }) => {
       onClick={() => {
         onClick(shelf.codeBin);
       }}
-      disabled={disabled.includes(shelf?.codeBin)}
+      disabled={
+        disabled.includes(shelf?.codeBin) ||
+        (isSelectingBin && status === "Đã đầy")
+      }
     >
       {shelf.codeBin}
     </Button>
