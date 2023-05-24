@@ -72,7 +72,7 @@ const InboundComponent = () => {
             marginRight: "50px",
           }}
           onClick={() => prev()}
-          disabled={current === 0}
+          disabled={current === 0 || isSuccess}
           type="primary"
         >
           {<LeftOutlined />}
