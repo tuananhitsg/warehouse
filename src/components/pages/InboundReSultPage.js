@@ -18,7 +18,7 @@ const ResultPage = ({ setCurrent, setIsSuccess, isDelivery }) => {
     dispatch(resetReceipt());
     dispatch(resetVoucher());
     setCurrent(0);
-    setIsSuccess(false);
+    setIsSuccess(true);
   };
   const handleImportClick = () => {
     dispatch(resetReceipt());
@@ -37,9 +37,9 @@ const ResultPage = ({ setCurrent, setIsSuccess, isDelivery }) => {
           : "Tạo phiếu nhập thành công"
       }
       extra={[
-        <Button type="primary" key="console" onClick={handleReset}>
-          {isDelivery ? "Tạo phiếu xuất hàng mới" : "Tạo phiếu nhập mới"}
-        </Button>,
+        // <Button type="primary" key="console" onClick={handleReset}>
+        //   {isDelivery ? "Tạo phiếu xuất hàng mới" : "Tạo phiếu nhập mới"}
+        // </Button>,
         <Button key="import" onClick={handleImportClick}>
           {isDelivery ? "Xuất hàng" : "Nhập hàng"}
         </Button>,

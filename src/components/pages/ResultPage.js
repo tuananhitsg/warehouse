@@ -27,9 +27,9 @@ const ResultPage = ({ setCurrent, setIsSucess, isSale }) => {
       status="success"
       title={isSale?"Tạo phiếu bán hàng thành công":"Tạo phiếu mua hàng thành công"}
       extra={[
-        <Button type="primary" key="console" onClick={handleReset}>
-          {isSale ? "Tạo phiếu bán hàng mới" : "Tạo phiếu mua hàng mới"}
-        </Button>,
+        // <Button type="primary" key="console" onClick={handleReset}>
+        //   {isSale ? "Tạo phiếu bán hàng mới" : "Tạo phiếu mua hàng mới"}
+        // </Button>,
         <Button key="import" onClick={handleImportClick}>
           {isSale ? "Xuất kho" : "Nhập kho"}
         </Button>,
