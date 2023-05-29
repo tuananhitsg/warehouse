@@ -106,6 +106,34 @@ const WarehouseTable = ({ setTab }) => {
       key: "volume",
     },
     {
+      title: "Trạng thái",
+      dataIndex: "status",
+      key: "status",
+      render: (status) => {
+        let color = "";
+        let text = "";
+        switch (status) {
+          case "AVAILABLE":
+            color = "green";
+            text = "Đang hoạt động";
+            break;
+          case "FULL":
+            color = "red";
+            text = "Ngừng hoạt động";
+            break;
+          default:
+            color = "grey";
+            text = "Trống";
+            break;
+        }
+        return (
+          <Tag color={color} key={text}>
+            {text.toUpperCase()}
+          </Tag>
+        );
+      },
+    },
+    {
       title: "Địa chỉ",
       dataIndex: "location",
       key: "location",
@@ -122,13 +150,13 @@ const WarehouseTable = ({ setTab }) => {
       width: "10%",
       render: (text, record) => (
         <Space size="middle">
-        <Tooltip title="Xem sơ đồ nhà kho">
-          <Button
-            type="primary"
-            icon={<RightCircleOutlined />}
-            onClick={() => handleClickCode(record.code)}
-          />
-        </Tooltip>
+          <Tooltip title="Xem sơ đồ nhà kho">
+            <Button
+              type="primary"
+              icon={<RightCircleOutlined />}
+              onClick={() => handleClickCode(record.code)}
+            />
+          </Tooltip>
         </Space>
       ),
     },
@@ -214,7 +242,6 @@ const WarehouseTable = ({ setTab }) => {
           visible={visible}
           setVisible={setVisible}
           selectedId={selectedId}
-          
         />
       ) : null}
     </div>

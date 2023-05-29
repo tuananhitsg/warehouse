@@ -34,11 +34,11 @@ const statisticApi = {
         return axiosApi.get(url);
     },
     getTop1GoodsImported: () => {
-        const url = `/goods/statistic-of-the-top1-imported-products-by/05`;
+        const url = `/goods/statistic-of-the-top1-imported-products`;
         return axiosApi.get(url);
     },
     getTop1GoodsExported: () => {
-        const url = `/goods/statistic-of-the-top1-exported-products-by/05`;
+        const url = `/goods/statistic-of-the-top1-exported-products`;
         return axiosApi.get(url);
     },
 

@@ -79,28 +79,28 @@ const TableSalesReceipt = ({ inboundCols, handleClick }) => {
       dataIndex: "code",
       key: "code",
     },
-    // {
-    //   title: "Trạng thái",
-    //   dataIndex: "status",
-    //   key: "status",
-    //   render: (status) => {
-    //     let color = "green";
-    //     let name = "";
-    //     if (status === "NOT_DONE_YET") {
-    //       color = "error";
-    //       name = "Chưa hoàn thành";
-    //     } else if (status === "DONE") {
-    //       color = "cyan";
-    //       name = "Đã hoàn thành";
-    //     }
+    {
+      title: "Trạng thái",
+      dataIndex: "status",
+      key: "status",
+      render: (status) => {
+        let color = "green";
+        let name = "";
+        if (status === "NOT_DONE_YET") {
+          color = "error";
+          name = "Chưa hoàn thành";
+        } else if (status === "DONE") {
+          color = "cyan";
+          name = "Đã hoàn thành";
+        }
 
-    //     return (
-    //       <Tag color={color} key={name}>
-    //         {name?.toUpperCase()}
-    //       </Tag>
-    //     );
-    //   },
-    // },
+        return (
+          <Tag color={color} key={name}>
+            {name?.toUpperCase()}
+          </Tag>
+        );
+      },
+    },
 
     {
       title: "Người tạo",

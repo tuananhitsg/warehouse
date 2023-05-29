@@ -20,9 +20,9 @@ const { Title, Text } = Typography;
 
 const QtyInWarehouseStatistic = () => {
   const [wareHouseOption, setWareHouseOption] = useState([]);
-  const [data, setData] = useState([]);
   const [wareHouseId, setWareHouseId] = useState("");
   const [wareHouseName, setWareHouseName] = useState("");
+
   const fetchWarehouse = async () => {
     try {
       const response = await wareHouserApi.getAllWareHouse();
@@ -35,14 +35,10 @@ const QtyInWarehouseStatistic = () => {
   useEffect(() => {
     fetchWarehouse();
   }, []);
-  const handleWarehouseSelect = (value) => {
-    setWareHouseId(value.value);
-    setWareHouseName(value.label);
-  };
+
   useEffect(() => {
     if (wareHouseOption.length > 0) {
       // Nếu đã có dữ liệu warehouse, set giá trị mặc định cho Select và wareHouseId
-      setWareHouseOption(wareHouseOption);
       setWareHouseId(wareHouseOption[0].code);
       setWareHouseName(wareHouseOption[0].name);
     }
@@ -67,8 +63,12 @@ const QtyInWarehouseStatistic = () => {
               value: item.code,
               label: item.name,
             }))}
+
             value={wareHouseId}
-            onChange={handleWarehouseSelect}
+            onChange={(value, option) => {
+              setWareHouseId(value);
+              setWareHouseName(option.label);
+            }}
           />
         </Col>
       </Row>
