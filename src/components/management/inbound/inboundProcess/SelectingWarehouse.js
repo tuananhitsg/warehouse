@@ -33,7 +33,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setWareHouse, setUsableBin } from "../../../../redux/wareHouseSlice";
 import { Padding } from "@mui/icons-material";
 import { setBinCode, setReceipt } from "../../../../redux/inboundSlice";
-
+import wareHouserApi from "../../../../api/wareHouseApi";
 const SelectingWarehouse = ({ next, show, setShow, setIsPicked }) => {
   const [wareHouseOption, setWareHouseOption] = useState([]);
   const [wareHouseCode, setWareHouseCode] = useState("");
@@ -42,12 +42,12 @@ const SelectingWarehouse = ({ next, show, setShow, setIsPicked }) => {
   const [visible, setVisible] = useState(false);
   const [purchaseReceipt, setPurchaseReceipt] = useState(null);
   const [showSelectedBin, setShowSelectedBin] = useState(false);
-
+  const [usableBin, setUsableBin] = useState([]);
   const dispatch = useDispatch();
   const record = useSelector((state) => state.inboundReducer.goods);
   console.log("record", record);
   const selectedBin = useSelector((state) => state.inboundReducer.binCode);
-  
+
   //test
   const [warehouseMap, setWarehouseMap] = useState(false);
 
@@ -94,23 +94,6 @@ const SelectingWarehouse = ({ next, show, setShow, setIsPicked }) => {
     }
   };
 
-  const handleSelectBins = async (values) => {
-    //setWarehouseMap(true);
-    // const params = {
-    //   codeGoods: record.code,
-    //   quantity: 26,
-    // };
-    // console.log("params", params);
-    // try {
-    //   console.log("warehouse code", wareHouseCode);
-    //   const response = await wareHouseApi.getUsableBin(wareHouseCode, params);
-    //   console.log("response", response);
-    //   setBins(response);
-    //   console.log("bins", bins);
-    // } catch (error) {
-    //   console.log(error);
-    // }
-  };
   const showFormInbound = async (values) => {
     console.log("values", values);
     setQuantity(parseInt(values.quantity, 10));
@@ -122,8 +105,34 @@ const SelectingWarehouse = ({ next, show, setShow, setIsPicked }) => {
     // dispatch(
     //   setUsableBin({ codeWarehouse: values.warehouseCode, params: params })
     // );
+    try {
+      const res = await wareHouserApi.getUsableBin(
+        values.warehouseCode,
+        params
+      );
+      console.log("Usable: ", res);
+      if (res.length === 0) {
+        message.warning("Không tìm thấy kệ khả dụng cho số lượng hàng này");
+      } else {
+        setVisible(true);
+        res?.sort((a, b) => a.id - b.id);
+        // setShelves(res);
+        setUsableBin(res);
+      }
+    } catch (error) {
+      console.log("Fetch error: ", error.response);
+      if (error.response.data.statusCode === 400) {
+        setTimeout(() => {
+          message.warning(error.response.data.message);
+        }, 3000);
+        setVisible(false);
+      } else {
+        message.error("Lấy dữ liệu kệ thất bại");
+        setVisible(false);
+      }
+    }
     setWarehouseMap({ codeWarehouse: values.warehouseCode, params: params });
-    setVisible(true);
+    // setVisible(true);
     //setWarehouseMap(true);
   };
   const handleNext = () => {
@@ -164,7 +173,11 @@ const SelectingWarehouse = ({ next, show, setShow, setIsPicked }) => {
                   },
                   ({ getFieldValue }) => ({
                     validator(_, value) {
-                      if (value && value > 0 && value <= record.quantityRemaining) {
+                      if (
+                        value &&
+                        value > 0 &&
+                        value <= record.quantityRemaining
+                      ) {
                         return Promise.resolve();
                       }
                       return Promise.reject(
@@ -249,6 +262,7 @@ const SelectingWarehouse = ({ next, show, setShow, setIsPicked }) => {
                   setVisible={setVisible}
                   setShowSelectedBin={setShowSelectedBin}
                   params={warehouseMap}
+                  usableBin={usableBin}
                 />
               ) : null}
             </Col>

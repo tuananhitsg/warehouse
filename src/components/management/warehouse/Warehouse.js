@@ -32,6 +32,7 @@ const Warehouse = ({
   visible,
   setVisible,
   setShowSelectedBin,
+  usableBin,
   params,
 }) => {
   const WareHouseId = useSelector((state) => state.wareHouseReducer.info);
@@ -93,22 +94,7 @@ const Warehouse = ({
   }, [params, reload, goodsCode]);
 
   const getUsableBin = async () => {
-    try {
-      const res = await wareHouserApi.getUsableBin(
-        WareHouseCode,
-        dataUseableBin
-      );
-      console.log("Usable: ", res);
-      if (res.length === 0) {
-        message.warning("Không tìm thấy kệ khả dụng cho số lượng hàng này");
-      } else {
-        res?.sort((a, b) => a.id - b.id);
-        setShelves(res);
-      }
-    } catch (error) {
-      console.log("Fetch error: ", error);
-      message.error("Lấy dữ liệu kệ khả dụng thất bại");
-    }
+    setShelves(usableBin);
   };
   const getShelfReporter = async () => {
     try {
@@ -296,7 +282,6 @@ const Warehouse = ({
             }
             isSelectingBin={isSelectingBin ? true : false}
             disabled={binLocationCodes}
-          
           />
         </div>
       </div>
