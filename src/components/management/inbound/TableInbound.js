@@ -248,7 +248,7 @@ const InboundTable = () => {
         rowKey={(record) => record.code}
         expandable={{
           expandedRowRender: (record) => <TableReceipt record={record} />,
-          expandRowByClick: true,
+          //expandRowByClick: true,
           onExpand: handleExpand,
         }}
         dataSource={listReceipt}

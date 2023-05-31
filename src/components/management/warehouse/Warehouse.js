@@ -46,6 +46,8 @@ const Warehouse = ({
   // );
   const reload = useSelector((state) => state.reloadReducer.reload);
   const receipt = useSelector((state) => state.inboundReducer.receipt);
+  const goodsSelected = useSelector((state) => state.inboundReducer.goods);
+  const [goodsCode, setGoodsCode] = useState(null);
   const [shelves, setShelves] = useState([]);
   const [open, setOpen] = useState(false);
   const [selectedShelf, setSelectedShelf] = useState(null);
@@ -53,13 +55,16 @@ const Warehouse = ({
   const [reportPos, setReportPos] = useState(null);
   const [isMovingBin, setIsMovingBin] = useState(false);
   const [goods, setGoods] = useState([]);
-  const [goodsCode, setGoodsCode] = useState(null);
+
   const dispatch = useDispatch();
-  const binLocationCodes = [];
+  const binCodeInReceipt = [];
+  const goodsCodeinReceipt = [];
+  goodsCodeinReceipt.push(goodsSelected.code);
+  console.log("receipt: ", receipt);
   for (let i = 0; i < receipt?.length; i++) {
-    binLocationCodes.push(receipt[i].binLocationCode);
+    binCodeInReceipt.push(receipt[i].binLocationCode);
   }
-  console.log("binLocationCodes: ", binLocationCodes);
+  console.log("goodsSelected: ", goodsSelected.code);
   const getGoods = async () => {
     try {
       const res = await goodsApi.getGoodsByWarehouseCode(WareHouseId);
@@ -281,7 +286,8 @@ const Warehouse = ({
               isSelectingBin ? handleSelectBin : handleOpenModal
             }
             isSelectingBin={isSelectingBin ? true : false}
-            disabled={binLocationCodes}
+            disabled={binCodeInReceipt}
+            goodsCodeinReceipt={goodsCodeinReceipt}
           />
         </div>
       </div>

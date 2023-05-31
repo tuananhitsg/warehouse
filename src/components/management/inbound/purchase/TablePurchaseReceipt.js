@@ -234,7 +234,7 @@ const TablePurchaseReceipt = ({ inboundCols, handleClick }) => {
           expandedRowRender: (record) => (
             <TablePurchaseDetail record={record} />
           ),
-          expandRowByClick: true,
+          //expandRowByClick: true,
           onExpand: handleExpand,
         }}
         // pagination={{

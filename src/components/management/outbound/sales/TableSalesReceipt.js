@@ -175,7 +175,7 @@ const TableSalesReceipt = ({ inboundCols, handleClick }) => {
         rowKey={(record) => record.code}
         expandable={{
           expandedRowRender: (record) => <TableSalesDetail record={record} />,
-          expandRowByClick: true,
+          //expandRowByClick: true,
           onExpand: handleExpand,
         }}
         pagination={{

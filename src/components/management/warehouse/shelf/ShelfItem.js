@@ -8,6 +8,7 @@ const ShelfItem = ({
   shelf,
   onClick,
   disabled,
+  goodsCodeinReceipt,
   isSelectingBin,
 }) => {
   const [selectedShelf, setSelectedShelf] = useState(null);
@@ -36,7 +37,8 @@ const ShelfItem = ({
       }}
       disabled={
         disabled.includes(shelf?.codeBin) ||
-        (isSelectingBin && status === "Đã đầy")
+        (isSelectingBin && status === "Đã đầy") ||
+        (shelf?.goods && !goodsCodeinReceipt.includes(shelf.goods.code))
       }
     >
       {shelf.codeBin}

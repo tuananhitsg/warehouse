@@ -19,6 +19,7 @@ import InboundApi from "../../../../api/inboundApi";
 import { useDispatch, useSelector } from "react-redux";
 import { setReload } from "../../../../redux/reloadSlice";
 import { useNavigate, useLocation } from "react-router-dom";
+import ModalVoucherInfo from "./ModalVoucherInfo";
 import "../table.scss";
 //import component
 // import ModalAddReceipt from "./modalAddReceipt";
@@ -26,7 +27,7 @@ import TableReceipt from "./TableVoucherDetail";
 const { Search } = Input;
 const InboundTable = () => {
   const [selectedId, setSelectedId] = useState(null);
-  const [showModalGoodsDetail, setShowModalGoodsDetail] = useState(false);
+  const [showModalVoucherDetail, setShowModalVoucherDetail] = useState(false);
   const [showModalCancelReceipt, setShowModalCancelReceipt] = useState(false);
   const [showModalConfirmPut, setShowModalConfirmPut] = useState(false);
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
@@ -41,7 +42,7 @@ const InboundTable = () => {
   const navigate = useNavigate();
 
   const showModalDetail = (e) => {
-    setShowModalGoodsDetail(true);
+    setShowModalVoucherDetail(true);
     setSelectedId(e);
   };
   // const showModalAdd = () => {
@@ -168,6 +169,18 @@ const InboundTable = () => {
       width: "15%",
       dataIndex: "code",
       key: "code",
+      // render: (code, record) => {
+      //   return (
+      //     <Button
+      //       type="link"
+      //       onClick={() => {
+      //         showModalDetail(record);
+      //       }}
+      //     >
+      //       {code}
+      //     </Button>
+      //   );
+      // }
     },
     {
       title: "Trạng thái",
@@ -354,7 +367,7 @@ const InboundTable = () => {
         rowKey={(record) => record.code}
         expandable={{
           expandedRowRender: (record) => <TableReceipt record={record} />,
-          expandRowByClick: true,
+          //expandRowByClick: true,
           onExpand: handleExpand,
         }}
         dataSource={listReceipt}
@@ -384,6 +397,12 @@ const InboundTable = () => {
         >
           <p>Bạn muốn huỷ phiếu nhập {selectedId}?</p>
         </Modal>
+      ) : null}
+      {showModalVoucherDetail ? (<ModalVoucherInfo
+        setShowModalVoucherDetail={setShowModalVoucherDetail}
+        showModalVoucherDetail={showModalVoucherDetail}
+        record={selectedId}
+      />
       ) : null}
     </div>
   );
