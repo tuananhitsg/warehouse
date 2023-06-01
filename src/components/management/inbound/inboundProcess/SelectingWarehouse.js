@@ -52,23 +52,23 @@ const SelectingWarehouse = ({ next, show, setShow, setIsPicked }) => {
   const [warehouseMap, setWarehouseMap] = useState(false);
 
   console.log("record code", record.code);
-  const selectBin = {
-    initial: {
-      quantity: "",
-      codeWarehouse: "",
-      quantityRemaining: record.quantityRemaining,
-    },
-    validationSchema: Yup.object().shape({
-      quantity: Yup.number()
-        .required("Chưa nhập số lượng.")
-        .min(1, "Số lượng phải lớn hơn 0.")
-        .max(
-          Yup.ref("quantityRemaining"),
-          "Số lượng vượt quá số lượng còn lại."
-        ),
-      codeWarehouse: Yup.string().required("Chưa chọn kho."),
-    }),
-  };
+  // const selectBin = {
+  //   initial: {
+  //     quantity: "",
+  //     codeWarehouse: "",
+  //     quantityRemaining: record.quantityRemaining,
+  //   },
+  //   validationSchema: Yup.object().shape({
+  //     quantity: Yup.number()
+  //       .required("Chưa nhập số lượng.")
+  //       .min(1, "Số lượng phải lớn hơn 0.")
+  //       .max(
+  //         Yup.ref("quantityRemaining"),
+  //         "Số lượng vượt quá số lượng còn lại."
+  //       ),
+  //     codeWarehouse: Yup.string().required("Chưa chọn kho."),
+  //   }),
+  // };
 
   //const handleSubmit = async (values, { setSubmitting, resetForm }) => {};
 

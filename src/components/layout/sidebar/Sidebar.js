@@ -13,6 +13,7 @@ import {
 } from "@ant-design/icons";
 import AuthService from "../../../service/auth.service";
 import { useSelector } from "react-redux";
+import "./Sidebar.scss";
 const { Sider } = Layout;
 
 function getItem(label, key, icon, children) {
@@ -105,6 +106,7 @@ const Sidebar = () => {
         collapsed={collapsed}
         onCollapse={(value) => setCollapsed(value)}
         width={234}
+        className="scroll-bar"
         style={{
           overflow: "auto",
           height: "100vh",

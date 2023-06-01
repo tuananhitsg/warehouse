@@ -37,8 +37,9 @@ const ShelfItem = ({
       }}
       disabled={
         disabled.includes(shelf?.codeBin) ||
-        (isSelectingBin && status === "Đã đầy") ||
-        (shelf?.goods && !goodsCodeinReceipt.includes(shelf.goods.code))
+        (isSelectingBin && status === "Đã đầy")
+        //  ||
+        // (shelf?.goods && !goodsCodeinReceipt.includes(shelf?.goods?.code))
       }
     >
       {shelf.codeBin}

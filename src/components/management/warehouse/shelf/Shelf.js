@@ -24,7 +24,7 @@ const Shelf = ({
           shelf={item}
           onClick={() => handleShelfItemClick(item.codeBin)}
           disabled={disabled}
-          goodsCodeinReceipt={goodsCodeinReceipt}
+          //goodsCodeinReceipt={goodsCodeinReceipt}
           isSelectingBin={isSelectingBin}
         />
       ))}
