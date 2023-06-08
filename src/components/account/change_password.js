@@ -8,7 +8,7 @@ import { validPhone, validPassword } from "../../resources/regexp";
 import userApi from "../../api/userApi";
 import zxcvbn from "zxcvbn";
 import "./style.scss";
-
+import AuthService from "../../service/auth.service";
 const { Title } = Typography;
 
 const ChangePassword = () => {
@@ -81,32 +81,36 @@ const ChangePassword = () => {
     });
   };
 
-  const error_msg = () => {
-    message.error("Sai mật khẩu");
-  };
-
   const onFinish = async (values) => {
     values.new_password = password;
 
     if (!validPassword.test(values.old_password)) {
-      message.error("Mật khẩu ít nhất 6 ký tự");
+      message.error(
+        "Mật khẩu tối thiểu 8 ký tự, phải chứa ít nhất 1 chữ viết hoa, 1 chữ viết thường, 1 số và 1 ký tự đặc biệt."
+      );
       stopLoading(0);
       return;
     }
-
-    if (values.new_password == "") {
+    if (!validPassword.test(values.new_password)) {
+      message.error(
+        "Mật khẩu mới tối thiểu 8 ký tự, phải chứa ít nhất 1 chữ viết hoa, 1 chữ viết thường, 1 số và 1 ký tự đặc biệt."
+      );
+      stopLoading(0);
+      return;
+    }
+    if (values.new_password === "") {
       message.error("Vui lòng nhập mật khẩu mới!");
       stopLoading(0);
       return;
     }
 
-    if (values.new_password != values.repeat_password) {
-      message.error("Mật khẩu mới không khớp");
+    if (values.new_password !== values.repeat_password) {
+      message.error("Nhập lại mật khẩu không khớp");
       stopLoading(0);
       return;
     }
 
-    if (testResult.score == 1 || testResult.score == 0) {
+    if (testResult.score === 1 || testResult.score === 0) {
       message.error("Vui lòng chọn mật khẩu an toàn hơn");
       stopLoading(0);
       return;
@@ -116,17 +120,16 @@ const ChangePassword = () => {
       email: resetPasswordEmail,
       password: values.new_password,
     };
-  
 
     try {
       const response = await userApi.changePassword(params);
-     
-
       if (response) {
         message.success("Đổi mật khẩu thành công");
-        navigate("/dang-nhap");
-        localStorage.removeItem("resetPasswordEmail");
-        localStorage.removeItem("token");
+        if (!AuthService.getUser()) {
+          navigate("/dang-nhap");
+          localStorage.removeItem("resetPasswordEmail");
+          localStorage.removeItem("token");
+        }
       } else {
         message.error("Xảy ra lỗi");
       }
@@ -139,13 +142,8 @@ const ChangePassword = () => {
   };
 
   useEffect(() => {
-    document.title = "Đổi mật khẩu - Quản lý kho hàng thông minh";
+    document.title = "Đổi mật khẩu - HỆ THỐNG QUẢN LÝ KHO TIỆN LỢI";
   }, []);
-
-  const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
-    message.error("Có lỗi xảy ra");
-  };
 
   return (
     <>
@@ -179,7 +177,7 @@ const ChangePassword = () => {
               src={require("../../assets/logo.png")}
             ></img>
             <Title className="logo-text" level={2}>
-              Kho hàng thông minh
+              HỆ THỐNG QUẢN LÝ KHO TIỆN LỢI
             </Title>
           </div>
         </Col>
@@ -215,7 +213,6 @@ const ChangePassword = () => {
               style={{
                 marginBottom: "0px",
               }}
-              
             >
               <Input.Password
                 size="large"

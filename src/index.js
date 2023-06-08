@@ -8,7 +8,7 @@ import { Provider } from "react-redux";
 import store from "./redux/store";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-document.title = "Quản lý kho hàng thông minh";
+document.title = "Hệ thống quản lý kho tiện lợi";
 root.render(
   // <BrowserRouter>
   //     <Provider store={store}>

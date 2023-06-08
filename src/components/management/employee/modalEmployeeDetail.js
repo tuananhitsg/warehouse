@@ -12,8 +12,9 @@ import {
   Space,
 } from "antd";
 import employeeApi from "../../../api/employeeApi";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../../../redux/userSlice";
+import { setReload } from "../../../redux/reloadSlice";
 const ModalEmployeeDetail = ({
   showModalEmployeeDetail,
   setShowModalEmployeeDetail,
@@ -24,7 +25,7 @@ const ModalEmployeeDetail = ({
   const [sex, setSex] = useState("");
   const [role, setRole] = useState("");
   const dispatch = useDispatch();
-
+  const reload = useSelector((state) => state.reloadReducer.reload);
   const onChangeName = (values) => {
     setFullName(values);
   };
@@ -65,10 +66,10 @@ const ModalEmployeeDetail = ({
       const res = await employeeApi.updateEmployee(selectedId, data);
       if (res) {
         dispatch(setUser(res));
+        dispatch(setReload(!reload));
         onClose();
-        setTimeout(() => {
-          message.success("Cập nhật thành công");
-        }, 3000);
+
+        message.success("Cập nhật thành công");
       }
     } catch (error) {
       console.log("error", error);

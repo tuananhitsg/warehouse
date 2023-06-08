@@ -17,30 +17,12 @@ const PickingGoods = ({ next }) => {
 
   const [selectedQuantities, setSelectedQuantities] = useState({});
 
-  // const onSelectChange = (selectedIds, selectedRows) => {
-  //   setSelectedRowKeys(selectedIds);
-  //   setDisableSelectButton(false);
-  //   console.log("selectedRows: ", selectedRows);
-  //   const updatedSelectedRows = selectedRows.map((row) => ({
-  //     ...row,
-  //     quantity: selectedGoods.find((item) => item.code === row.code)?.quantity || 1,
-  //   }));
-  //   setSelectedGoods(updatedSelectedRows);
-  // };
-
-  // const handleQuantityChange = (record, value) => {
-  //   console.log("value ", value);
-  //   console.log("record ", record);
-
-  //   const updatedSelectedRows = selectedGoods.map((item) => {
-  //     if (item?.code === record?.code) {
-  //       return { ...item, quantity: value };
-  //     }
-  //     return item;
-  //   });
-
-  //   setSelectedGoods(updatedSelectedRows);
-  // };
+  const restrictInputToNumbers = (event) => {
+    const numericKeys = /[0-9]/;
+    if (!numericKeys.test(event.key)) {
+      event.preventDefault();
+    }
+  };
   const onSelectChange = (selectedIds, selectedRows) => {
     setSelectedRowKeys(selectedIds);
     setDisableSelectButton(false);
@@ -127,55 +109,16 @@ const PickingGoods = ({ next }) => {
 
       render: (_, record) => (
         <InputNumber
+          disabled={!selectedRowKeys.includes(record.code)}
           defaultValue={1}
           min={1}
+          onKeyPress={restrictInputToNumbers}
           onChange={(value) => handleQuantityChange(record, value)}
         />
       ),
     },
   ];
-  // const [quantity, setQuantity] = useState(1);
 
-  // const updateSelectedGoods = (record, quantity) => {
-  //   const existingRecordIndex = selectedGoods.findIndex((item) => item?.code === record?.code);
-  //   if (existingRecordIndex > -1) {
-  //     // Nếu sản phẩm đã tồn tại trong danh sách, cập nhật lại số lượng
-  //     const updatedGoods = [...selectedGoods];
-  //     updatedGoods[existingRecordIndex] = { ...record, quantity };
-  //     setSelectedGoods(updatedGoods);
-  //   } else {
-  //     // Nếu sản phẩm chưa tồn tại trong danh sách, thêm mới sản phẩm đó vào danh sách
-  //     setSelectedGoods([...selectedGoods, { ...record, quantity }]);
-  //   }
-  // };
-  // const renderCell = (item) => {
-  //   const editable = item.editable;
-  //   return editable ? (
-  //     <InputNumber
-  //       defaultValue={item.quantity}
-  //       min={1}
-  //       max={1000}
-  //       onChange={onCellChange(item.key, "quantity")}
-  //     />
-  //   ) : (
-  //     item.quantity
-  //   );
-  // };
-  // const quantities = selectedGoods.map((item) => item.quantity);
-  // const onSaveClick = () => {
-  //   const quantities = selectedGoods.map((item) => item.quantity);
-  //   console.log("quantities: ", quantities);
-
-  //   // TODO: update selectedGoods with new quantities
-  // };
-  // const updateSelectedGoods = (selectedGoods, quantities) => {
-  //   return selectedGoods.map((item, index) => {
-  //     return {
-  //       ...item,
-  //       quantity: quantities[index],
-  //     };
-  //   });
-  // };
   return (
     <>
       <TableGoods
@@ -185,33 +128,6 @@ const PickingGoods = ({ next }) => {
         isPickingGoods={true}
         cols={columns}
       />
-
-      {/* {isQuantityModal ? (
-        <Modal
-          title="Nhập số lượng"
-          open={isQuantityModal}
-          onOk={onModalOk}
-          onCancel={() => setIsQuantityModal(false)}
-          okText="Xác nhận"
-          cancelText="Hủy"
-        >
-          <Form
-            form={form}
-            layout="horizontal"
-            labelAlign="left"
-            labelCol={{
-              span: 5,
-            }}
-            wrapperCol={{
-              span: 19,
-            }}
-          >
-            <FormItem label="Số lượng" name="quantity">
-              <Input />
-            </FormItem>
-          </Form>
-        </Modal>
-      ) : null} */}
     </>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Header.scss";
 import {
   Breadcrumb,
@@ -17,25 +17,30 @@ import {
   UserOutlined,
   ProfileOutlined,
   LogoutOutlined,
-  ExclamationCircleOutlined,
 } from "@ant-design/icons";
 
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import authService from "../../../service/auth.service";
 import { setUser } from "../../../redux/userSlice";
 import { useNavigate, Link } from "react-router-dom";
+import employeeApi from "../../../api/employeeApi";
+import AuthService from "../../../service/auth.service";
+
 const { Text, Title } = Typography;
 const { Header } = Layout;
 
 const HeaderCustom = () => {
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
+  //const [user, setUser] = useState(null);
   const {
     token: { colorBgContainer },
   } = theme.useToken();
   const user = JSON.parse(localStorage.getItem("user"));
+  const reload = useSelector((state) => state.reloadReducer.reload);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  //const [user, setUser] = useState(null);
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -48,6 +53,7 @@ const HeaderCustom = () => {
     try {
       localStorage.removeItem("token");
       authService.removeUser();
+      dispatch(setUser(null));
       navigate("/dang-nhap");
     } catch (err) {
       console.log(err);
@@ -80,12 +86,7 @@ const HeaderCustom = () => {
     items,
     onClick: handleMenuClick,
   };
-  // const warning = () => {
-  //   Modal.warning({
-  //     title: 'Đăng xuát',
-  //     content: 'some messages...some messages...',
-  //   });
-  // };
+
   return (
     <Header
       className="header"
@@ -138,7 +139,11 @@ const HeaderCustom = () => {
                       color: "#abb4bc",
                     }}
                   >
-                    {user?.roles}
+                    {user?.roles.includes("ADMIN")
+                      ? "Quản lý"
+                      : user?.roles.includes("SYSTEM_MANAGER")
+                      ? "Quản trị viên"
+                      : "Nhân viên"}
                   </Text>
                 </div>
                 <Avatar
@@ -172,76 +177,3 @@ const HeaderCustom = () => {
   );
 };
 export { HeaderCustom };
-// const Header = () => {
-//   const {
-//     token: { colorBgContainer },
-//   } = theme.useToken();
-
-//   const [isModalOpen, setIsModalOpen] = useState(false);
-//   const navigate = useNavigate();
-
-//   const user = useSelector((state) => state.userReducer.info);
-
-//   const showModal = () => {
-//     setIsModalOpen(true);
-//   };
-
-//   const handleOk = () => {
-//     setIsModalOpen(false);
-//     handleLogout();
-//     //handle code for log out in here
-//   };
-//   const handleCancel = () => {
-//     setIsModalOpen(false);
-//   };
-//   const handleLogout = () => {
-//     localStorage.removeItem("token");
-//     authService.removeUser();
-//     navigate("/dang-nhap", { replace: true });
-//   };
-//   const handleMenuClick = (e) => {
-//     message.info("Click on menu item.");
-//     console.log("click", e);
-//   };
-//   const itemMenu = [
-//     {
-//       key: "1",
-//       // label: (
-//       //   <Link to={"/thong-tin"} className="profile">
-//       //     Thông tin
-//       //   </Link>
-//       // ),
-//     },
-//     {
-//       key: "2",
-//       // label: (
-//       //   <Link name="logout" onClick={handleLogout}>
-//       //     Đăng xuất
-//       //   </Link>
-//       // ),
-//     },
-//   ];
-//   const menuProps = {
-//     itemMenu,
-//     onClick: handleMenuClick,
-//   };
-//   return (
-//     <>
-//       <div
-//         style={{
-//           padding: 0,
-//           background: colorBgContainer,
-//         }}
-//       >
-//         <Dropdown.Button
-//           menu={menuProps}
-//           placement="bottom"
-//           icon={<UserOutlined />}
-//         >
-//           Dropdown
-//         </Dropdown.Button>
-//       </div>
-//     </>
-//   );
-// };
-// export { Header };

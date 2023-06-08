@@ -1,18 +1,9 @@
 import "./App.css";
 import React, { useEffect, useState, Component } from "react";
-import { lazy, Suspense } from "react";
-import {
-  BrowserRouter,
-  Route,
-  Routes,
-  useNavigate,
-  Navigate,
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
-import { Provider } from "react-redux";
-import store from "./redux/store";
-import Loading from "./components/basic/loading";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
+import { ConfigProvider } from "antd";
+import viVN from "antd/lib/locale/vi_VN";
 
 import { useSelector } from "react-redux";
 import authService from "./service/auth.service";
@@ -34,20 +25,22 @@ import IndexWarehouse from "./components/management/warehouse/index";
 import IndexUser from "./components/account/user/userInfo";
 import IndexReceipt from "./components/management/inbound/index";
 import IndexPartner from "./components/management/partner/index";
-import IndexOutbound from "./components/management/outbound/index";
-import IndexInbound from "./components/management/inbound/inventoryInbound/indexInbound";
+// import IndexOutbound from "./components/management/outbound/index";
+import IndexPurchase from "./components/management/inbound/purchasingProcess/indexPurchase";
+import IndexInbound from "./components/management/inbound/inboundProcess/IndexInbound";
+import IndexOutbound from "./components/management/outbound/outboundProcess/IndexOutbound";
 import { TablePurchaseReceipt } from "./components/management/inbound/purchase/index";
-
+import { TableSalesReceipt } from "./components/management/outbound/sales";
+import { InboundTable } from "./components/management/inbound/voucher/index";
+import { OutboundTable } from "./components/management/outbound/voucher";
+import IndexSale from "./components/management/outbound/salingProcess/indexSale";
 import LoginPage from "./components/account/login";
 import ChangePassword from "./components/account/change_password";
 import ForgotPassword from "./components/account/forgot";
-// link cũ
-// const HomePage = lazy(() => import("./pages/homePage"));
 
-// const Warehouse = lazy(() =>
-//   import("./components/management/warehouse/Warehouse")
-// );
-
+import QtyInWarehouseStatistic from "./components/management/statistic/goods/QtyInWarehouseStatistic";
+import QtyImportedByPeriod from "./components/management/statistic/inbound/QtyImportedByPeriod";
+import QtyExportedByPeriod from "./components/management/statistic/outbound/QtyExportedByPeriod";
 class ErrorBoundary extends Component {
   constructor(props) {
     super(props);
@@ -92,15 +85,29 @@ const router = createBrowserRouter([
           },
           {
             path: "tao-phieu-mua",
-            element: <IndexInbound />,
+            element: <IndexPurchase />,
           },
           {
             path: "danh-sach-phieu-mua",
             element: <TablePurchaseReceipt />,
           },
           {
+            path: "tao-phieu-nhap",
+            element: <IndexInbound />,
+          },
+          {
             path: "danh-sach-phieu-nhap",
-            element: <IndexReceipt />,
+            // element: <IndexReceipt />,
+            element: <InboundTable />,
+          },
+
+          {
+            path: "tao-phieu-ban",
+            element: <IndexSale />,
+          },
+          {
+            path: "danh-sach-phieu-ban",
+            element: <TableSalesReceipt />,
           },
           {
             path: "tao-phieu-xuat",
@@ -108,7 +115,7 @@ const router = createBrowserRouter([
           },
           {
             path: "danh-sach-phieu-xuat",
-            element: <IndexOutbound />,
+            element: <OutboundTable />,
           },
           {
             path: "nha-kho",
@@ -120,7 +127,13 @@ const router = createBrowserRouter([
           },
           {
             path: "loai-san-pham",
-            element: <IndexCategory />,
+            element: <AdminProtectedRoute roleName={"ADMIN"} />,
+            children: [
+              {
+                path: "/loai-san-pham",
+                element: <IndexCategory />,
+              },
+            ],
           },
           {
             path: "nhan-vien",
@@ -136,6 +149,24 @@ const router = createBrowserRouter([
             path: "doi-tac",
             element: <IndexPartner />,
           },
+          {
+            path: "thong-ke",
+            children: [
+              {
+                path: "so-luong-trong-kho",
+                element: <QtyInWarehouseStatistic />,
+              },
+              {
+                path: "so-luong-nhap-kho",
+                element: <QtyImportedByPeriod />,
+              },
+              {
+                path: "so-luong-xuat-kho",
+                element: <QtyExportedByPeriod />,
+              },
+            ]
+
+          }
         ],
       },
     ],
@@ -155,25 +186,13 @@ const router = createBrowserRouter([
   },
 ]);
 const App = () => {
-  // const dispatch = useDispatch();
-  // const navigate = useNavigate();
-  // const user = useSelector((state) => state.userReducer);
-  // useEffect(() => {
-  //   const userInLocalStorage = authService.getUser();
-  //   const token = authService.getLocalToken();
-  //   if (userInLocalStorage) {
-  //     dispatch(setUser(userInLocalStorage));
-  //     navigate("/trang-chu");
-  //   } else {
-  //     navigate("/dang-nhap");
-  //   }
-  // }, []);
-
   return (
     <div className="App">
       <React.Fragment>
         <ErrorBoundary>
-          <RouterProvider router={router} />
+          <ConfigProvider locale={viVN}>
+            <RouterProvider router={router} />
+          </ConfigProvider>
         </ErrorBoundary>
       </React.Fragment>
     </div>

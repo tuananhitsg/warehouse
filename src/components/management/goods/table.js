@@ -25,7 +25,7 @@ import { setReload } from "../../../redux/reloadSlice";
 import "./table.scss";
 import ModalGoodsDetail from "./modalGoodsDetail";
 import ModalAddGoods from "./modalAddGoods";
-
+const { Search } = Input;
 const GoodsTable = ({
   disableSelectButton,
   rowSelection,
@@ -43,9 +43,9 @@ const GoodsTable = ({
   const [isLoading, setIsLoading] = useState(false);
   const [listGoods, setListGoods] = useState([]);
   const [refreshKey, setRefreshKey] = useState(0);
-
   const reload = useSelector((state) => state.reloadReducer.reload);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const location = useLocation();
   //search on column
   const [searchText, setSearchText] = useState("");
@@ -286,9 +286,6 @@ const GoodsTable = ({
       console.log("Failed to fetch page: ", error);
     }
   };
-  useEffect(() => {
-    fetchPageOfData();
-  }, [tableParams.pagination.current, reload]);
 
   const handleTableChange = (pagination, filters, sorter) => {
     setTableParams({
@@ -306,18 +303,72 @@ const GoodsTable = ({
   };
 
   const handleRefresh = () => {
-    setIsLoading(true);
+    setLoading(true);
+
     // ajax request after empty completing
     setTimeout(() => {
       setSelectedRowKeys([]);
-      setIsLoading(false);
+      setLoading(false);
       setRefreshKey((oldKey) => oldKey + 1);
+      dispatch(setReload(!reload));
       message.success("Tải lại thành công");
     }, 1000);
   };
+  const [loading, setLoading] = useState(false);
+  const [nameSearched, setNameSearched] = useState("");
+  const onSearchName = async () => {
+    const name = nameSearched;
+    const { page, pageSize } = tableParams.pagination;
+
+    const res = await goodsApi.searchGoods(name, page, pageSize);
+    if (res) {
+      const { content, totalElements, numberOfElements } = res;
+      //setListGoods(content);
+      setListGoods(content.map((item) => ({ ...item, quantity: 0 })));
+      console.log("content", listGoods);
+      console.log("totalElements", res.totalElements);
+      setTableParams({
+        ...tableParams,
+        pagination: {
+          ...tableParams.pagination,
+          total: totalElements,
+        },
+      });
+    }
+  };
+  useEffect(() => {
+    fetchPageOfData();
+  }, []);
+  useEffect(() => {
+    nameSearched ? onSearchName() : fetchPageOfData();
+  }, [tableParams.pagination.current, reload]);
   return (
     <div className="table-container">
       <div className="table-header">
+        <Row gutter={16} style={{ marginBottom: "10px", marginLeft: "10px" }}>
+          <Col span={12}>
+            <Search
+              placeholder="Tìm kiếm sản phẩm"
+              onChange={(e) => {
+                setNameSearched(e.target.value);
+              }}
+              enterButton
+              allowClear
+              onSearch={onSearchName}
+            />
+          </Col>
+          <Col span={12}>
+            <Button
+              type="primary"
+              onClick={handleRefresh}
+              loading={loading}
+              icon={<ReloadOutlined />}
+              style={{ marginLeft: "8px" }}
+            >
+              Làm mới
+            </Button>
+          </Col>
+        </Row>
         <Row gutter={{ xs: 8, sm: 16, md: 16, lg: 16 }}>
           <Col span={12}>
             {rowSelection ? (

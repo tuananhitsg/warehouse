@@ -1,7 +1,7 @@
 $shelf-bg-available: #4caf50;
 $shelf-bg-full: #f44336;
 $shelf-bg-empty: #cdcdcd;
-
+$shelf-bg-selected: yellow;
 .shelf {
   display: flex;
   flex-wrap: wrap;
@@ -19,7 +19,9 @@ $shelf-bg-empty: #cdcdcd;
     font-weight: bold;
     text-transform: uppercase;
     transition: background-color 0.2s ease-in-out;
-
+    &.selected-shelf {
+      background-color: $shelf-bg-selected;
+    }
     &--available {
       background-color: $shelf-bg-available;
 

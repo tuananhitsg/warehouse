@@ -12,7 +12,11 @@ import {
   Col,
   Row,
 } from "antd";
-import { CheckOutlined, UserAddOutlined } from "@ant-design/icons";
+import {
+  CheckOutlined,
+  UserAddOutlined,
+  ReloadOutlined,
+} from "@ant-design/icons";
 
 import employeeApi from "../../../api/employeeApi";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,7 +27,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import ModalPartnerDetail from "./ModalPartnerDetail";
 import ModalAddPartner from "./ModalAddPartner";
 import partnerApi from "../../../api/partnerApi";
-
+const { Search } = Input;
 const PartnerTable = ({
   disableSelectButton,
   rowSelection,
@@ -54,27 +58,7 @@ const PartnerTable = ({
   const onSelectChange = (selectedId) => {
     setSelectedRowKeys(selectedId);
   };
-  // const rowSelection = {
-  //   selectedRowKeys,
-  //   onChange: onSelectChange,
-  // };
-  // const [isModalOpen, setIsModalOpen] = useState(false);
-  // const showModal = () => {
-  //   setIsModalOpen(true);
-  // };
-  // useEffect(() => {
-  //   const fetchDataTable = async () => {
-  //     try {
-  //       const response = await partnerApi.getAll();
-  //       setListPartner(response);
-  //     } catch (error) {
-  //       console.log("Failed to fetch data table: ", error);
-  //       message.error("Lỗi tải dữ liệu");
-  //     }
-  //   };
-  //   fetchDataTable();
-  // }, [reload]);
-  //fetch
+
   const [tableParams, setTableParams] = useState({
     pagination: {
       current: 1,
@@ -123,7 +107,7 @@ const PartnerTable = ({
     setTableParams({
       pagination: {
         ...pagination,
-        page: pagination.current - 1,
+        page: pagination.current,
       },
     });
     navigate(
@@ -132,16 +116,6 @@ const PartnerTable = ({
     if (pagination.pageSize !== tableParams.pagination.pageSize) {
       setListPartner([]);
     }
-  };
-  const handleRefresh = () => {
-    setLoading(true);
-    // ajax request after empty completing
-    setTimeout(() => {
-      setSelectedRowKeys([]);
-      setLoading(false);
-      setRefreshKey((oldKey) => oldKey + 1);
-      message.success("Tải lại thành công");
-    }, 1000);
   };
   const columns = [
     {
@@ -173,6 +147,45 @@ const PartnerTable = ({
       dataIndex: "address",
     },
   ];
+  const handleRefresh = () => {
+    setLoading(true);
+
+    // ajax request after empty completing
+    setTimeout(() => {
+      setSelectedRowKeys([]);
+      setLoading(false);
+      setRefreshKey((oldKey) => oldKey + 1);
+      dispatch(setReload(!reload));
+      message.success("Tải lại thành công");
+    }, 1000);
+  };
+  const [nameSearched, setNameSearched] = useState("");
+  const onSearchName = async (e) => {
+    // const name = nameSearched;
+    const { page, pageSize } = tableParams.pagination;
+
+    const res = await partnerApi.searchPartner(e, page, pageSize);
+    if (res) {
+      const { content, totalElements } = res;
+      //setListGoods(content);
+      const data = content.map((item) => {
+        return {
+          ...item,
+          address: `${item.address.street}, ${item.address.ward}, ${item.address.district}, ${item.address.province}`,
+        };
+      });
+
+      console.log("data", data);
+      setListPartner(data);
+      setTableParams({
+        ...tableParams,
+        pagination: {
+          ...tableParams.pagination,
+          total: totalElements,
+        },
+      });
+    }
+  };
   return (
     <div className="table-container">
       <div
@@ -181,6 +194,30 @@ const PartnerTable = ({
           marginBottom: 16,
         }}
       >
+        <Row gutter={16} style={{ marginBottom: "10px", marginLeft: "10px" }}>
+          <Col span={12}>
+            <Search
+              placeholder="Tìm kiếm đối tác"
+              // onChange={(e) => {
+              //   setNameSearched(e.target.value);
+              // }}
+              enterButton
+              allowClear
+              onSearch={onSearchName}
+            />
+          </Col>
+          <Col span={12}>
+            <Button
+              type="primary"
+              onClick={handleRefresh}
+              loading={loading}
+              icon={<ReloadOutlined />}
+              style={{ marginLeft: "8px" }}
+            >
+              Làm mới
+            </Button>
+          </Col>
+        </Row>
         <Row gutter={{ xs: 8, sm: 16, md: 16, lg: 16 }}>
           <Col span={24}>
             {rowSelection ? (

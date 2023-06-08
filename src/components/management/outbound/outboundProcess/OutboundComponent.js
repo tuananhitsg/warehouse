@@ -2,45 +2,56 @@ import React, { useEffect, useState } from "react";
 import { Button, Modal, Breadcrumb, Steps, theme } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 
-import PickingPartner from "./PickingPartner";
-import PickingGoods from "./PickingGoods";
+// import PickingPartner from "./PickingPartner";
+// import PickingGoods from "./PickingGoods";
 import Confirmation from "./ConfirmInbound";
-import PickingGood from "./editablerow";
-import ResultPage from "../../../pages/ResultPage";
-
+import PickingSalesReceipt from "./PickingSalesReceipt";
+import SelectingGoods from "./SelectingGoods";
+//import SelectingWarehouse from "./SelectingWarehouse";
+import InboundReSultPage from "../../../pages/InboundReSultPage";
+import { setReceipt, resetVoucher } from "../../../../redux/outboundSlice";
 import { useDispatch, useSelector } from "react-redux";
 import "./style.scss";
-const InboundComponent = () => {
+const OutboundComponent = () => {
   const { token } = theme.useToken();
   const [current, setCurrent] = useState(0);
   const [isSuccess, setIsSuccess] = useState(false);
-  const partner = useSelector((state) => state.inboundReducer.info);
-  const goods = useSelector((state) => state.inboundReducer.goods);
+  const partner = useSelector((state) => state.outboundReducer.info);
+  const goods = useSelector((state) => state.outboundReducer.goods);
+  const receipt = useSelector((state) => state.outboundReducer.receipt);
+
+  const dispatch = useDispatch();
   const next = () => {
     setCurrent(current + 1);
   };
   const prev = () => {
     setCurrent(current - 1);
+    //dispatch(setReceipt(null));
   };
+  useEffect(() => {
+    if (current === 0) {
+      dispatch(resetVoucher());
+    }
+  }, [current]);
   const steps = [
     {
-      title: "Đối tác",
-      content: <PickingPartner next={next} />,
+      title: "Chọn phiếu bán",
+      content: <PickingSalesReceipt next={next} />,
     },
     {
-      title: "Sản phẩm",
-      content: <PickingGoods next={next} />,
+      title: "Chọn sản phẩm",
+      content: <SelectingGoods next={next} />,
     },
-    // {
-    //   title: "Test",
-    //   content: <PickingGood next={next} />,
-    // },
     {
-      title: "Xác nhận",
+      title: "Hoàn tất",
       content: isSuccess ? (
-        <ResultPage setIsSuccess={setIsSuccess} setCurrent={setCurrent} />
+        <InboundReSultPage
+          setIsSuccess={setIsSuccess}
+          setCurrent={setCurrent}
+          isDelivery={true}
+        />
       ) : (
-        <Confirmation next={next} setIsSucess={setIsSuccess} />
+        <Confirmation next={next} setIsSucess={setIsSuccess} isSale={true} />
       ),
     },
   ];
@@ -63,11 +74,12 @@ const InboundComponent = () => {
     <>
       <div className="steps-bar-container">
         <Button
+          
           style={{
             marginRight: "50px",
           }}
           onClick={() => prev()}
-          disabled={current === 0}
+          disabled={current === 0 || isSuccess}
           type="primary"
         >
           {<LeftOutlined />}
@@ -88,4 +100,4 @@ const InboundComponent = () => {
     </>
   );
 };
-export default InboundComponent;
+export default OutboundComponent;

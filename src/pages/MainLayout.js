@@ -16,9 +16,9 @@ const MainLayout = () => {
           <Content style={{ margin: "0 16px", height: "80vh",overflow: "auto" }}>
             <Outlet  />
           </Content>
-          <Footer style={{ textAlign: "center" }}>
+          {/* <Footer style={{ textAlign: "center" }}>
             Warehouse management ©2023 Created by Nhom 5
-          </Footer>
+          </Footer> */}
         </Layout>
       </Layout>
     </>

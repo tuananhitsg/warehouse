@@ -13,16 +13,14 @@ import {
   Space,
 } from "antd";
 import partnerApi from "../../../api/partnerApi";
-import {
-  getProvinceList,
-  getDistrictList,
-  getWardList,
-} from "../../../service/province.service";
+import addressApi from "../../../api/addressApi";
+
+import { setReload } from "../../../redux/reloadSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 import { Formik, Field, ErrorMessage } from "formik";
 import { createPartnerValues } from "../../utils/initValues";
-import addressApi from "../../../api/addressApi";
+
 const ModalPartnerDetail = ({
   showModalPartnerDetail,
   setShowModalPartnerDetail,
@@ -128,8 +126,33 @@ const ModalPartnerDetail = ({
     setWardPicked(value);
     setWardGot(options.label);
   };
-  console.log("initialValues", initialValues);
-  const handleSubmit = async (values) => {};
+
+  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+    const { street, province, district, ward, phone, name } = values;
+    console.log("values:", values);
+    const data = {
+      address: {
+        street: street,
+        province: province,
+        district: district,
+        ward: ward,
+      },
+      phone: phone,
+      name: name,
+    };
+    console.log("formdata:", data);
+
+    const res = await partnerApi.update(data);
+    console.log(res);
+    if (res.code) {
+      resetForm();
+      dispatch(setReload(!reload));
+      setSubmitting(false);
+      setProvincePicked(null);
+      setDistrictPicked(null);
+      setWardPicked(null);
+    }
+  };
   useEffect(() => {
     console.log("selectedId", selectedId);
     const fetchData = async (id) => {
@@ -141,7 +164,6 @@ const ModalPartnerDetail = ({
           setProvincePicked(res.address.province);
           setDistrictPicked(res.address.district);
           setWardPicked(res.address.ward);
-
         }
       } catch (error) {
         console.log("error", error);
@@ -327,7 +349,7 @@ const ModalPartnerDetail = ({
                             htmlType="submit"
                             loading={isSubmitting}
                             // disabled={!dirty || !isValid}
-                            onClick={handleSubmit}
+                            onClick={() => handleSubmit()}
                           >
                             Xác nhận
                           </Button>
@@ -341,100 +363,7 @@ const ModalPartnerDetail = ({
           </div>
         </Drawer>
       </div>
-      {/* <Form
-            form={form}
-            id="myForm"
-            layout="vertical"
-            onFinish={handleSubmit}
-          >
-            <Row gutter={16}>
-              <Col span={12}>
-                <Form.Item name="code" label="Mã đối tác">
-                  <Input readOnly />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item name="name" label="Tên đối tác">
-                  <Input />
-                </Form.Item>
-              </Col>
-            </Row>
 
-            <Col span={12}>
-              <Form.Item name="phone" label="Số điện thoại">
-                <Input readOnly />
-              </Form.Item>
-            </Col>
-            <Row gutter={16}>
-              <Col span={8}>
-                <Form.Item label="Địa chỉ" name="province">
-                  <Select
-                    showSearch
-                    placeholder="Chọn tỉnh thành"
-                    optionFilterProp="children"
-                    //onChange={onChangeProvince}
-                    onSearch={onSearch}
-                    filterOption={(input, option) =>
-                      (option?.label ?? "")
-                        .toLowerCase()
-                        .includes(input.toLowerCase())
-                    }
-                    //options={province}
-                  />
-                </Form.Item>
-              </Col> */}
-
-      {/* <Col span={8}>
-                <Form.Item label=" " name="district">
-                  <Select
-                    showSearch
-                    placeholder="Chọn quận huyện"
-                    optionFilterProp="children"
-                    onChange={onChangeDistrict}
-                    onSearch={onSearch}
-                    style={{ width: "100%" }}
-                    filterOption={(input, option) =>
-                      (option?.label ?? "")
-                        .toLowerCase()
-                        .includes(input.toLowerCase())
-                    }
-                    options={districts}
-                  />
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label=" " name="ward">
-                  <Select
-                    showSearch
-                    placeholder="Chọn phường/xã"
-                    optionFilterProp="children"
-                    onChange={onChangeWard}
-                    onSearch={onSearch}
-                    style={{ width: "100%" }}
-                    filterOption={(input, option) =>
-                      (option?.label ?? "")
-                        .toLowerCase()
-                        .includes(input.toLowerCase())
-                    }
-                    options={wards}
-                  />
-                </Form.Item>
-              </Col>
-              <Col span={24}>
-                <Form.Item name="address">
-                  <Input.TextArea
-                    showCount
-                    maxLength={100}
-                    style={{
-                      width: "100%",
-                    }}
-                    placeholder="Nhập địa chỉ"
-                    rows={3}
-                  />
-                </Form.Item>
-              </Col> */}
-      {/* </Row>
-          </Form> */}
     </div>
   );
 };

@@ -24,7 +24,6 @@ const { Title, Text } = Typography;
 const LoginPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       const { email, password } = values;
@@ -32,7 +31,9 @@ const LoginPage = () => {
       if (res) {
         console.log("res login:", res);
         localStorage.setItem("token", res.token);
+        localStorage.setItem("refreshToken", res.refreshToken);
         authService.setUser(res);
+
         dispatch(setUser(res));
         navigate("/");
       }

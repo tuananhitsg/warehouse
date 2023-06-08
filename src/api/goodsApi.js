@@ -33,10 +33,26 @@ const goodsApi = {
     const url = `/goods/get-all-by/${category}`;
     return axiosApi.get(url);
   },
-  searchGoods: (keyword) => {
-    const url = `/goods/search/${keyword}`;
+  searchGoods: (keyword, page, size) => {
+    const url = `/goods/search/${keyword}?page=${page}&size=${size}`;
     return axiosApi.get(url);
   },
+  updateGoods: (id, data) => {
+    const url = `/goods/update/${id}`;
+    return axiosApi.post(url, data);
+  },
+  getCurrentQuantityByGoodsCode: (id) => {
+    const url = `/goods/get-current-quantity-by/${id}`;
+    return axiosApi.get(url);
+  },
+  getCurrentQuantityAllGoods: () => {
+    const url = `/goods/count-quantity`;
+    return axiosApi.get(url);
+  },
+  getGoodsByWarehouseCode: (warehouseCode) => { 
+    const url =`/goods/get-all-in-warehouse-by/${warehouseCode}`;
+    return axiosApi.get(url);
+  }
 };
 
 export default goodsApi;

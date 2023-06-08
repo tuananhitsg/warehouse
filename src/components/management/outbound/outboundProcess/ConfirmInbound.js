@@ -13,48 +13,49 @@ import {
   message,
   Form,
 } from "antd";
-import inboundApi from "../../../../api/inboundApi";
+import OutboundApi from "../../../../api/outboundApi";
 import { useDispatch, useSelector } from "react-redux";
 import { setReload } from "../../../../redux/reloadSlice";
-import { setPartner, setGoods } from "../../../../redux/inboundSlice";
+import {
+  setPartner,
+  setGoods,
+  setReceipt,
+} from "../../../../redux/inboundSlice";
 import ResultPage from "../../../pages/ResultPage";
 
 const Confirmation = ({ setIsSucess }) => {
-  const partner = useSelector((state) => state.inboundReducer.info);
-  const goods = useSelector((state) => state.inboundReducer.goods);
+  const receipt = useSelector((state) => state.outboundReducer.receipt);
+  const sales = useSelector((state) => state.outboundReducer.salesVoucher);
   const reload = useSelector((state) => state.reloadReducer.reload);
   const dispatch = useDispatch();
 
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
+    console.log("receipt:", receipt);
     const data = {
-      goodsRequests: [
-        ...goods.map((item) => {
-          return {
-            name: item.name,
-            height: item.height,
-            width: item.width,
-            length: item.length,
-            unit: item.unit,
-            quantity: item.quantity,
-            categoryCode: item.categoryCode,
-          };
-        }),
-      ],
-      partnerRequest: {
-        name: partner.name,
-        address: partner.address,
-        phone: partner.phone,
-      },
+      goodsRequests: [...receipt],
     };
+    const salesCode = sales.code;
+    console.log("data:", data);
+    console.log("purchaseCode:", salesCode);
 
-    setLoading(true);
-    const res = await inboundApi.createPurchaseReceipt(data);
-    console.log("res:", res);
-    if (res) {
-      dispatch(setReload(!reload));
-      setIsSucess(true);
+    try {
+      const res = await OutboundApi.createDelivery(salesCode, data);
+      console.log("res outbound:", res);
+      setLoading(true);
+      if (res) {
+        dispatch(setReload(!reload));
+        setIsSucess(true);
+        setLoading(false);
+        message.success("Tạo phiếu phiếu xuất thành công");
+      }
+    } catch (err) {
+      console.log("err", err.response.data.statusCode);
+      if (err.response.data.statusCode === 400) {
+        message.error("Không đủ hàng trong kho để xuất");
+        setLoading(false);
+      }
     }
   };
 
@@ -69,7 +70,7 @@ const Confirmation = ({ setIsSucess }) => {
               alt="confirm"
               onClick={handleSubmit}
             />
-            <h2 className="form-title">Xác nhận phiếu mua hàng</h2>
+            <h2 className="form-title">Xác nhận phiếu xuất</h2>
           </div>
         </Col>
         <Col span={24}>
@@ -84,21 +85,18 @@ const Confirmation = ({ setIsSucess }) => {
                 span: 16,
               }}
             >
-              <Form.Item label="Đối tác" className="form-item-label">
-                <div className="form-text">
-                  <div className="item-text">
-                    {partner.name}, {partner.phone}, {partner.address.street},{" "}
-                    {partner.address.ward}, {partner.address.district},{" "}
-                    {partner.address.province}
-                  </div>
-                </div>
+              <Form.Item label="Mã phiếu bán" className="form-item-label">
+                <div className="form-text">{sales.code}</div>
               </Form.Item>
+
               <Form.Item label="Sản phẩm" className="form-item-label">
                 <div className="form-text">
-                  {goods?.map((item) => {
+                  {receipt?.map((item) => {
                     return (
-                      <div key={item.code} className="item-text">
-                        {item.name} - {item.quantity} {item.unit}
+                      <div key={item.goodCode} className="item-text">
+                        Sản phẩm: {item.goodCode} -{item.name}
+                        <br></br>
+                        Số lượng: {item.quantity}
                       </div>
                     );
                   })}

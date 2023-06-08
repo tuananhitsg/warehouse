@@ -34,6 +34,10 @@ const employeeApi = {
   changeAccountStatus: (id) => {
     const url = `/user/deactivate-by/${id}`;
     return axiosApi.post(url);
+  },
+  searchEmployee: (params) => {
+    const url = `/user/search/${params}`;
+    return axiosApi.get(url);
   }
 };
 export default employeeApi;

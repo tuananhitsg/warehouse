@@ -11,10 +11,12 @@ import {
   Row,
   Select,
   Space,
+  Upload,
 } from "antd";
-
+import { UploadOutlined } from "@ant-design/icons";
 import goodsApi from "../../../api/goodsApi";
 import categoryApi from "../../../api/categoryApi";
+import uploadApi from "../../../api/uploadApi";
 import { setReload } from "../../../redux/reloadSlice";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -30,18 +32,18 @@ import * as Yup from "yup";
 const ModalAddGoods = ({ showModalAddGoods, setShowModalAddGoods }) => {
   const dispatch = useDispatch();
   const reload = useSelector((state) => state.reloadReducer.reload);
-
+  const [image, setImage] = useState("");
   const [size, setSize] = useState("");
   const [categoryCodes, setCategoryCodes] = useState([]);
-  const [categoryCode, setCategoryCode] = useState("");
+
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const onChangeSize = async (values) => {
     console.log("values", values);
     setSize(values);
   };
-  const onChageCategory = (value) => {
-    setCategoryCode(value);
+  const onChageCategory = (value, option) => {
+    console.log("option", option);
   };
   const onClose = () => {
     setShowModalAddGoods(false);
@@ -50,6 +52,10 @@ const ModalAddGoods = ({ showModalAddGoods, setShowModalAddGoods }) => {
     initial: {
       categoryCode: "",
       name: "",
+      length: "",
+      width: "",
+      height: "",
+      //image: "",
     },
     validationSchema: Yup.object().shape({
       categoryCode: Yup.string().oneOf(
@@ -57,6 +63,7 @@ const ModalAddGoods = ({ showModalAddGoods, setShowModalAddGoods }) => {
         "Vui lòng chọn loại sản phẩm!"
       ),
       name: Yup.string().required("Tên không được bỏ trống!"),
+      //image: Yup.mixed().required("Vui lòng tải lên một tệp ảnh"),
     }),
   };
 
@@ -76,31 +83,40 @@ const ModalAddGoods = ({ showModalAddGoods, setShowModalAddGoods }) => {
   }, []);
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
-    console.log("submit", values);
-    console.log("reload", reload);
-    const { categoryCode, name, size } = values;
+    const { categoryCode, categoryName, name, size, length, width, height } =
+      values;
+    console.log("values", values);
+    // console.log("image", image);
+    const formData = new FormData();
+    formData.append("file", image);
+    // const convertedImage = await convertImageToBase64(image);
+    const uploadRes = await uploadApi.upload(formData);
+    console.log("uploadRes", uploadRes);
 
-    let length, width, height;
-    if (size === "1") {
-      length = 0.3;
-      width = 0.2;
-      height = 0.3;
-    } else if (size === "2") {
-      length = 0.5;
-      width = 0.3;
-      height = 0.4;
-    } else if (size === "3") {
-      length = 0.6;
-      width = 0.4;
-      height = 0.4;
-    }
+    // let length, width, height;
+    // if (size === "1") {
+    //   length = 0.3;
+    //   width = 0.2;
+    //   height = 0.3;
+    // } else if (size === "2") {
+    //   length = 0.5;
+    //   width = 0.3;
+    //   height = 0.4;
+    // } else if (size === "3") {
+    //   length = 0.6;
+    //   width = 0.4;
+    //   height = 0.4;
+    // }
+
     const data = {
       categoryCode,
+      categoryName,
       name,
       length,
       width,
       height,
       unit: "Thùng",
+      image: uploadRes,
     };
     const res = await goodsApi.addGoods(data);
     if (res) {
@@ -110,6 +126,36 @@ const ModalAddGoods = ({ showModalAddGoods, setShowModalAddGoods }) => {
     }
   };
 
+  const normFile = (e) => {
+    console.log("Upload event:", e);
+    if (Array.isArray(e)) {
+      return e;
+    }
+    return e?.fileList;
+  };
+  const dummyRequest = ({ file, onSuccess }) => {
+    setImage(file);
+    setTimeout(() => {
+      onSuccess("ok");
+    }, 0);
+  };
+  const convertImageToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  };
+  const restrictInputToRealNumbers = (event) => {
+    const numericKeys = /^[0-9]*\.?[0-9]*$/;
+    if (!numericKeys.test(event.key)) {
+      event.preventDefault();
+    }
+  };
+  const onSearch = (value) => {
+    console.log("search:", value);
+  };
   return (
     <>
       <Modal
@@ -137,9 +183,21 @@ const ModalAddGoods = ({ showModalAddGoods, setShowModalAddGoods }) => {
                 <FormAntd.Item label="Loại sản phẩm" labelAlign="left">
                   <Field
                     name="categoryCode"
+                    virtual={false}
                     as={Select}
+                    showSearch
+                    onSearch={onSearch}
+                    filterOption={(input, option) =>
+                      (option?.label ?? "")
+                        .toLowerCase()
+                        .includes(input.toLowerCase())
+                    }
                     placeholder="Chọn loại sản phẩm"
-                    onChange={(value) => setFieldValue("categoryCode", value)}
+                    onChange={(value, option) => {
+                      console.log("name", option.label);
+                      setFieldValue("categoryCode", value);
+                      setFieldValue("categoryName", option.label);
+                    }}
                     options={categories.map((category) => ({
                       value: category.code,
                       label: category.name,
@@ -166,8 +224,42 @@ const ModalAddGoods = ({ showModalAddGoods, setShowModalAddGoods }) => {
                     className="error-message"
                   />
                 </FormAntd.Item>
-
-                <FormAntd.Item label="Kích thước" labelAlign="left">
+                <FormAntd.Item
+                  name="shelves"
+                  label="Kích cỡ sản phẩm"
+                  rules={[{ required: true }]}
+                >
+                  <Space.Compact block>
+                    <FormAntd.Item noStyle>
+                      <Field
+                        name="length"
+                        as={Input}
+                        style={{ width: "33%" }}
+                        placeholder="Chiều dài sản phẩm(m)"
+                        onKeyPress={restrictInputToRealNumbers}
+                      />
+                    </FormAntd.Item>
+                    <FormAntd.Item noStyle>
+                      <Field
+                        name="width"
+                        as={Input}
+                        style={{ width: "33%" }}
+                        placeholder="Chiều rộng sản phẩm(m)"
+                        onKeyPress={restrictInputToRealNumbers}
+                      />
+                    </FormAntd.Item>
+                    <FormAntd.Item noStyle>
+                      <Field
+                        name="height"
+                        as={Input}
+                        style={{ width: "33%" }}
+                        placeholder="Chiều cao sản phẩm(m)"
+                        onKeyPress={restrictInputToRealNumbers}
+                      />
+                    </FormAntd.Item>
+                  </Space.Compact>
+                </FormAntd.Item>
+                {/* <FormAntd.Item label="Kích thước" labelAlign="left">
                   <Field
                     onChange={(value) => setFieldValue("size", value)}
                     options={[
@@ -194,6 +286,25 @@ const ModalAddGoods = ({ showModalAddGoods, setShowModalAddGoods }) => {
                     component="div"
                     className="error-message"
                   />
+                </FormAntd.Item> */}
+                <FormAntd.Item
+                  name="image"
+                  label="Hình ảnh"
+                  valuePropName="fileList"
+                  getValueFromEvent={normFile}
+                  extra="Chỉ chấp nhận file jpg, jpeg, png"
+                  type="file"
+                >
+                  <Field
+                    as={Upload}
+                    name="logo"
+                    customRequest={dummyRequest}
+                    listType="picture"
+                    maxCount={1}
+                    accept=".jpg,.jpeg,.png"
+                  >
+                    <Button icon={<UploadOutlined />}> Tải ảnh lên</Button>
+                  </Field>
                 </FormAntd.Item>
                 <div className="btn-add-partner" style={{ marginTop: "50px" }}>
                   <Row gutter={16} justify="end">

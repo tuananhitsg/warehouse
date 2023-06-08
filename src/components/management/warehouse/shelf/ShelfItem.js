@@ -1,6 +1,17 @@
+import { Button } from "antd";
 import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-const ShelfItem = ({ codeRow, status, shelf, onClick }) => {
+const ShelfItem = ({
+  codeRow,
+  status,
+  shelf,
+  onClick,
+  disabled,
+  goodsCodeinReceipt,
+  isSelectingBin,
+}) => {
+  const [selectedShelf, setSelectedShelf] = useState(null);
   let className = "";
   switch (status) {
     case "Đã đầy":
@@ -13,13 +24,26 @@ const ShelfItem = ({ codeRow, status, shelf, onClick }) => {
       className = "shelf__item shelf__item--empty";
       break;
     default:
-
+  }
+  if (selectedShelf?.codeBin === shelf.codeBin) {
+    className = `${className} selected-shelf`;
   }
 
   return (
-    <div className={className} onClick={() => onClick(shelf.codeRow)}>
-      {status}:{codeRow}
-    </div>
+    <Button
+      className={className}
+      onClick={() => {
+        onClick(shelf.codeBin);
+      }}
+      disabled={
+        disabled.includes(shelf?.codeBin) ||
+        (isSelectingBin && status === "Đã đầy")
+        //  ||
+        // (shelf?.goods && !goodsCodeinReceipt.includes(shelf?.goods?.code))
+      }
+    >
+      {shelf.codeBin}
+    </Button>
   );
 };
 

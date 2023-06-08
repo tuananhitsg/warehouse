@@ -23,8 +23,8 @@ import {
 import InboundApi from "../../../api/inboundApi";
 import { useDispatch, useSelector } from "react-redux";
 import { setReload } from "../../../redux/reloadSlice";
-import { useNavigate } from "react-router-dom";
-import "./table.scss";
+import { useNavigate, useLocation } from "react-router-dom";
+// import "./table.scss";
 //import component
 import ModalAddReceipt from "./modalAddReceipt";
 import TableReceipt from "./TableReceiptDetail";
@@ -40,6 +40,8 @@ const InboundTable = () => {
   const [refreshKey, setRefreshKey] = useState(0);
   //reload trang sau khi them
   const reload = useSelector((state) => state.reloadReducer.reload);
+
+  const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -54,8 +56,6 @@ const InboundTable = () => {
     setShowModalConfirmPut(true);
     setSelectedId(code);
   };
-
-
 
   //get good list
   // useEffect(() => {
@@ -80,7 +80,7 @@ const InboundTable = () => {
   });
   //get all purchase receipt
   const [listPurchase, setListPurchase] = useState([]);
-  const fetchAllPurchases = async () =>{
+  const fetchAllPurchases = async () => {
     try {
       const res = await InboundApi.getAllPurchaseReceipt();
       if (res) {
@@ -89,14 +89,15 @@ const InboundTable = () => {
     } catch (error) {
       console.log("Failed to fetch recepit list: ", error);
     }
-  }
+  };
   const fetchPageOfData = async () => {
     const { page, pageSize } = tableParams.pagination;
     console.log("page", page, pageSize);
 
     try {
       const res = await InboundApi.getPageOfReceipt(page, pageSize);
-      navigate(`/danh-sach-phieu-nhap?page=${page + 1}&size=${pageSize}`);
+      // navigate(`/danh-sach-phieu-nhap?page=${page + 1}&size=${pageSize}`);
+      navigate(`${location.pathname}?page=${page+1}&size=${pageSize}`);
       if (res) {
         const { content, totalElements } = res;
         setListReceipt(content);
@@ -124,8 +125,11 @@ const InboundTable = () => {
         page: pagination.current - 1,
       },
     });
+    // navigate(
+    //   `/danh-sach-phieu-nhap?page=${pagination.current}&size=${pagination.pageSize}`
+    // );
     navigate(
-      `/danh-sach-phieu-nhap?page=${pagination.current}&size=${pagination.pageSize}`
+      `${location.pathname}?page=${pagination.current}&size=${pagination.pageSize}`
     );
     if (pagination.pageSize !== tableParams.pagination.pageSize) {
       setListReceipt([]);
@@ -212,7 +216,7 @@ const InboundTable = () => {
       ),
     },
   ];
- 
+
   const handleCancel = () => {
     setShowModalConfirmPut(false);
     setSelectedId(null);
@@ -225,12 +229,6 @@ const InboundTable = () => {
     <div className="table-container">
       <div className="table-header">
         <Row gutter={{ xs: 8, sm: 16, md: 16, lg: 16 }}>
-          {/* <Col span={12}>
-            <Input
-              placeholder="Tìm kiếm sản phẩm theo mã, tên"
-              prefix={<SearchOutlined />}
-            />
-          </Col> */}
           <Col span={12}>
             <Button
               type="primary"
@@ -249,13 +247,12 @@ const InboundTable = () => {
         pagination={{ ...tableParams.pagination }}
         rowKey={(record) => record.code}
         expandable={{
-          expandedRowRender:(record) =>( <TableReceipt record={record} />),
-          expandRowByClick: true,
+          expandedRowRender: (record) => <TableReceipt record={record} />,
+          //expandRowByClick: true,
           onExpand: handleExpand,
         }}
         dataSource={listReceipt}
         onChange={handleTableChange}
-
       />
       {showModalConfirmPut ? (
         <Modal
